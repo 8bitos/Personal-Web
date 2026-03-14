@@ -1,0 +1,34 @@
+{
+  "categories": [
+    {
+      "title": "Frontend",
+      "icon": "layout",
+      "skills": [
+        { "name": "HTML5", "icon": "code-2", "level": 90 },
+        { "name": "CSS", "icon": "palette", "level": 70 },
+        { "name": "JavaScript", "icon": "zap", "level": 65 },
+        { "name": "React", "icon": "atom", "level": 65 }
+      ]
+    },
+    {
+      "title": "Backend",
+      "icon": "server",
+      "skills": [
+        { "name": "Node.js", "icon": "terminal-square", "level": 75 },
+        { "name": "Python", "icon": "cpu", "level": 70 },
+        { "name": "Go", "icon": "cpu", "level": 75 },        
+        { "name": "SQL", "icon": "database", "level": 65 }
+      ]
+    },
+    {
+      "title": "Tools & Others",
+      "icon": "wrench",
+      "skills": [
+        { "name": "Git & GitHub", "icon": "git-branch", "level": 80 },
+        { "name": "VS Code", "icon": "monitor", "level": 90 },
+        { "name": "Photoshop", "icon": "image", "level": 90 },
+        { "name": "Figma", "icon": "pen-tool", "level": 60 }
+      ]
+    }
+  ]
+}

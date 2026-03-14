@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Scroll Reveal
     initScrollReveal();
 
-    // Skill Bars
-    initSkillBars();
+    // Skills from JSON
+    initSkillsFromJson();
 
     // Stat Counter
     initStatCounter();
@@ -363,6 +363,54 @@ function initScrollReveal() {
     });
 
     elements.forEach(el => observer.observe(el));
+}
+
+/* ============ SKILLS FROM JSON ============ */
+function initSkillsFromJson() {
+    const grid = document.getElementById('skills-grid');
+    if (!grid) return;
+
+    fetch('skill.json')
+        .then(r => r.json())
+        .then(data => {
+            const categories = Array.isArray(data.categories) ? data.categories : [];
+            grid.innerHTML = categories.map(cat => {
+                const title = cat.title || 'Skills';
+                const icon = cat.icon || 'star';
+                const skills = Array.isArray(cat.skills) ? cat.skills : [];
+                const items = skills.map(sk => {
+                    const level = Math.max(0, Math.min(100, Number(sk.level) || 0));
+                    const skillIcon = sk.icon || 'sparkles';
+                    const name = sk.name || 'Skill';
+                    return `
+                        <div class="skill-item glass-card">
+                            <div class="skill-icon">
+                                <i data-lucide="${skillIcon}"></i>
+                            </div>
+                            <span class="skill-name">${name}</span>
+                            <div class="skill-bar"><div class="skill-fill" data-level="${level}"></div></div>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="skill-category reveal-up">
+                        <h3 class="skill-category-title">
+                            <i data-lucide="${icon}" class="skill-cat-icon"></i>
+                            ${title}
+                        </h3>
+                        <div class="skill-items">
+                            ${items}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (window.lucide) lucide.createIcons();
+            initSkillBars();
+            initScrollReveal();
+        })
+        .catch(() => {});
 }
 
 /* ============ SKILL BARS ============ */

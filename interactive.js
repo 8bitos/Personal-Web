@@ -642,10 +642,10 @@
             ctx.fillText('SAPTA', cx, photoY + photoSize + 14);
             ctx.fillStyle = '#00b4ff';
             ctx.font = '700 10px "Inter", sans-serif';
-            ctx.fillText('FULL-STACK DEVELOPER', cx, photoY + photoSize + 34);
+            ctx.fillText('FULL STACK DEVELOPER', cx, photoY + photoSize + 34);
             ctx.fillStyle = 'rgba(0, 180, 255, 0.6)';
             ctx.font = '600 7px "Inter", sans-serif';
-            ctx.fillText('P3R ACADEMY • WEB LAB', cx, photoY + photoSize + 48);
+            ctx.fillText('UNDIKSHA', cx, photoY + photoSize + 48);
 
             // Divider + diamond
             const divY = photoY + photoSize + 54;
@@ -667,15 +667,15 @@
             ctx.fillStyle = 'rgba(0, 180, 255, 0.45)'; ctx.font = '700 7px "Inter", sans-serif';
             ctx.fillText('ID NO', bx + 16, infoY + 26);
             ctx.fillStyle = '#e4eaf8'; ctx.font = '700 8px "Inter", sans-serif';
-            ctx.fillText('P3R-26-0614', bx + 16, infoY + 36);
+            ctx.fillText('28012004', bx + 16, infoY + 36);
             ctx.fillStyle = 'rgba(0, 180, 255, 0.4)'; ctx.font = '700 8px "Inter", sans-serif';
             ctx.fillText('DEPT', bx + cardW / 2, infoY);
             ctx.fillStyle = '#e4eaf8'; ctx.font = '700 10px "Inter", sans-serif';
-            ctx.fillText('WEB / UI', bx + cardW / 2, infoY + 12);
+            ctx.fillText('WEB / APP', bx + cardW / 2, infoY + 12);
             ctx.fillStyle = 'rgba(0, 180, 255, 0.45)'; ctx.font = '700 7px "Inter", sans-serif';
             ctx.fillText('ACCESS', bx + cardW / 2, infoY + 26);
             ctx.fillStyle = '#e4eaf8'; ctx.font = '700 8px "Inter", sans-serif';
-            ctx.fillText('LAB • STUDIO', bx + cardW / 2, infoY + 36);
+            ctx.fillText('EVERYWHERE', bx + cardW / 2, infoY + 36);
 
             // QR
             const qrX = bx + cardW / 2 - 14;
