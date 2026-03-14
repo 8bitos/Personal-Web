@@ -157,16 +157,17 @@
                 if (titleEl) titleEl.textContent = 'No Songs Found';
             });
 
-        function setMarquee(text) {
-            if (!titleEl) return;
-            titleEl.textContent = text;
-            titleEl.classList.remove('marquee');
+        function setMarquee(el, text, separator) {
+            if (!el) return;
+            el.textContent = text;
+            el.classList.remove('marquee');
 
             // Check if text overflows
             requestAnimationFrame(() => {
-                if (titleEl.scrollWidth > titleEl.clientWidth) {
-                    titleEl.classList.add('marquee');
-                    titleEl.innerHTML = '<span class="marquee-inner">' + text + '     ♪     ' + text + '     ♪     </span>';
+                if (el.scrollWidth > el.clientWidth) {
+                    el.classList.add('marquee');
+                    const sep = separator || '     •     ';
+                    el.innerHTML = '<span class="marquee-inner">' + text + sep + text + sep + '</span>';
                 }
             });
         }
@@ -177,8 +178,8 @@
             const song = songs[currentIndex];
 
             audio.src = 'assets/Audio/' + song.file;
-            setMarquee(song.title || 'Unknown');
-            if (artistEl) artistEl.textContent = song.artist || 'Unknown Artist';
+            setMarquee(titleEl, song.title || 'Unknown', '     ♪     ');
+            setMarquee(artistEl, song.artist || 'Unknown Artist', '     •     ');
 
             // Try to load thumbnail
             const thumbPath = 'assets/thumbs/' + (song.thumb || ('thumbs' + (currentIndex + 1) + '.png'));
@@ -1267,3 +1268,4 @@
         init();
     }
 })();
+
