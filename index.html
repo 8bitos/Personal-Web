@@ -48,6 +48,12 @@
 
     <!-- ========== GRAVITY CANVAS ========== -->
     <canvas id="gravity-canvas"></canvas>
+    <!-- ========== AUDIO REACTIVE CANVAS ========== -->
+    <canvas id="audio-reactive-canvas"></canvas>
+    <!-- ========== DVD CANVAS ========== -->
+    <canvas id="dvd-canvas"></canvas>
+    <!-- ========== VORTEX CANVAS ========== -->
+    <canvas id="vortex-canvas"></canvas>
 
     <!-- ========== P3R TOP BAR ========== -->
     <nav id="navbar" class="p3r-topbar">
@@ -445,21 +451,21 @@
                             <i data-lucide="mail" class="contact-icon"></i>
                             <div>
                                 <span class="contact-link-label">Email</span>
-                                <span class="contact-link-value">sapta@example.com</span>
+                                <span class="contact-link-value">saptaw2801@gmail.com</span>
                             </div>
                         </a>
-                        <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="contact-link glass-card">
+                        <a href="https://github.com/8bitos" target="_blank" rel="noopener noreferrer" class="contact-link glass-card">
                             <i data-lucide="github" class="contact-icon"></i>
                             <div>
                                 <span class="contact-link-label">GitHub</span>
-                                <span class="contact-link-value">github.com/sapta</span>
+                                <span class="contact-link-value">github.com/8bitos</span>
                             </div>
                         </a>
-                        <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" class="contact-link glass-card">
+                        <a href="https://www.linkedin.com/in/sapta-wiguna-1a01a42a5" target="_blank" rel="noopener noreferrer" class="contact-link glass-card">
                             <i data-lucide="linkedin" class="contact-icon"></i>
                             <div>
                                 <span class="contact-link-label">LinkedIn</span>
-                                <span class="contact-link-value">linkedin.com/in/sapta</span>
+                                <span class="contact-link-value">linkedin.com/in/sapta-wiguna</span>
                             </div>
                         </a>
                     </div>
@@ -566,50 +572,77 @@
                     </div>
                 </div>
 
-                <!-- TOGGLE GRID (small icons below) -->
-                <div class="phone-toggles-grid">
-                    <button class="phone-toggle-tile" data-feature="lanyard" aria-label="Physics Lanyard">
-                        <span class="tile-icon">🎫</span>
-                        <span class="tile-label">Lanyard</span>
-                        <input type="checkbox" id="toggle-lanyard" class="toggle-input" data-feature="lanyard" hidden>
-                    </button>
-                    <button class="phone-toggle-tile" data-feature="sparkles" aria-label="Cursor Sparkles">
-                        <span class="tile-icon">✨</span>
-                        <span class="tile-label">Sparkles</span>
-                        <input type="checkbox" id="toggle-sparkles" class="toggle-input" data-feature="sparkles" hidden>
-                    </button>
-                    <button class="phone-toggle-tile" data-feature="gravity" aria-label="Gravity Balls">
-                        <span class="tile-icon">🎱</span>
-                        <span class="tile-label">Gravity</span>
-                        <input type="checkbox" id="toggle-gravity" class="toggle-input" data-feature="gravity" hidden>
-                    </button>
-                    <button class="phone-toggle-tile" data-feature="magnetic" aria-label="Magnetic Hover">
-                        <span class="tile-icon">🧲</span>
-                        <span class="tile-label">Magnetic</span>
-                        <input type="checkbox" id="toggle-magnetic" class="toggle-input" data-feature="magnetic" hidden>
-                    </button>
-                    <button class="phone-toggle-tile" data-feature="sounds" aria-label="UI Sounds">
-                        <span class="tile-icon">🔊</span>
-                        <span class="tile-label">Sounds</span>
-                        <input type="checkbox" id="toggle-sounds" class="toggle-input" data-feature="sounds" hidden>
-                    </button>
-                    <button class="phone-toggle-tile" data-feature="trail" aria-label="Cursor Trail">
-                        <span class="tile-icon">💫</span>
-                        <span class="tile-label">Trail</span>
-                        <input type="checkbox" id="toggle-trail" class="toggle-input" data-feature="trail" hidden>
-                    </button>
-                    <button class="phone-toggle-tile" data-feature="glitch" aria-label="Glitch FX">
-                        <span class="tile-icon">📺</span>
-                        <span class="tile-label">Glitch</span>
-                        <input type="checkbox" id="toggle-glitch" class="toggle-input" data-feature="glitch" hidden>
-                    </button>
-                    <button class="phone-toggle-tile" data-feature="scanlines" aria-label="Scanlines">
-                        <span class="tile-icon">📡</span>
-                        <span class="tile-label">Scanlines</span>
-                        <input type="checkbox" id="toggle-scanlines" class="toggle-input" data-feature="scanlines" hidden>
-                    </button>
+                <!-- TOGGLE PAGES (6 per page) -->
+                <div class="phone-toggles-pager">
+                    <div class="phone-toggles-page">
+                        <button class="phone-toggle-tile" data-feature="lanyard" aria-label="Physics Lanyard">
+                            <span class="tile-icon">🎫</span>
+                            <span class="tile-label">Lanyard</span>
+                            <input type="checkbox" id="toggle-lanyard" class="toggle-input" data-feature="lanyard" hidden>
+                        </button>
+                        <button class="phone-toggle-tile" data-feature="sparkles" aria-label="Cursor Sparkles">
+                            <span class="tile-icon">✨</span>
+                            <span class="tile-label">Sparkles</span>
+                            <input type="checkbox" id="toggle-sparkles" class="toggle-input" data-feature="sparkles" hidden>
+                        </button>
+                        <button class="phone-toggle-tile" data-feature="gravity" aria-label="Gravity Balls">
+                            <span class="tile-icon">🎱</span>
+                            <span class="tile-label">Gravity</span>
+                            <input type="checkbox" id="toggle-gravity" class="toggle-input" data-feature="gravity" hidden>
+                        </button>
+                        <button class="phone-toggle-tile" data-feature="magnetic" aria-label="Magnetic Hover">
+                            <span class="tile-icon">🧲</span>
+                            <span class="tile-label">Magnetic</span>
+                            <input type="checkbox" id="toggle-magnetic" class="toggle-input" data-feature="magnetic" hidden>
+                        </button>
+                        <button class="phone-toggle-tile" data-feature="sounds" aria-label="UI Sounds">
+                            <span class="tile-icon">🔊</span>
+                            <span class="tile-label">Sounds</span>
+                            <input type="checkbox" id="toggle-sounds" class="toggle-input" data-feature="sounds" hidden>
+                        </button>
+                        <button class="phone-toggle-tile" data-feature="trail" aria-label="Cursor Trail">
+                            <span class="tile-icon">💫</span>
+                            <span class="tile-label">Trail</span>
+                            <input type="checkbox" id="toggle-trail" class="toggle-input" data-feature="trail" hidden>
+                        </button>
+                    </div>
+                    <div class="phone-toggles-page">
+                        <button class="phone-toggle-tile" data-feature="glitch" aria-label="Glitch FX">
+                            <span class="tile-icon">📺</span>
+                            <span class="tile-label">Glitch</span>
+                            <input type="checkbox" id="toggle-glitch" class="toggle-input" data-feature="glitch" hidden>
+                        </button>
+                        <button class="phone-toggle-tile" data-feature="scanlines" aria-label="Scanlines">
+                            <span class="tile-icon">📡</span>
+                            <span class="tile-label">Scanlines</span>
+                            <input type="checkbox" id="toggle-scanlines" class="toggle-input" data-feature="scanlines" hidden>
+                        </button>
+                        <button class="phone-toggle-tile" data-feature="gyro" aria-label="Gyro Parallax">
+                            <span class="tile-icon">🧭</span>
+                            <span class="tile-label">Gyro</span>
+                            <input type="checkbox" id="toggle-gyro" class="toggle-input" data-feature="gyro" hidden>
+                        </button>
+                        <button class="phone-toggle-tile" data-feature="audioReactive" aria-label="Audio Reactive">
+                            <span class="tile-icon">🎵</span>
+                            <span class="tile-label">Audio</span>
+                            <input type="checkbox" id="toggle-audioReactive" class="toggle-input" data-feature="audioReactive" hidden>
+                        </button>
+                        <button class="phone-toggle-tile" data-feature="dvd" aria-label="DVD Logo">
+                            <span class="tile-icon">📀</span>
+                            <span class="tile-label">DVD</span>
+                            <input type="checkbox" id="toggle-dvd" class="toggle-input" data-feature="dvd" hidden>
+                        </button>
+                        <button class="phone-toggle-tile" data-feature="vortex" aria-label="Gravity Vortex">
+                            <span class="tile-icon">🌀</span>
+                            <span class="tile-label">Vortex</span>
+                            <input type="checkbox" id="toggle-vortex" class="toggle-input" data-feature="vortex" hidden>
+                        </button>
+                    </div>
                 </div>
-            </div>
+                <div class="phone-toggles-dots" role="tablist" aria-label="Toggle pages">
+                    <button class="phone-dot active" data-page="0" aria-label="Page 1" aria-selected="true"></button>
+                    <button class="phone-dot" data-page="1" aria-label="Page 2" aria-selected="false"></button>
+                </div>
 
             <!-- Phone home indicator -->
             <div class="phone-home-bar"></div>
@@ -634,3 +667,4 @@
     </script>
 </body>
 </html>
+

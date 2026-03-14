@@ -17,9 +17,14 @@
         trail: false,
         glitch: false,
         scanlines: false,
+        gyro: false,
+        audioReactive: false,
+        dvd: false,
+        vortex: false,
     };
 
     const features = {};
+    let sharedAudio = null;
 
     // Preload images for lanyard
     let profileImg = null;
@@ -33,7 +38,7 @@
             img.src = src;
         });
     }
-    preloadImg('assets/profile.png').then(img => { profileImg = img; });
+    preloadImg('assets/sapta.png').then(img => { profileImg = img; });
     preloadImg('assets/bglanyard.png').then(img => { backImg = img; });
 
     // ——— Phone UI Logic ———
@@ -117,6 +122,9 @@
 
         // ---- Media Player ----
         initMediaPlayer();
+
+        // ---- Toggle pager dots ----
+        initTogglePager();
     }
 
     // ——— Media Player ———
@@ -141,6 +149,7 @@
         let songs = [];
         let currentIndex = 0;
         let audio = new Audio();
+        sharedAudio = audio;
         let isPlaying = false;
         let progressRAF = null;
         let shuffleOn = false;
@@ -322,6 +331,43 @@
         });
     }
 
+    function initTogglePager() {
+        const pager = document.querySelector('.phone-toggles-pager');
+        const dots = Array.from(document.querySelectorAll('.phone-dot'));
+        if (!pager || dots.length === 0) return;
+
+        let rafId = null;
+        let snapTimer = null;
+        const updateDots = () => {
+            const pageWidth = pager.clientWidth || 1;
+            const index = Math.max(0, Math.min(dots.length - 1, Math.round(pager.scrollLeft / pageWidth)));
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+                dot.setAttribute('aria-selected', i === index ? 'true' : 'false');
+            });
+        };
+
+        pager.addEventListener('scroll', () => {
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(updateDots);
+            if (snapTimer) clearTimeout(snapTimer);
+            snapTimer = setTimeout(() => {
+                const pageWidth = pager.clientWidth || 1;
+                const index = Math.max(0, Math.min(dots.length - 1, Math.round(pager.scrollLeft / pageWidth)));
+                pager.scrollTo({ left: index * pageWidth, behavior: 'smooth' });
+            }, 120);
+        }, { passive: true });
+
+        dots.forEach((dot, i) => {
+            dot.addEventListener('click', (e) => {
+                e.stopPropagation();
+                pager.scrollTo({ left: i * pager.clientWidth, behavior: 'smooth' });
+            });
+        });
+
+        updateDots();
+    }
+
     function toggleFeature(name, isOn) {
         state[name] = isOn;
         switch (name) {
@@ -332,6 +378,10 @@
             case 'trail': isOn ? startTrail() : stopTrail(); break;
             case 'glitch': isOn ? startGlitch() : stopGlitch(); break;
             case 'scanlines': isOn ? startScanlines() : stopScanlines(); break;
+            case 'gyro': isOn ? startGyro() : stopGyro(); break;
+            case 'audioReactive': isOn ? startAudioReactive() : stopAudioReactive(); break;
+            case 'dvd': isOn ? startDVD() : stopDVD(); break;
+            case 'vortex': isOn ? startVortex() : stopVortex(); break;
             case 'sounds': break;
         }
     }
@@ -543,7 +593,7 @@
             ctx.font = '700 8px "Space Grotesk", sans-serif';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
-            ctx.fillText('IDENTIFICATION CARD', bx + 14, by + 12);
+            ctx.fillText('PERSONAL LANYARD PASS', bx + 14, by + 12);
 
             // Corner accents
             ctx.strokeStyle = 'rgba(0, 180, 255, 0.25)';
@@ -592,7 +642,10 @@
             ctx.fillText('SAPTA', cx, photoY + photoSize + 14);
             ctx.fillStyle = '#00b4ff';
             ctx.font = '700 10px "Inter", sans-serif';
-            ctx.fillText('WEB DEVELOPER', cx, photoY + photoSize + 36);
+            ctx.fillText('FULL-STACK DEVELOPER', cx, photoY + photoSize + 34);
+            ctx.fillStyle = 'rgba(0, 180, 255, 0.6)';
+            ctx.font = '600 7px "Inter", sans-serif';
+            ctx.fillText('P3R ACADEMY • WEB LAB', cx, photoY + photoSize + 48);
 
             // Divider + diamond
             const divY = photoY + photoSize + 54;
@@ -605,20 +658,28 @@
             ctx.fillStyle = 'rgba(0, 180, 255, 0.3)'; ctx.fill();
 
             // Info
-            const infoY = divY + 16;
+            const infoY = divY + 14;
             ctx.textAlign = 'left'; ctx.font = '700 8px "Inter", sans-serif';
             ctx.fillStyle = 'rgba(0, 180, 255, 0.4)';
             ctx.fillText('STATUS', bx + 16, infoY);
             ctx.fillStyle = '#10b981'; ctx.font = '700 10px "Inter", sans-serif';
             ctx.fillText('● ACTIVE', bx + 16, infoY + 12);
+            ctx.fillStyle = 'rgba(0, 180, 255, 0.45)'; ctx.font = '700 7px "Inter", sans-serif';
+            ctx.fillText('ID NO', bx + 16, infoY + 26);
+            ctx.fillStyle = '#e4eaf8'; ctx.font = '700 8px "Inter", sans-serif';
+            ctx.fillText('P3R-26-0614', bx + 16, infoY + 36);
             ctx.fillStyle = 'rgba(0, 180, 255, 0.4)'; ctx.font = '700 8px "Inter", sans-serif';
-            ctx.fillText('CLASS', bx + cardW / 2, infoY);
+            ctx.fillText('DEPT', bx + cardW / 2, infoY);
             ctx.fillStyle = '#e4eaf8'; ctx.font = '700 10px "Inter", sans-serif';
-            ctx.fillText('DEVELOPER', bx + cardW / 2, infoY + 12);
+            ctx.fillText('WEB / UI', bx + cardW / 2, infoY + 12);
+            ctx.fillStyle = 'rgba(0, 180, 255, 0.45)'; ctx.font = '700 7px "Inter", sans-serif';
+            ctx.fillText('ACCESS', bx + cardW / 2, infoY + 26);
+            ctx.fillStyle = '#e4eaf8'; ctx.font = '700 8px "Inter", sans-serif';
+            ctx.fillText('LAB • STUDIO', bx + cardW / 2, infoY + 36);
 
             // QR
             const qrX = bx + cardW / 2 - 14;
-            const qrY = infoY + 36;
+            const qrY = infoY + 44;
             const qrSz = 28, cs = qrSz / 8;
             ctx.fillStyle = 'rgba(0, 180, 255, 0.5)';
             for (const p of getQRPattern()) ctx.fillRect(qrX + p.c * cs, qrY + p.r * cs, cs - 0.5, cs - 0.5);
@@ -628,7 +689,7 @@
             // Serial
             ctx.fillStyle = 'rgba(0, 180, 255, 0.25)';
             ctx.font = '600 7px "Inter", monospace'; ctx.textAlign = 'center';
-            ctx.fillText('P3R-2026-SAPTA', cx, by + cardH - 10);
+            ctx.fillText('ID# P3R-2026-0614', cx, by + cardH - 10);
 
             // Bottom accent
             ctx.beginPath(); ctx.moveTo(bx, by + cardH); ctx.lineTo(bx + cardW, by + cardH);
@@ -1196,6 +1257,493 @@
         if (scanlineOverlay) { scanlineOverlay.remove(); scanlineOverlay = null; }
         const kf = document.getElementById('scanline-keyframes');
         if (kf) kf.remove();
+    }
+
+    // =============================================
+    //  🧭 GYRO PARALLAX (Device Orientation)
+    // =============================================
+    let gyroHandler = null;
+    let gyroActive = false;
+
+    function startGyro() {
+        if (gyroActive) return;
+        const enable = () => {
+            gyroActive = true;
+            document.body.classList.add('gyro-enabled');
+            gyroHandler = (e) => {
+                const gamma = Math.max(-30, Math.min(30, e.gamma || 0));
+                const beta = Math.max(-30, Math.min(30, e.beta || 0));
+                const x = (gamma / 30) * 8;
+                const y = (beta / 30) * 8;
+                const hero = document.querySelector('.hero');
+                const phonePanel = document.getElementById('phone-panel');
+                const particleCanvas = document.getElementById('particle-canvas');
+                if (hero) hero.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+                if (phonePanel) phonePanel.style.transform = `translate3d(${x * 1.4}px, ${y * 1.4}px, 0)`;
+                if (particleCanvas) particleCanvas.style.transform = `translate3d(${x * -0.6}px, ${y * -0.6}px, 0)`;
+            };
+            window.addEventListener('deviceorientation', gyroHandler, true);
+        };
+
+        if (typeof DeviceOrientationEvent !== 'undefined' &&
+            typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission()
+                .then(res => { if (res === 'granted') enable(); })
+                .catch(() => {});
+        } else {
+            enable();
+        }
+    }
+
+    function stopGyro() {
+        gyroActive = false;
+        document.body.classList.remove('gyro-enabled');
+        if (gyroHandler) window.removeEventListener('deviceorientation', gyroHandler, true);
+        gyroHandler = null;
+        const hero = document.querySelector('.hero');
+        const phonePanel = document.getElementById('phone-panel');
+        const particleCanvas = document.getElementById('particle-canvas');
+        if (hero) hero.style.transform = '';
+        if (phonePanel) phonePanel.style.transform = '';
+        if (particleCanvas) particleCanvas.style.transform = '';
+    }
+
+    // =============================================
+    //  🎵 AUDIO REACTIVE VISUALIZER
+    // =============================================
+    let audioVizRAF = null;
+    let audioAnalyser = null;
+    let audioData = null;
+
+    function connectAudioAnalyser() {
+        if (!sharedAudio) return null;
+        const ctx = getAudioCtx();
+        if (!features.audioSource) {
+            try {
+                features.audioSource = ctx.createMediaElementSource(sharedAudio);
+                audioAnalyser = ctx.createAnalyser();
+                audioAnalyser.fftSize = 256;
+                features.audioSource.connect(audioAnalyser);
+                audioAnalyser.connect(ctx.destination);
+                audioData = new Uint8Array(audioAnalyser.frequencyBinCount);
+            } catch (e) { return null; }
+        }
+        if (!audioAnalyser) {
+            audioAnalyser = ctx.createAnalyser();
+            audioAnalyser.fftSize = 256;
+            features.audioSource.connect(audioAnalyser);
+            audioAnalyser.connect(ctx.destination);
+            audioData = new Uint8Array(audioAnalyser.frequencyBinCount);
+        }
+        return audioAnalyser;
+    }
+
+    function startAudioReactive() {
+        const canvas = document.getElementById('audio-reactive-canvas');
+        if (!canvas) return;
+        canvas.classList.add('active');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        features.audioResize = resize;
+        window.addEventListener('resize', resize);
+
+        const analyser = connectAudioAnalyser();
+        const draw = () => {
+            audioVizRAF = requestAnimationFrame(draw);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (!analyser || !audioData) return;
+            analyser.getByteFrequencyData(audioData);
+
+            const centerX = canvas.width * 0.5;
+            const centerY = canvas.height * 0.55;
+            const radius = Math.min(canvas.width, canvas.height) * 0.12;
+            const bars = 48;
+            const step = Math.floor(audioData.length / bars);
+
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            for (let i = 0; i < bars; i++) {
+                const v = audioData[i * step] / 255;
+                const barLen = radius + v * radius * 1.4;
+                const angle = (i / bars) * Math.PI * 2;
+                const x1 = Math.cos(angle) * radius;
+                const y1 = Math.sin(angle) * radius;
+                const x2 = Math.cos(angle) * barLen;
+                const y2 = Math.sin(angle) * barLen;
+                const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+                grad.addColorStop(0, 'rgba(0,180,255,0.2)');
+                grad.addColorStop(1, 'rgba(0,180,255,0.85)');
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+            ctx.restore();
+        };
+
+        getAudioCtx().resume().catch(() => {});
+        draw();
+    }
+
+    function stopAudioReactive() {
+        const canvas = document.getElementById('audio-reactive-canvas');
+        if (canvas) canvas.classList.remove('active');
+        if (audioVizRAF) cancelAnimationFrame(audioVizRAF);
+        audioVizRAF = null;
+        if (features.audioResize) window.removeEventListener('resize', features.audioResize);
+    }
+
+    // =============================================
+    //  🧵 CLOTH BANNER (drag to deform)
+    // =============================================
+    let clothRAF = null;
+    let clothPoints = [];
+    let clothConstraints = [];
+    let clothDragIndex = -1;
+
+    function startCloth() {
+        const canvas = document.getElementById('cloth-canvas');
+        if (!canvas) return;
+        canvas.classList.add('active');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        features.clothResize = resize;
+        window.addEventListener('resize', resize);
+
+        const cols = 18;
+        const rows = 10;
+        const spacing = Math.min(canvas.width, canvas.height) * 0.035;
+        const startX = canvas.width * 0.2;
+        const startY = canvas.height * 0.2;
+        const gravity = 0.25;
+
+        clothPoints = [];
+        clothConstraints = [];
+
+        function idx(x, y) { return y * cols + x; }
+
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const px = startX + x * spacing;
+                const py = startY + y * spacing;
+                clothPoints.push({
+                    x: px, y: py,
+                    oldx: px, oldy: py,
+                    pinned: y === 0 && x % 2 === 0
+                });
+                if (x > 0) clothConstraints.push([idx(x, y), idx(x - 1, y), spacing]);
+                if (y > 0) clothConstraints.push([idx(x, y), idx(x, y - 1), spacing]);
+            }
+        }
+
+        const onDown = (e) => {
+            let nearest = -1;
+            let best = 99999;
+            for (let i = 0; i < clothPoints.length; i++) {
+                const p = clothPoints[i];
+                const dx = e.clientX - p.x;
+                const dy = e.clientY - p.y;
+                const d = dx * dx + dy * dy;
+                if (d < best && d < spacing * spacing * 3) {
+                    best = d;
+                    nearest = i;
+                }
+            }
+            clothDragIndex = nearest;
+        };
+        const onMove = (e) => {
+            if (clothDragIndex < 0) return;
+            const p = clothPoints[clothDragIndex];
+            if (!p || p.pinned) return;
+            p.x = e.clientX;
+            p.y = e.clientY;
+            p.oldx = p.x;
+            p.oldy = p.y;
+        };
+        const onUp = () => { clothDragIndex = -1; };
+
+        canvas.addEventListener('pointerdown', onDown);
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onUp);
+        features.clothDown = onDown;
+        features.clothMove = onMove;
+        features.clothUp = onUp;
+
+        function satisfy() {
+            for (let iter = 0; iter < 4; iter++) {
+                for (const c of clothConstraints) {
+                    const a = clothPoints[c[0]];
+                    const b = clothPoints[c[1]];
+                    const dx = b.x - a.x;
+                    const dy = b.y - a.y;
+                    const dist = Math.hypot(dx, dy) || 1;
+                    const diff = (dist - c[2]) / dist;
+                    const offsetX = dx * 0.5 * diff;
+                    const offsetY = dy * 0.5 * diff;
+                    if (!a.pinned) { a.x += offsetX; a.y += offsetY; }
+                    if (!b.pinned) { b.x -= offsetX; b.y -= offsetY; }
+                }
+            }
+        }
+
+        function update() {
+            clothRAF = requestAnimationFrame(update);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (const p of clothPoints) {
+                if (p.pinned) continue;
+                const vx = (p.x - p.oldx) * 0.99;
+                const vy = (p.y - p.oldy) * 0.99;
+                p.oldx = p.x;
+                p.oldy = p.y;
+                p.x += vx;
+                p.y += vy + gravity;
+            }
+
+            satisfy();
+
+            ctx.strokeStyle = 'rgba(0, 180, 255, 0.45)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            for (const c of clothConstraints) {
+                const a = clothPoints[c[0]];
+                const b = clothPoints[c[1]];
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+            }
+            ctx.stroke();
+
+            // Banner label
+            ctx.fillStyle = 'rgba(0, 180, 255, 0.22)';
+            const mid = clothPoints[Math.floor(clothPoints.length * 0.6)];
+            ctx.fillRect(mid.x - 70, mid.y + 10, 140, 28);
+            ctx.fillStyle = 'rgba(0, 180, 255, 0.9)';
+            ctx.font = '12px "Space Grotesk", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('SAPTA', mid.x, mid.y + 30);
+        }
+        update();
+    }
+
+    function stopCloth() {
+        const canvas = document.getElementById('cloth-canvas');
+        if (canvas) {
+            canvas.classList.remove('active');
+            canvas.removeEventListener('pointerdown', features.clothDown);
+        }
+        if (features.clothMove) window.removeEventListener('pointermove', features.clothMove);
+        if (features.clothUp) window.removeEventListener('pointerup', features.clothUp);
+        if (features.clothResize) window.removeEventListener('resize', features.clothResize);
+        if (clothRAF) cancelAnimationFrame(clothRAF);
+        clothRAF = null;
+        clothPoints = [];
+        clothConstraints = [];
+        clothDragIndex = -1;
+    }
+
+    // =============================================
+    //  📀 DVD LOGO BOUNCE (random color)
+    // =============================================
+    let dvdRAF = null;
+    let dvdState = null;
+
+    function startDVD() {
+        const canvas = document.getElementById('dvd-canvas');
+        if (!canvas) return;
+        canvas.classList.add('active');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        features.dvdResize = resize;
+        window.addEventListener('resize', resize);
+
+        const colors = ['#00b4ff', '#ff2050', '#ffcc00', '#80ffea', '#8a4dff', '#00ff7a'];
+        dvdState = {
+            w: 140,
+            h: 70,
+            x: Math.random() * (canvas.width - 140),
+            y: Math.random() * (canvas.height - 70),
+            vx: (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2),
+            vy: (Math.random() > 0.5 ? 1 : -1) * (2 + Math.random() * 2),
+            color: colors[Math.floor(Math.random() * colors.length)]
+        };
+
+        function drawLogo(x, y, w, h, color) {
+            ctx.save();
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 18;
+            ctx.beginPath();
+            ctx.roundRect(x, y, w, h, 12);
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            ctx.font = 'bold 28px "Space Grotesk", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('DVD', x + w / 2, y + h / 2);
+            ctx.restore();
+        }
+
+        function tick() {
+            dvdRAF = requestAnimationFrame(tick);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (!dvdState) return;
+
+            dvdState.x += dvdState.vx;
+            dvdState.y += dvdState.vy;
+
+            let bounced = false;
+            if (dvdState.x <= 0 || dvdState.x + dvdState.w >= canvas.width) {
+                dvdState.vx *= -1;
+                bounced = true;
+            }
+            if (dvdState.y <= 0 || dvdState.y + dvdState.h >= canvas.height) {
+                dvdState.vy *= -1;
+                bounced = true;
+            }
+
+            if (bounced) {
+                dvdState.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            drawLogo(dvdState.x, dvdState.y, dvdState.w, dvdState.h, dvdState.color);
+        }
+        tick();
+    }
+
+    function stopDVD() {
+        const canvas = document.getElementById('dvd-canvas');
+        if (canvas) canvas.classList.remove('active');
+        if (features.dvdResize) window.removeEventListener('resize', features.dvdResize);
+        if (dvdRAF) cancelAnimationFrame(dvdRAF);
+        dvdRAF = null;
+        dvdState = null;
+    }
+
+    // =============================================
+    //  🌀 GRAVITY VORTEX (hold to pull)
+    // =============================================
+    let vortexRAF = null;
+    let vortexParticles = [];
+    let vortexActive = false;
+    let vortexPos = { x: 0, y: 0 };
+
+    function startVortex() {
+        const canvas = document.getElementById('vortex-canvas');
+        if (!canvas) return;
+        canvas.classList.add('active');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        features.vortexResize = resize;
+        window.addEventListener('resize', resize);
+
+        vortexParticles = [];
+        const count = 180;
+        for (let i = 0; i < count; i++) {
+            vortexParticles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.6,
+                vy: (Math.random() - 0.5) * 0.6,
+            });
+        }
+
+        const onDown = (e) => {
+            vortexActive = true;
+            vortexPos.x = e.clientX;
+            vortexPos.y = e.clientY;
+        };
+        const onMove = (e) => {
+            if (!vortexActive) return;
+            vortexPos.x = e.clientX;
+            vortexPos.y = e.clientY;
+        };
+        const onUp = () => { vortexActive = false; };
+
+        canvas.addEventListener('pointerdown', onDown);
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onUp);
+        features.vortexDown = onDown;
+        features.vortexMove = onMove;
+        features.vortexUp = onUp;
+
+        function render() {
+            vortexRAF = requestAnimationFrame(render);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (const p of vortexParticles) {
+                if (vortexActive) {
+                    const dx = vortexPos.x - p.x;
+                    const dy = vortexPos.y - p.y;
+                    const dist = Math.max(20, Math.hypot(dx, dy));
+                    const pull = 120 / dist;
+                    const tx = -dy / dist; // tangential for swirl
+                    const ty = dx / dist;
+                    p.vx += (dx / dist) * pull * 0.05 + tx * 0.2;
+                    p.vy += (dy / dist) * pull * 0.05 + ty * 0.2;
+                }
+
+                p.vx *= 0.98;
+                p.vy *= 0.98;
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+
+                ctx.fillStyle = 'rgba(0, 180, 255, 0.7)';
+                ctx.fillRect(p.x, p.y, 2, 2);
+            }
+
+            if (vortexActive) {
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(0,180,255,0.35)';
+                ctx.lineWidth = 2;
+                ctx.arc(vortexPos.x, vortexPos.y, 26, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+        render();
+    }
+
+    function stopVortex() {
+        const canvas = document.getElementById('vortex-canvas');
+        if (canvas) {
+            canvas.classList.remove('active');
+            canvas.removeEventListener('pointerdown', features.vortexDown);
+        }
+        if (features.vortexMove) window.removeEventListener('pointermove', features.vortexMove);
+        if (features.vortexUp) window.removeEventListener('pointerup', features.vortexUp);
+        if (features.vortexResize) window.removeEventListener('resize', features.vortexResize);
+        if (vortexRAF) cancelAnimationFrame(vortexRAF);
+        vortexRAF = null;
+        vortexParticles = [];
+        vortexActive = false;
     }
 
     // =============================================

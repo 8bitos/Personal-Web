@@ -468,11 +468,13 @@ body:hover #cursor-glow {
    ============================== */
 .hero {
     min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 60px;
-    padding: 120px 40px 80px;
+    padding: 90px 40px 80px;
     max-width: var(--container-width);
     margin: 0 auto;
     position: relative;
@@ -1481,7 +1483,7 @@ body:hover #cursor-glow {
    ============================== */
 @media (max-width: 1024px) {
     .hero {
-        padding: 120px 24px 80px;
+        padding: 90px 24px 80px;
         gap: 40px;
     }
     .about-grid {
@@ -1567,7 +1569,7 @@ body:hover #cursor-glow {
     .hero {
         justify-content: center;
         text-align: center;
-        padding: 100px 20px 60px;
+        padding: 80px 20px 60px;
         gap: 40px;
     }
     .hero-content {
@@ -1618,7 +1620,10 @@ body:hover #cursor-glow {
    ============================== */
 #lanyard-canvas,
 #sparkle-canvas,
-#gravity-canvas {
+#gravity-canvas,
+#audio-reactive-canvas,
+#dvd-canvas,
+#vortex-canvas {
     position: fixed;
     inset: 0;
     z-index: 9000;
@@ -1636,6 +1641,17 @@ body:hover #cursor-glow {
 }
 
 #gravity-canvas.active {
+    display: block;
+    pointer-events: auto;
+}
+#audio-reactive-canvas.active {
+    display: block;
+}
+#dvd-canvas.active {
+    display: block;
+    pointer-events: auto;
+}
+#vortex-canvas.active {
     display: block;
     pointer-events: auto;
 }
@@ -1877,6 +1893,14 @@ body:hover #cursor-glow {
     animation: marquee-scroll 10s linear infinite;
 }
 
+/* Gyro parallax helpers */
+body.gyro-enabled #particle-canvas,
+body.gyro-enabled #phone-panel,
+body.gyro-enabled .hero {
+    will-change: transform;
+    transition: transform 0.08s linear;
+}
+
 /* Progress bar */
 .media-progress-wrap {
     margin-top: 4px;
@@ -1969,10 +1993,45 @@ body:hover #cursor-glow {
 }
 
 /* ---- TOGGLE GRID (small tiles) ---- */
-.phone-toggles-grid {
+.phone-toggles-pager {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scroll-snap-stop: always;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+}
+.phone-toggles-pager::-webkit-scrollbar {
+    display: none;
+}
+.phone-toggles-page {
+    min-width: 100%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
+    scroll-snap-align: start;
+}
+.phone-toggles-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 6px;
+}
+.phone-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 180, 255, 0.35);
+    background: rgba(0, 180, 255, 0.12);
+    cursor: pointer;
+    transition: transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+}
+.phone-dot.active {
+    background: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0, 180, 255, 0.6);
+    transform: scale(1.1);
 }
 .phone-toggle-tile {
     display: flex;
@@ -2046,8 +2105,15 @@ body:hover #cursor-glow {
         width: 36px;
         height: 36px;
     }
-    .phone-toggles-grid {
+    .phone-toggles-pager {
+        gap: 10px;
+    }
+    .phone-toggles-page {
         gap: 6px;
+    }
+    .phone-dot {
+        width: 7px;
+        height: 7px;
     }
     .phone-toggle-tile {
         padding: 10px 4px;
