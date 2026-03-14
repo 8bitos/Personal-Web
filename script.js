@@ -194,6 +194,9 @@ function initTypingEffect() {
 function initNavbar() {
     const navbar = document.getElementById('navbar');
     const items = document.querySelectorAll('.p3r-menu-item');
+    const heroNav = document.querySelector('.p3r-hero-nav');
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileBackdrop = document.getElementById('mobile-menu-backdrop');
     let focusedIndex = -1;
 
     // ---- Sound Manager ----
@@ -239,7 +242,10 @@ function initNavbar() {
 
     // ---- Click on menu item ----
     items.forEach((item, i) => {
-        item.addEventListener('click', () => selectItem(i));
+        item.addEventListener('click', () => {
+            selectItem(i);
+            closeMobileMenu();
+        });
 
         // Hover sounds
         item.addEventListener('mouseenter', () => {
@@ -252,6 +258,38 @@ function initNavbar() {
             item.classList.remove('focused');
         });
     });
+
+    function isMobile() {
+        return window.matchMedia('(max-width: 768px)').matches;
+    }
+
+    function openMobileMenu() {
+        if (!heroNav || !mobileBtn || !mobileBackdrop) return;
+        heroNav.classList.add('open');
+        mobileBtn.classList.add('active');
+        mobileBtn.setAttribute('aria-expanded', 'true');
+        mobileBackdrop.classList.add('active');
+    }
+
+    function closeMobileMenu() {
+        if (!heroNav || !mobileBtn || !mobileBackdrop) return;
+        heroNav.classList.remove('open');
+        mobileBtn.classList.remove('active');
+        mobileBtn.setAttribute('aria-expanded', 'false');
+        mobileBackdrop.classList.remove('active');
+    }
+
+    if (mobileBtn && mobileBackdrop && heroNav) {
+        mobileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!isMobile()) return;
+            heroNav.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
+        });
+        mobileBackdrop.addEventListener('click', closeMobileMenu);
+        window.addEventListener('resize', () => {
+            if (!isMobile()) closeMobileMenu();
+        });
+    }
 
     // ---- Keyboard navigation (always active) ----
     document.addEventListener('keydown', (e) => {
