@@ -1,0 +1,147 @@
+{
+  "hero": {
+    "greeting": "Hello, I'm",
+    "name": "Sapta",
+    "typedWords": ["Developer", "Editor", "Tech Enthusiast", "Problem Solver", "Einstein"],
+    "description": "Leveling up the digital landscape through creative engineering. Building robust web architectures with the precision of a gamer and the vision of a developer.",
+    "cta": [
+      { "label": "View My Work", "href": "#projects", "style": "primary", "icon": "arrow-right" },
+      { "label": "Let's Talk", "href": "#contact", "style": "outline", "icon": "message-circle" }
+    ],
+    "socials": [
+      { "label": "GitHub", "href": "https://github.com/8bitos", "icon": "github", "target": true },
+      { "label": "LinkedIn", "href": "https://linkedin.com/in/sapta-wiguna-1a01a42a5", "icon": "linkedin", "target": true },
+      { "label": "Instagram", "href": "https://instagram.com/sapta_2801", "icon": "instagram", "target": true }
+    ]
+  },
+  "menu": [
+    { "section": "hero", "label": "Home", "comment": "Intro and quick actions" },
+    { "section": "about", "label": "About", "comment": "Background and stats" },
+    { "section": "skills", "label": "Skills", "comment": "Tech stack overview" },
+    { "section": "projects", "label": "Projects", "comment": "Selected works" },
+    { "section": "experience", "label": "Experience", "comment": "Timeline highlights" },
+    { "section": "contact", "label": "Contact", "comment": "Let’s connect" }
+  ],
+  "about": {
+    "number": "01",
+    "title": "About Me",
+    "paragraphs": [
+      "Hi! I'm <strong>Sapta</strong>, a passionate student who loves building things for the web and the experiments. My journey in tech is fueled by a deep curiosity for how digital experiences work, but my inspiration is equally driven by a love for science, gaming, and the ever-evolving world of pop culture. When I'm not coding or exploring the latest things, I’m usually immersing myself in films, music, video games or the latest scientific discoveries, always looking for that perfect intersection where logic meets creativity to push my skills even further"
+    ],
+    "stats": [
+      { "label": "Projects Completed", "value": 10, "suffix": "+" },
+      { "label": "Technologies", "value": 5, "suffix": "+" },
+      { "label": "Years Learning", "value": 10, "suffix": "+" },
+      { "label": "Passion", "value": 100, "suffix": "%" }
+    ]
+  },
+  "skills": {
+    "number": "02",
+    "title": "Skills & Tech Stack",
+    "categories": [
+      {
+        "title": "Frontend",
+        "icon": "layout",
+        "skills": [
+          { "name": "HTML5", "icon": "code-2", "level": 90 },
+          { "name": "CSS3", "icon": "palette", "level": 85 },
+          { "name": "JavaScript", "icon": "zap", "level": 80 },
+          { "name": "React", "icon": "atom", "level": 70 }
+        ]
+      },
+      {
+        "title": "Backend",
+        "icon": "server",
+        "skills": [
+          { "name": "Node.js", "icon": "terminal-square", "level": 70 },
+          { "name": "Python", "icon": "cpu", "level": 75 },
+          { "name": "MySQL", "icon": "database", "level": 65 }
+        ]
+      },
+      {
+        "title": "Tools & Others",
+        "icon": "wrench",
+        "skills": [
+          { "name": "Git & GitHub", "icon": "git-branch", "level": 80 },
+          { "name": "VS Code", "icon": "monitor", "level": 90 },
+          { "name": "Figma", "icon": "pen-tool", "level": 60 }
+        ]
+      }
+    ]
+  },
+  "projects": {
+    "number": "03",
+    "title": "Featured Projects",
+    "items": [
+      {
+        "title": "SAGE — Smart Automated Grading Engine",
+        "desc": "Thesis project: an automated essay scoring engine designed for consistent, rubric-aligned grading.",
+        "icon": "cpu",
+        "tech": ["Go", "TypeScript", "CSS"],
+        "codeUrl": "https://github.com/8bitos/AUTOMATED-ESSAY-SCORING"
+      },
+      {
+        "title": "Underwater Oddysey",
+        "desc": "Final team project: a Greenfoot game inspired by the quirks of a platypus, built with playful mechanics.",
+        "icon": "gamepad-2",
+        "tech": ["Java", "Greenfoot"],
+        "liveUrl": "https://youtu.be/OaUEIvBQi_U?si=GZKdf60M0CcgC488"
+      },
+      {
+        "title": "Designing Equality: Asa's Architectural Journey",
+        "desc": "An animated short on gender equality, crafted through an architectural narrative.",
+        "icon": "film",
+        "tech": ["Photoshop", "Corel", "Ibis Paint"],
+        "liveUrl": "https://youtu.be/dYx3ZVttnSg?si=-QKwj0EF9pe58Sgo"
+      }
+    ]
+  },
+  "experience": {
+    "number": "04",
+    "title": "Experience",
+    "items": [
+      {
+        "date": "Present",
+        "title": "Last Semester Student",
+        "desc": "Building system for my Undergraduate Thesis. Focused on creating responsive, user friendly interfaces and seamless user experiences."
+      },
+      {
+        "date": "2022 — 2026",
+        "title": "University Projects",
+        "desc": "Developed multiple academic projects including web apps, database management systems, and collaborative tools."
+      },
+      {
+        "date": "2015 — 2022",
+        "title": "Self-Learning Journey",
+        "desc": "Started learning programming from scratch. Explored HTML, CSS, JavaScript, and built my first projects."
+      }
+    ]
+  },
+  "contact": {
+    "number": "05",
+    "title": "Get In Touch",
+    "desc": "I'm currently open to new opportunities and collaborations. Whether you have a project in mind, a question, or just want to say hi — feel free to reach out!",
+    "links": [
+      {
+        "label": "Email",
+        "value": "saptaw2801@gmail.com",
+        "href": "mailto:saptaw2801@gmail.com",
+        "icon": "mail"
+      },
+      {
+        "label": "GitHub",
+        "value": "github.com/8bitos",
+        "href": "https://github.com/8bitos",
+        "icon": "github",
+        "target": true
+      },
+      {
+        "label": "LinkedIn",
+        "value": "linkedin.com/in/sapta-wiguna",
+        "href": "https://www.linkedin.com/in/sapta-wiguna-1a01a42a5",
+        "icon": "linkedin",
+        "target": true
+      }
+    ]
+  }
+}

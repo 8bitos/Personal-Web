@@ -15,8 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cursor Glow
     initCursorGlow();
 
-    // Typing Effect
-    initTypingEffect();
+    // Typing Effect (after hero render)
 
     // Navbar
     initNavbar();
@@ -24,11 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Scroll Reveal
     initScrollReveal();
 
-    // Skills from JSON
-    initSkillsFromJson();
+    // Content from JSON
+    initContentFromJson();
 
-    // Stat Counter
-    initStatCounter();
+    // Stat Counter (after JSON render)
 
     // 3D Tilt on Project Cards
     initTiltEffect();
@@ -157,7 +155,9 @@ function initTypingEffect() {
     const el = document.getElementById('typed-text');
     if (!el) return;
 
-    const words = ['Web Developer', 'UI Designer', 'Tech Enthusiast', 'Problem Solver', 'Creative Coder'];
+    const words = Array.isArray(window.__typedWords) && window.__typedWords.length
+        ? window.__typedWords
+        : ['Web Developer', 'UI Designer', 'Tech Enthusiast', 'Problem Solver', 'Creative Coder'];
     let wordIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
@@ -348,69 +348,276 @@ function updateActiveSection(menuItems) {
 }
 
 /* ============ SCROLL REVEAL ============ */
+let scrollRevealObserver = null;
 function initScrollReveal() {
     const elements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('revealed');
-            }
+    if (!scrollRevealObserver) {
+        scrollRevealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    scrollRevealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
+    }
 
-    elements.forEach(el => observer.observe(el));
+    elements.forEach(el => {
+        if (el.dataset.revealBound) return;
+        el.dataset.revealBound = 'true';
+        scrollRevealObserver.observe(el);
+    });
 }
 
 /* ============ SKILLS FROM JSON ============ */
-function initSkillsFromJson() {
-    const grid = document.getElementById('skills-grid');
-    if (!grid) return;
-
-    fetch('skill.json')
+function initContentFromJson() {
+    fetch('content.json')
         .then(r => r.json())
         .then(data => {
-            const categories = Array.isArray(data.categories) ? data.categories : [];
-            grid.innerHTML = categories.map(cat => {
-                const title = cat.title || 'Skills';
-                const icon = cat.icon || 'star';
-                const skills = Array.isArray(cat.skills) ? cat.skills : [];
-                const items = skills.map(sk => {
-                    const level = Math.max(0, Math.min(100, Number(sk.level) || 0));
-                    const skillIcon = sk.icon || 'sparkles';
-                    const name = sk.name || 'Skill';
-                    return `
-                        <div class="skill-item glass-card">
-                            <div class="skill-icon">
-                                <i data-lucide="${skillIcon}"></i>
-                            </div>
-                            <span class="skill-name">${name}</span>
-                            <div class="skill-bar"><div class="skill-fill" data-level="${level}"></div></div>
-                        </div>
-                    `;
-                }).join('');
-
-                return `
-                    <div class="skill-category reveal-up">
-                        <h3 class="skill-category-title">
-                            <i data-lucide="${icon}" class="skill-cat-icon"></i>
-                            ${title}
-                        </h3>
-                        <div class="skill-items">
-                            ${items}
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            applyMenuComments(data.menu);
+            renderHero(data.hero);
+            renderAbout(data.about);
+            renderSkills(data.skills);
+            renderProjects(data.projects);
+            renderExperience(data.experience);
+            renderContact(data.contact);
 
             if (window.lucide) lucide.createIcons();
+            initTypingEffect();
             initSkillBars();
+            initStatCounter();
             initScrollReveal();
         })
         .catch(() => {});
+}
+
+function renderSectionTitle(num, title) {
+    return `
+        <h2 class="section-title reveal-up">
+            <span class="section-number">${num}.</span> ${title}
+        </h2>
+    `;
+}
+
+function renderHero(hero) {
+    const container = document.getElementById('hero-content');
+    if (!container || !hero) return;
+    const ctas = (hero.cta || []).map(c => `
+        <a href="${c.href || '#'}" class="btn ${c.style === 'outline' ? 'btn-outline' : 'btn-primary'}">
+            <span>${c.label || ''}</span>
+            <i data-lucide="${c.icon || 'arrow-right'}" class="btn-icon"></i>
+        </a>
+    `).join('');
+    const socials = (hero.socials || []).map(s => `
+        <a href="${s.href || '#'}" ${s.target ? 'target=\"_blank\" rel=\"noopener noreferrer\"' : ''} class="social-link" aria-label="${s.label || 'Social'}">
+            <i data-lucide="${s.icon || 'link'}"></i>
+        </a>
+    `).join('');
+
+    container.innerHTML = `
+        <p class="hero-greeting reveal-up">${hero.greeting || ''}</p>
+        <h1 class="hero-name reveal-up">
+            <span class="gradient-text">${hero.name || ''}</span>
+        </h1>
+        <div class="hero-title-wrapper reveal-up">
+            <span class="hero-prefix">I'm a&nbsp;</span>
+            <span id="typed-text" class="typed-text"></span>
+            <span class="cursor-blink">|</span>
+        </div>
+        <p class="hero-description reveal-up">${hero.description || ''}</p>
+        <div class="hero-cta reveal-up">${ctas}</div>
+        <div class="hero-socials reveal-up">${socials}</div>
+    `;
+
+    if (Array.isArray(hero.typedWords)) {
+        window.__typedWords = hero.typedWords.slice();
+    }
+}
+
+function applyMenuComments(menu) {
+    if (!Array.isArray(menu)) return;
+    const items = document.querySelectorAll('.p3r-menu-item');
+    menu.forEach(m => {
+        const match = Array.from(items).find(it => it.getAttribute('data-section') === m.section);
+        if (!match) return;
+        const textEl = match.querySelector('.p3r-item-text');
+        if (textEl && m.label) textEl.textContent = m.label;
+        if (m.comment) {
+            match.setAttribute('data-comment', m.comment);
+            match.setAttribute('title', m.comment);
+        }
+    });
+}
+
+function renderAbout(about) {
+    const container = document.querySelector('#about .container');
+    if (!container || !about) return;
+    const paragraphs = (about.paragraphs || []).map(p => `<p>${p}</p>`).join('');
+    const stats = (about.stats || []).map(s => `
+        <div class="stat-card glass-card">
+            <span class="stat-number" data-count="${Number(s.value) || 0}">0</span><span class="stat-plus">${s.suffix || ''}</span>
+            <span class="stat-label">${s.label || ''}</span>
+        </div>
+    `).join('');
+
+    container.innerHTML = `
+        ${renderSectionTitle(about.number || '01', about.title || 'About Me')}
+        <div class="about-grid">
+            <div class="about-text reveal-up">${paragraphs}</div>
+            <div class="about-stats reveal-up">${stats}</div>
+        </div>
+    `;
+}
+
+function renderSkills(skills) {
+    const container = document.querySelector('#skills .container');
+    if (!container || !skills) return;
+    const categories = (skills.categories || []).map(cat => {
+        const items = (cat.skills || []).map(sk => {
+            const level = Math.max(0, Math.min(100, Number(sk.level) || 0));
+            const skillIcon = sk.icon || 'sparkles';
+            const name = sk.name || 'Skill';
+            return `
+                <div class="skill-item glass-card">
+                    <div class="skill-icon">
+                        <i data-lucide="${skillIcon}"></i>
+                    </div>
+                    <span class="skill-name">${name}</span>
+                    <div class="skill-bar"><div class="skill-fill" data-level="${level}"></div></div>
+                </div>
+            `;
+        }).join('');
+        return `
+            <div class="skill-category reveal-up">
+                <h3 class="skill-category-title">
+                    <i data-lucide="${cat.icon || 'star'}" class="skill-cat-icon"></i>
+                    ${cat.title || 'Skills'}
+                </h3>
+                <div class="skill-items">${items}</div>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = `
+        ${renderSectionTitle(skills.number || '02', skills.title || 'Skills & Tech Stack')}
+        <div class="skills-grid" id="skills-grid">${categories}</div>
+    `;
+}
+
+function renderProjects(projects) {
+    const container = document.querySelector('#projects .container');
+    if (!container || !projects) return;
+    const cards = (projects.items || []).map(p => {
+        const tech = (p.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('');
+        const pickIcon = (url) => {
+            if (!url) return 'external-link';
+            if (/github\\.com/i.test(url)) return 'github';
+            if (/youtu\\.be|youtube\\.com/i.test(url)) return 'youtube';
+            return 'external-link';
+        };
+        const codeLink = p.codeUrl ? `
+            <a href="${p.codeUrl}" class="project-link-btn" aria-label="View Code">
+                <i data-lucide="${pickIcon(p.codeUrl)}"></i>
+            </a>` : '';
+        const liveLink = p.liveUrl ? `
+            <a href="${p.liveUrl}" class="project-link-btn" aria-label="Live Demo">
+                <i data-lucide="${pickIcon(p.liveUrl)}"></i>
+            </a>` : '';
+        return `
+            <div class="project-card glass-card reveal-up" data-tilt>
+                <div class="project-image">
+                    <div class="project-placeholder">
+                        <i data-lucide="${p.icon || 'layers'}" class="project-placeholder-icon"></i>
+                    </div>
+                    <div class="project-overlay">
+                        <div class="project-links">
+                            ${codeLink}
+                            ${liveLink}
+                        </div>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-title">${p.title || ''}</h3>
+                    <p class="project-desc">${p.desc || ''}</p>
+                    <div class="project-tech">${tech}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = `
+        ${renderSectionTitle(projects.number || '03', projects.title || 'Featured Projects')}
+        <div class="projects-grid">${cards}</div>
+    `;
+}
+
+function renderExperience(exp) {
+    const container = document.querySelector('#experience .container');
+    if (!container || !exp) return;
+    const items = (exp.items || []).map((e, i) => `
+        <div class="timeline-item ${i % 2 === 0 ? 'reveal-left' : 'reveal-right'}">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content glass-card">
+                <span class="timeline-date">${e.date || ''}</span>
+                <h3 class="timeline-title">${e.title || ''}</h3>
+                <p class="timeline-desc">${e.desc || ''}</p>
+            </div>
+        </div>
+    `).join('');
+
+    container.innerHTML = `
+        ${renderSectionTitle(exp.number || '04', exp.title || 'Experience')}
+        <div class="timeline">${items}</div>
+    `;
+}
+
+function renderContact(contact) {
+    const container = document.querySelector('#contact .container');
+    if (!container || !contact) return;
+    const links = (contact.links || []).map(l => `
+        <a href="${l.href || '#'}" ${l.target ? 'target=\"_blank\" rel=\"noopener noreferrer\"' : ''} class="contact-link glass-card">
+            <i data-lucide="${l.icon || 'link'}" class="contact-icon"></i>
+            <div>
+                <span class="contact-link-label">${l.label || ''}</span>
+                <span class="contact-link-value">${l.value || ''}</span>
+            </div>
+        </a>
+    `).join('');
+
+    container.innerHTML = `
+        ${renderSectionTitle(contact.number || '05', contact.title || 'Get In Touch')}
+        <div class="contact-grid">
+            <div class="contact-info reveal-up">
+                <p class="contact-desc">${contact.desc || ''}</p>
+                <div class="contact-links">${links}</div>
+            </div>
+            <form id="contact-form" class="contact-form glass-card reveal-up" autocomplete="off">
+                <div class="form-group">
+                    <input type="text" id="form-name" name="name" placeholder=" " required>
+                    <label for="form-name">Your Name</label>
+                    <div class="form-line"></div>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="form-email" name="email" placeholder=" " required>
+                    <label for="form-email">Your Email</label>
+                    <div class="form-line"></div>
+                </div>
+                <div class="form-group">
+                    <textarea id="form-message" name="message" rows="4" placeholder=" " required></textarea>
+                    <label for="form-message">Your Message</label>
+                    <div class="form-line"></div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-submit">
+                    <span>Send Message</span>
+                    <i data-lucide="send" class="btn-icon"></i>
+                </button>
+            </form>
+        </div>
+    `;
 }
 
 /* ============ SKILL BARS ============ */
