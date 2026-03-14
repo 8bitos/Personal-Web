@@ -28,5 +28,11 @@
         "artist": "Koji Kondo",
         "file": "song5.mp3",
         "thumb": "thumbs5.png"
+    },
+        {
+        "title": "Dire Dire Docks",
+        "artist": "Koji Kondo",
+        "file": "song6.mp3",
+        "thumb": "thumbs6.png"
     }
 ]
