@@ -9,18 +9,59 @@
     const REPO_NAME  = 'Personal-Web';
     const FILE_PATH  = 'content.json';
     const LS_TOKEN   = 'admin_github_token';
+    const LS_PASSHASH = 'admin_password_hash';
+    const LS_SALT     = 'admin_password_salt';
 
     /* ---------- STATE ---------- */
-    let contentData   = null;   // current working copy
-    let originalJSON  = '';      // stringified snapshot after last save/load
-    let githubToken   = null;
-    let isOpen        = false;
-    let activeTab     = 'skills';
+    let contentData    = null;   // current working copy
+    let originalJSON   = '';      // stringified snapshot after last save/load
+    let githubToken    = null;
+    let isOpen         = false;
+    let activeTab      = 'skills';
+    let isAuthenticated = false;  // session-based auth flag
+
+    /* ---------- CRYPTO (SHA-256) ---------- */
+    async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function generateSalt() {
+        const array = new Uint8Array(16);
+        crypto.getRandomValues(array);
+        return Array.from(array).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function hashPassword(password, salt) {
+        return await sha256(salt + ':' + password + ':admin_panel_v1');
+    }
+
+    function hasPasswordSet() {
+        return !!localStorage.getItem(LS_PASSHASH) && !!localStorage.getItem(LS_SALT);
+    }
+
+    async function verifyPassword(password) {
+        const salt = localStorage.getItem(LS_SALT);
+        const storedHash = localStorage.getItem(LS_PASSHASH);
+        if (!salt || !storedHash) return false;
+        const hash = await hashPassword(password, salt);
+        return hash === storedHash;
+    }
+
+    async function setPassword(password) {
+        const salt = generateSalt();
+        const hash = await hashPassword(password, salt);
+        localStorage.setItem(LS_SALT, salt);
+        localStorage.setItem(LS_PASSHASH, hash);
+    }
 
     /* ---------- INIT ---------- */
     function init() {
         githubToken = localStorage.getItem(LS_TOKEN) || null;
         buildDOM();
+        buildAuthModal();
         bindShortcut();
     }
 
@@ -36,19 +77,197 @@
 
     /* ---------- TOGGLE PANEL ---------- */
     function togglePanel() {
-        isOpen = !isOpen;
-        const panel    = document.getElementById('admin-panel');
-        const backdrop = document.getElementById('admin-backdrop');
-        if (!panel || !backdrop) return;
-
-        if (isOpen) {
+        if (!isOpen) {
+            // Must authenticate first
+            if (!isAuthenticated) {
+                showAuthGate();
+                return;
+            }
+            isOpen = true;
+            const panel    = document.getElementById('admin-panel');
+            const backdrop = document.getElementById('admin-backdrop');
+            if (!panel || !backdrop) return;
             panel.classList.add('open');
             backdrop.classList.add('active');
             if (!contentData) loadData();
         } else {
+            isOpen = false;
+            const panel    = document.getElementById('admin-panel');
+            const backdrop = document.getElementById('admin-backdrop');
+            if (!panel || !backdrop) return;
             panel.classList.remove('open');
             backdrop.classList.remove('active');
         }
+    }
+
+    /* ---------- AUTH GATE ---------- */
+    function showAuthGate() {
+        const modal = document.getElementById('admin-auth-modal');
+        if (!modal) return;
+
+        if (!hasPasswordSet()) {
+            // First time — setup password
+            renderAuthSetup(modal);
+        } else {
+            // Returning — enter password
+            renderAuthLogin(modal);
+        }
+
+        modal.classList.add('active');
+    }
+
+    function hideAuthGate() {
+        const modal = document.getElementById('admin-auth-modal');
+        if (modal) modal.classList.remove('active');
+    }
+
+    function buildAuthModal() {
+        const modal = document.createElement('div');
+        modal.id = 'admin-auth-modal';
+        modal.className = 'admin-modal-backdrop';
+        modal.addEventListener('click', e => {
+            if (e.target === modal) hideAuthGate();
+        });
+        document.body.appendChild(modal);
+    }
+
+    function renderAuthLogin(modal) {
+        modal.innerHTML = `
+            <div class="admin-modal">
+                <div class="admin-modal-header">
+                    <h3>🔒 Admin Access</h3>
+                    <button class="admin-close-btn" id="auth-close-btn">✕</button>
+                </div>
+                <div class="admin-modal-body">
+                    <div style="text-align:center;margin-bottom:20px">
+                        <div style="font-size:3rem;margin-bottom:10px">🛡️</div>
+                        <p style="color:#94a3b8;font-size:0.85rem">Enter your admin password to continue</p>
+                    </div>
+                    <div class="admin-field">
+                        <label>Password</label>
+                        <input type="password" id="auth-password-input" placeholder="Enter admin password" autocomplete="off">
+                        <div class="field-hint" id="auth-error" style="color:#ef4444;display:none">❌ Wrong password</div>
+                    </div>
+                </div>
+                <div class="admin-modal-footer">
+                    <button class="admin-secondary-btn" id="auth-cancel-btn">Cancel</button>
+                    <button class="admin-publish-btn" id="auth-login-btn" style="flex:none;padding:10px 24px">🔓 Unlock</button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('auth-close-btn').addEventListener('click', hideAuthGate);
+        document.getElementById('auth-cancel-btn').addEventListener('click', hideAuthGate);
+
+        const input = document.getElementById('auth-password-input');
+        const loginBtn = document.getElementById('auth-login-btn');
+
+        async function attemptLogin() {
+            const pw = input.value;
+            if (!pw) return;
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="admin-spinner"></span>';
+            const valid = await verifyPassword(pw);
+            if (valid) {
+                isAuthenticated = true;
+                hideAuthGate();
+                toast('🔓 Admin unlocked!', 'success');
+                // Now open the panel
+                togglePanel();
+            } else {
+                document.getElementById('auth-error').style.display = 'block';
+                input.value = '';
+                input.focus();
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '🔓 Unlock';
+                // Shake animation
+                const modal = document.querySelector('#admin-auth-modal .admin-modal');
+                if (modal) {
+                    modal.style.animation = 'none';
+                    modal.offsetHeight; // reflow
+                    modal.style.animation = 'adminShake 0.4s ease';
+                }
+            }
+        }
+
+        loginBtn.addEventListener('click', attemptLogin);
+        input.addEventListener('keydown', e => {
+            if (e.key === 'Enter') attemptLogin();
+            document.getElementById('auth-error').style.display = 'none';
+        });
+
+        // Auto-focus
+        setTimeout(() => input.focus(), 100);
+    }
+
+    function renderAuthSetup(modal) {
+        modal.innerHTML = `
+            <div class="admin-modal">
+                <div class="admin-modal-header">
+                    <h3>🔐 Setup Admin Password</h3>
+                    <button class="admin-close-btn" id="auth-close-btn">✕</button>
+                </div>
+                <div class="admin-modal-body">
+                    <div style="text-align:center;margin-bottom:20px">
+                        <div style="font-size:3rem;margin-bottom:10px">🛡️</div>
+                        <p style="color:#94a3b8;font-size:0.85rem">Create a password to protect your admin panel.<br>This password is hashed with SHA-256 — no one can see it.</p>
+                    </div>
+                    <div class="admin-field">
+                        <label>New Password</label>
+                        <input type="password" id="auth-new-pw" placeholder="Create a strong password" autocomplete="off">
+                    </div>
+                    <div class="admin-field">
+                        <label>Confirm Password</label>
+                        <input type="password" id="auth-confirm-pw" placeholder="Re-enter password" autocomplete="off">
+                        <div class="field-hint" id="auth-setup-error" style="color:#ef4444;display:none"></div>
+                    </div>
+                </div>
+                <div class="admin-modal-footer">
+                    <button class="admin-secondary-btn" id="auth-cancel-btn">Cancel</button>
+                    <button class="admin-publish-btn" id="auth-setup-btn" style="flex:none;padding:10px 24px">🔒 Set Password</button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('auth-close-btn').addEventListener('click', hideAuthGate);
+        document.getElementById('auth-cancel-btn').addEventListener('click', hideAuthGate);
+
+        const pw1 = document.getElementById('auth-new-pw');
+        const pw2 = document.getElementById('auth-confirm-pw');
+        const setupBtn = document.getElementById('auth-setup-btn');
+        const errEl = document.getElementById('auth-setup-error');
+
+        async function attemptSetup() {
+            const p1 = pw1.value;
+            const p2 = pw2.value;
+            errEl.style.display = 'none';
+
+            if (!p1 || p1.length < 4) {
+                errEl.textContent = '❌ Password must be at least 4 characters';
+                errEl.style.display = 'block';
+                return;
+            }
+            if (p1 !== p2) {
+                errEl.textContent = '❌ Passwords do not match';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            setupBtn.disabled = true;
+            setupBtn.innerHTML = '<span class="admin-spinner"></span>';
+            await setPassword(p1);
+            isAuthenticated = true;
+            hideAuthGate();
+            toast('🔒 Password set! Admin unlocked.', 'success');
+            togglePanel();
+        }
+
+        setupBtn.addEventListener('click', attemptSetup);
+        pw2.addEventListener('keydown', e => {
+            if (e.key === 'Enter') attemptSetup();
+        });
+
+        setTimeout(() => pw1.focus(), 100);
     }
 
     /* ---------- LOAD DATA (fetch content.json) ---------- */
@@ -227,6 +446,10 @@
                     <button class="admin-secondary-btn danger" id="admin-reset-btn" title="Reset to content.json default">🔄 Reset</button>
                     <button class="admin-secondary-btn" id="admin-token-btn" title="GitHub Token Settings">🔑 Token</button>
                 </div>
+                <div class="admin-footer-row">
+                    <button class="admin-secondary-btn" id="admin-change-pw-btn" title="Change admin password">🔐 Password</button>
+                    <button class="admin-secondary-btn danger" id="admin-logout-btn" title="Lock admin panel">🔒 Lock</button>
+                </div>
             </div>
         `;
         document.body.appendChild(panel);
@@ -305,6 +528,80 @@
             if (target) target.classList.add('active');
             renderTokenSetup();
         });
+
+        // Event: Change Password
+        document.getElementById('admin-change-pw-btn').addEventListener('click', () => {
+            showChangePassword();
+        });
+
+        // Event: Lock (logout)
+        document.getElementById('admin-logout-btn').addEventListener('click', () => {
+            isAuthenticated = false;
+            isOpen = false;
+            const panel    = document.getElementById('admin-panel');
+            const backdrop = document.getElementById('admin-backdrop');
+            if (panel) panel.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('active');
+            toast('🔒 Admin panel locked', 'success');
+        });
+    }
+
+    /* ---------- CHANGE PASSWORD ---------- */
+    function showChangePassword() {
+        showModal('🔐 Change Password', `
+            <div class="admin-field">
+                <label>Current Password</label>
+                <input type="password" id="modal-current-pw" placeholder="Enter current password" autocomplete="off">
+            </div>
+            <div class="admin-field">
+                <label>New Password</label>
+                <input type="password" id="modal-new-pw" placeholder="Enter new password" autocomplete="off">
+            </div>
+            <div class="admin-field">
+                <label>Confirm New Password</label>
+                <input type="password" id="modal-confirm-pw" placeholder="Re-enter new password" autocomplete="off">
+                <div class="field-hint" id="modal-pw-error" style="color:#ef4444;display:none"></div>
+            </div>
+        `, async () => {
+            // Override default save — we handle it manually
+        });
+
+        // Override the save button behavior
+        const saveBtn = document.getElementById('admin-modal-save');
+        if (saveBtn) {
+            // Remove old listeners by replacing
+            const newBtn = saveBtn.cloneNode(true);
+            saveBtn.parentNode.replaceChild(newBtn, saveBtn);
+            newBtn.addEventListener('click', async () => {
+                const current = document.getElementById('modal-current-pw').value;
+                const newPw   = document.getElementById('modal-new-pw').value;
+                const confirm = document.getElementById('modal-confirm-pw').value;
+                const errEl   = document.getElementById('modal-pw-error');
+
+                errEl.style.display = 'none';
+
+                const valid = await verifyPassword(current);
+                if (!valid) {
+                    errEl.textContent = '❌ Current password is wrong';
+                    errEl.style.display = 'block';
+                    return;
+                }
+                if (!newPw || newPw.length < 4) {
+                    errEl.textContent = '❌ New password must be at least 4 characters';
+                    errEl.style.display = 'block';
+                    return;
+                }
+                if (newPw !== confirm) {
+                    errEl.textContent = '❌ Passwords do not match';
+                    errEl.style.display = 'block';
+                    return;
+                }
+
+                await setPassword(newPw);
+                removeModal();
+                toast('🔐 Password changed!', 'success');
+            });
+        }
     }
 
     /* ====================================

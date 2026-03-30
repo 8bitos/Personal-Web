@@ -857,3 +857,13 @@
 @keyframes adminSpin {
     to { transform: rotate(360deg); }
 }
+
+@keyframes adminShake {
+    0%, 100% { transform: scale(1) translateY(0) translateX(0); }
+    15% { transform: scale(1) translateY(0) translateX(-8px); }
+    30% { transform: scale(1) translateY(0) translateX(8px); }
+    45% { transform: scale(1) translateY(0) translateX(-6px); }
+    60% { transform: scale(1) translateY(0) translateX(6px); }
+    75% { transform: scale(1) translateY(0) translateX(-3px); }
+    90% { transform: scale(1) translateY(0) translateX(3px); }
+}
