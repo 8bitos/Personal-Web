@@ -24,6 +24,7 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body>
     <!-- ========== LOADER ========== -->
@@ -407,7 +408,7 @@
                 <!-- MEDIA PLAYER WIDGET (top, large) -->
                 <div class="media-widget" id="media-widget">
                     <div class="media-widget-art">
-                        <img id="media-thumb" src="assets/thumbs/default.png" alt="Album Art" class="media-thumb-img">
+                        <img id="media-thumb" src="assets/thumbs/default.png" alt="Album Art" class="media-thumb-img" loading="lazy" decoding="async">
                     </div>
                     <div class="media-widget-info">
                         <div class="media-song-title" id="media-title">No Songs</div>
@@ -518,20 +519,50 @@
     </div>
 
     <script src="script.js" defer></script>
+    <script src="admin.js" defer></script>
     <script>
-    // Lazy-load interactive.js — only downloads on first phone click
+    // Lazy-load interactive modules on first phone click
     (function() {
         let loaded = false;
         const btn = document.getElementById('phone-trigger');
         if (!btn) return;
+
+        const scripts = [
+            'keren/core.js',
+            'keren/feature-lanyard.js',
+            'keren/feature-sparkles.js',
+            'keren/feature-gravity.js',
+            'keren/feature-magnetic.js',
+            'keren/feature-trail.js',
+            'keren/feature-glitch.js',
+            'keren/feature-scanlines.js',
+            'keren/feature-gyro.js',
+            'keren/feature-audioreactive.js',
+            'keren/feature-cloth.js',
+            'keren/feature-dvd.js',
+            'keren/feature-vortex.js',
+            'keren/media-player.js',
+            'keren/ui-panel.js',
+            'keren/boot.js'
+        ];
+
+        function loadNext(i) {
+            if (i >= scripts.length) return;
+            const s = document.createElement('script');
+            s.src = scripts[i];
+            s.onload = () => loadNext(i + 1);
+            document.body.appendChild(s);
+        }
+
         btn.addEventListener('click', function handler() {
             if (loaded) return;
             loaded = true;
-            const s = document.createElement('script');
-            s.src = 'interactive.js';
-            document.body.appendChild(s);
+            loadNext(0);
         }, { once: false });
     })();
     </script>
 </body>
 </html>
+
+
+

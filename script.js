@@ -3,6 +3,9 @@
    ============================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) document.body.classList.add('reduce-motion');
+
     // Init Lucide Icons
     if (window.lucide) lucide.createIcons();
 
@@ -10,10 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initLoader();
 
     // Particle Background
-    initParticles();
+    if (!reduceMotion) initParticles();
 
     // Cursor Glow
-    initCursorGlow();
+    if (!reduceMotion) initCursorGlow();
 
     // Typing Effect (after hero render)
 
@@ -29,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Stat Counter (after JSON render)
 
     // 3D Tilt on Project Cards
-    initTiltEffect();
+    if (!reduceMotion) initTiltEffect();
 
     // Contact Form
     initContactForm();
@@ -59,6 +62,8 @@ function initParticles() {
     let particles = [];
     let mouseX = 0, mouseY = 0;
     let animId;
+    let running = true;
+    let pausedByVisibility = false;
 
     function resize() {
         canvas.width = window.innerWidth;
@@ -126,6 +131,7 @@ function initParticles() {
     }
 
     function animate() {
+        if (!running) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => { p.update(); p.draw(); });
         drawConnections();
@@ -136,6 +142,20 @@ function initParticles() {
     document.addEventListener('mousemove', e => {
         mouseX = e.clientX;
         mouseY = e.clientY;
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            if (running) {
+                running = false;
+                pausedByVisibility = true;
+                if (animId) cancelAnimationFrame(animId);
+            }
+        } else if (pausedByVisibility) {
+            pausedByVisibility = false;
+            running = true;
+            animId = requestAnimationFrame(animate);
+        }
     });
 }
 
@@ -205,6 +225,10 @@ function initNavbar() {
         select: new Audio('assets/Audio/deck_ui_tab_transition_01.wav'),
         hover: new Audio('assets/Audio/deck_ui_slider_up.wav'),
     };
+
+    sounds.navigate.preload = 'none';
+    sounds.select.preload = 'none';
+    sounds.hover.preload = 'none';
 
     sounds.navigate.volume = 0.4;
     sounds.select.volume = 0.5;
@@ -349,7 +373,7 @@ function updateActiveSection(menuItems) {
 
 /* ============ SCROLL REVEAL ============ */
 let scrollRevealObserver = null;
-function initScrollReveal() {
+window.initScrollReveal = function initScrollReveal() {
     const elements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
 
     if (!scrollRevealObserver) {
@@ -473,7 +497,7 @@ function renderAbout(about) {
     `;
 }
 
-function renderSkills(skills) {
+window.renderSkills = function renderSkills(skills) {
     const container = document.querySelector('#skills .container');
     if (!container || !skills) return;
     const categories = (skills.categories || []).map(cat => {
@@ -508,7 +532,7 @@ function renderSkills(skills) {
     `;
 }
 
-function renderProjects(projects) {
+window.renderProjects = function renderProjects(projects) {
     const container = document.querySelector('#projects .container');
     if (!container || !projects) return;
     const cards = (projects.items || []).map(p => {
@@ -555,7 +579,7 @@ function renderProjects(projects) {
     `;
 }
 
-function renderExperience(exp) {
+window.renderExperience = function renderExperience(exp) {
     const container = document.querySelector('#experience .container');
     if (!container || !exp) return;
     const items = (exp.items || []).map((e, i) => `
@@ -621,7 +645,7 @@ function renderContact(contact) {
 }
 
 /* ============ SKILL BARS ============ */
-function initSkillBars() {
+window.initSkillBars = function initSkillBars() {
     const fills = document.querySelectorAll('.skill-fill');
 
     const observer = new IntersectionObserver((entries) => {
@@ -673,7 +697,7 @@ function animateCounter(el, target) {
 }
 
 /* ============ 3D TILT EFFECT ============ */
-function initTiltEffect() {
+window.initTiltEffect = function initTiltEffect() {
     const cards = document.querySelectorAll('[data-tilt]');
 
     cards.forEach(card => {
@@ -727,3 +751,5 @@ function initContactForm() {
         }, 2500);
     });
 }
+
+

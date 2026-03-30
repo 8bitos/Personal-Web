@@ -1,9 +1,9 @@
-/* ==============================
-   🎮 PERSONA 3 RELOAD — DESIGN TOKENS
+﻿/* ==============================
+    PERSONA 3 RELOAD  DESIGN TOKENS
    Angular, geometric, bold blues
    ============================== */
 :root {
-    /* P3R Colors — deep blues, electric accents */
+    /* P3R Colors  deep blues, electric accents */
     --bg-primary: #04060e;
     --bg-secondary: #0a0f1e;
     --bg-tertiary: #111833;
@@ -47,7 +47,7 @@
 }
 
 /* ==============================
-   🔄 RESET & BASE
+    RESET & BASE
    ============================== */
 *, *::before, *::after {
     margin: 0;
@@ -121,7 +121,7 @@ ul {
 }
 
 /* ==============================
-   ⏳ PAGE LOADER
+    PAGE LOADER
    ============================== */
 .loader {
     position: fixed;
@@ -175,7 +175,7 @@ ul {
 }
 
 /* ==============================
-   ✨ PARTICLE CANVAS
+    PARTICLE CANVAS
    ============================== */
 #particle-canvas {
     position: fixed;
@@ -185,7 +185,7 @@ ul {
 }
 
 /* ==============================
-   🔮 CURSOR GLOW
+    CURSOR GLOW
    ============================== */
 #cursor-glow {
     position: fixed;
@@ -205,7 +205,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   🧭 P3R TOP BAR — Minimal
+    P3R TOP BAR  Minimal
    ============================== */
 .p3r-topbar {
     position: fixed;
@@ -241,7 +241,7 @@ body:hover #cursor-glow {
     color: var(--accent-cyan);
 }
 
-/* P3R Menu Trigger — now the hero content area */
+/* P3R Menu Trigger  now the hero content area */
 .p3r-menu-trigger {
     display: none;
 }
@@ -294,7 +294,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   🎮 P3R HERO NAVIGATION (inline)
+    P3R HERO NAVIGATION (inline)
    ============================== */
 
 /* Left-side nav container */
@@ -371,7 +371,7 @@ body:hover #cursor-glow {
     z-index: 2;
 }
 
-/* Diagonal accent stripe behind item — P3R signature */
+/* Diagonal accent stripe behind item  P3R signature */
 .p3r-item-stripe {
     position: absolute;
     top: 0;
@@ -464,7 +464,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   🚀 HERO SECTION
+    HERO SECTION
    ============================== */
 .hero {
     min-height: 100vh;
@@ -585,7 +585,7 @@ body:hover #cursor-glow {
     justify-content: flex-end;
 }
 
-/* Hero socials — right-aligned */
+/* Hero socials  right-aligned */
 .hero-socials {
     display: flex;
     gap: 8px;
@@ -610,7 +610,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   P3R BUTTONS — Angular cut
+   P3R BUTTONS  Angular cut
    ============================== */
 .btn {
     display: inline-flex;
@@ -666,7 +666,7 @@ body:hover #cursor-glow {
     box-shadow: 0 0 20px rgba(0, 180, 255, 0.2);
 }
 
-/* Social links — P3R angular boxes */
+/* Social links  P3R angular boxes */
 .hero-socials {
     display: flex;
     gap: 8px;
@@ -699,7 +699,7 @@ body:hover #cursor-glow {
     height: 18px;
 }
 
-/* Hero Image — P3R angular frame */
+/* Hero Image  P3R angular frame */
 .hero-image {
     position: relative;
     flex-shrink: 0;
@@ -825,7 +825,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   📝 SECTION TITLES — P3R Style
+    SECTION TITLES  P3R Style
    ============================== */
 .section-title {
     font-family: var(--font-heading);
@@ -847,7 +847,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   🪟 GLASS CARD — P3R Angular
+    GLASS CARD  P3R Angular
    ============================== */
 .glass-card {
     background: var(--surface);
@@ -892,7 +892,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   👤 ABOUT SECTION
+    ABOUT SECTION
    ============================== */
 .about-grid {
     display: grid;
@@ -959,7 +959,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   💡 SKILLS SECTION
+    SKILLS SECTION
    ============================== */
 .skills-grid {
     display: grid;
@@ -1060,7 +1060,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   📂 PROJECTS SECTION — P3R Cards
+    PROJECTS SECTION  P3R Cards
    ============================== */
 .projects-grid {
     display: grid;
@@ -1198,7 +1198,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   📅 EXPERIENCE / TIMELINE — P3R
+    EXPERIENCE / TIMELINE  P3R
    ============================== */
 .timeline {
     position: relative;
@@ -1269,7 +1269,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   📬 CONTACT SECTION
+    CONTACT SECTION
    ============================== */
 .contact-grid {
     display: grid;
@@ -1401,7 +1401,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   🦶 FOOTER
+    FOOTER
    ============================== */
 .footer {
     border-top: 1px solid var(--border);
@@ -1449,7 +1449,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   🎭 REVEAL ANIMATIONS
+    REVEAL ANIMATIONS
    ============================== */
 .reveal-up {
     opacity: 0;
@@ -1479,7 +1479,7 @@ body:hover #cursor-glow {
 .reveal-up:nth-child(4) { transition-delay: 0.3s; }
 
 /* ==============================
-   📱 RESPONSIVE
+    RESPONSIVE
    ============================== */
 @media (max-width: 1024px) {
     .hero {
@@ -1616,7 +1616,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   ⚡ INTERACTIVE OVERLAY CANVASES
+    INTERACTIVE OVERLAY CANVASES
    ============================== */
 #lanyard-canvas,
 #sparkle-canvas,
@@ -1657,10 +1657,10 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   ⚡ INTERACTIVE TOGGLE PANEL — P3R
+    INTERACTIVE TOGGLE PANEL  P3R
    ============================== */
 /* ==============================
-   📱 PHONE UI
+    PHONE UI
    ============================== */
 
 /* Backdrop */
@@ -1688,7 +1688,7 @@ body:hover #cursor-glow {
     z-index: 9500;
 }
 
-/* Trigger button — phone icon */
+/* Trigger button  phone icon */
 .phone-trigger {
     width: 50px;
     height: 50px;
@@ -1717,7 +1717,7 @@ body:hover #cursor-glow {
     color: var(--bg-primary);
 }
 
-/* Phone frame — slides up from bottom-right */
+/* Phone frame  slides up from bottom-right */
 .phone-frame {
     position: absolute;
     bottom: 60px;
@@ -1824,7 +1824,7 @@ body:hover #cursor-glow {
     background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue), transparent);
 }
 
-/* Album art — circular */
+/* Album art  circular */
 .media-widget-art {
     width: 72px;
     height: 72px;
@@ -2127,3 +2127,14 @@ body.gyro-enabled .hero {
         letter-spacing: 0.4px;
     }
 }
+/* Reduced motion */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+}
+
+
