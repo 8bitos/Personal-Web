@@ -2,25 +2,80 @@
   "hero": {
     "greeting": "Hello, I'm",
     "name": "Sapta",
-    "typedWords": ["Developer", "Editor", "Tech Enthusiast", "Problem Solver", "Einstein"],
+    "typedWords": [
+      "Developer",
+      "Editor",
+      "Tech Enthusiast",
+      "Problem Solver",
+      "Einstein"
+    ],
     "description": "Leveling up the digital landscape through creative engineering. Building robust web architectures with the precision of a gamer and the vision of a developer.",
     "cta": [
-      { "label": "View My Work", "href": "#projects", "style": "primary", "icon": "arrow-right" },
-      { "label": "Let's Talk", "href": "#contact", "style": "outline", "icon": "message-circle" }
+      {
+        "label": "View My Work",
+        "href": "#projects",
+        "style": "primary",
+        "icon": "arrow-right"
+      },
+      {
+        "label": "Let's Talk",
+        "href": "#contact",
+        "style": "outline",
+        "icon": "message-circle"
+      }
     ],
     "socials": [
-      { "label": "GitHub", "href": "https://github.com/8bitos", "icon": "github", "target": true },
-      { "label": "LinkedIn", "href": "https://linkedin.com/in/sapta-wiguna-1a01a42a5", "icon": "linkedin", "target": true },
-      { "label": "Instagram", "href": "https://instagram.com/sapta_2801", "icon": "instagram", "target": true }
+      {
+        "label": "GitHub",
+        "href": "https://github.com/8bitos",
+        "icon": "github",
+        "target": true
+      },
+      {
+        "label": "LinkedIn",
+        "href": "https://linkedin.com/in/sapta-wiguna-1a01a42a5",
+        "icon": "linkedin",
+        "target": true
+      },
+      {
+        "label": "Instagram",
+        "href": "https://instagram.com/sapta_2801",
+        "icon": "instagram",
+        "target": true
+      }
     ]
   },
   "menu": [
-    { "section": "hero", "label": "Home", "comment": "Intro and quick actions" },
-    { "section": "about", "label": "About", "comment": "Background and stats" },
-    { "section": "skills", "label": "Skills", "comment": "Tech stack overview" },
-    { "section": "projects", "label": "Projects", "comment": "Selected works" },
-    { "section": "experience", "label": "Experience", "comment": "Timeline highlights" },
-    { "section": "contact", "label": "Contact", "comment": "Let’s connect" }
+    {
+      "section": "hero",
+      "label": "Home",
+      "comment": "Intro and quick actions"
+    },
+    {
+      "section": "about",
+      "label": "About",
+      "comment": "Background and stats"
+    },
+    {
+      "section": "skills",
+      "label": "Skills",
+      "comment": "Tech stack overview"
+    },
+    {
+      "section": "projects",
+      "label": "Projects",
+      "comment": "Selected works"
+    },
+    {
+      "section": "experience",
+      "label": "Experience",
+      "comment": "Timeline highlights"
+    },
+    {
+      "section": "contact",
+      "label": "Contact",
+      "comment": "Let’s connect"
+    }
   ],
   "about": {
     "number": "01",
@@ -29,10 +84,26 @@
       "Hi! I'm <strong>Sapta</strong>, a passionate student who loves building things for the web and the experiments. My journey in tech is fueled by a deep curiosity for how digital experiences work, but my inspiration is equally driven by a love for science, gaming, and the ever-evolving world of pop culture. When I'm not coding or exploring the latest things, I’m usually immersing myself in films, music, video games or the latest scientific discoveries, always looking for that perfect intersection where logic meets creativity to push my skills even further"
     ],
     "stats": [
-      { "label": "Projects Completed", "value": 10, "suffix": "+" },
-      { "label": "Technologies", "value": 5, "suffix": "+" },
-      { "label": "Years Learning", "value": 10, "suffix": "+" },
-      { "label": "Passion", "value": 100, "suffix": "%" }
+      {
+        "label": "Projects Completed",
+        "value": 10,
+        "suffix": "+"
+      },
+      {
+        "label": "Technologies",
+        "value": 5,
+        "suffix": "+"
+      },
+      {
+        "label": "Years Learning",
+        "value": 10,
+        "suffix": "+"
+      },
+      {
+        "label": "Passion",
+        "value": 100,
+        "suffix": "%"
+      }
     ]
   },
   "skills": {
@@ -43,30 +114,83 @@
         "title": "Frontend",
         "icon": "layout",
         "skills": [
-          { "name": "HTML5", "icon": "code-2", "level": 90 },
-          { "name": "CSS", "icon": "palette", "level": 85 },
-          { "name": "JavaScript", "icon": "zap", "level": 80 },
-          { "name": "React", "icon": "atom", "level": 70 }
+          {
+            "name": "HTML5",
+            "icon": "code-2",
+            "level": 90
+          },
+          {
+            "name": "CSS",
+            "icon": "palette",
+            "level": 85
+          },
+          {
+            "name": "JavaScript",
+            "icon": "zap",
+            "level": 80
+          },
+          {
+            "name": "React",
+            "icon": "atom",
+            "level": 70
+          }
         ]
       },
       {
         "title": "Backend",
         "icon": "server",
         "skills": [
-          { "name": "Node.js", "icon": "terminal-square", "level": 70 },
-          { "name": "Python", "icon": "cpu", "level": 75 },
-          { "name": "Go", "icon": "cpu", "level": 65 },
-          { "name": "SQL", "icon": "database", "level": 65 }
+          {
+            "name": "Node.js",
+            "icon": "terminal-square",
+            "level": 70
+          },
+          {
+            "name": "Python",
+            "icon": "cpu",
+            "level": 75
+          },
+          {
+            "name": "Go",
+            "icon": "cpu",
+            "level": 65
+          },
+          {
+            "name": "SQL",
+            "icon": "database",
+            "level": 65
+          }
         ]
       },
       {
         "title": "Tools & Others",
         "icon": "wrench",
         "skills": [
-          { "name": "Git & GitHub", "icon": "git-branch", "level": 80 },
-          { "name": "Photoshop", "icon": "image", "level": 85 },
-          { "name": "Figma", "icon": "pen-tool", "level": 60 },
-          { "name": "Docker", "icon": "box", "level": 70 }
+          {
+            "name": "Git & GitHub",
+            "icon": "git-branch",
+            "level": 80
+          },
+          {
+            "name": "Photoshop",
+            "icon": "image",
+            "level": 85
+          },
+          {
+            "name": "Figma",
+            "icon": "pen-tool",
+            "level": 60
+          },
+          {
+            "name": "Docker",
+            "icon": "box",
+            "level": 70
+          },
+          {
+            "name": "Tidur",
+            "icon": "cpu",
+            "level": 50
+          }
         ]
       }
     ]
@@ -79,21 +203,32 @@
         "title": "SAGE — Smart Automated Grading Engine",
         "desc": "Thesis project: an automated essay scoring engine designed for consistent, rubric-aligned grading.",
         "icon": "cpu",
-        "tech": ["Go", "TypeScript", "CSS"],
+        "tech": [
+          "Go",
+          "TypeScript",
+          "CSS"
+        ],
         "codeUrl": "https://github.com/8bitos/AUTOMATED-ESSAY-SCORING"
       },
       {
         "title": "Underwater Oddysey",
         "desc": "Final team project: a Greenfoot game inspired by the quirks of a platypus, built with playful mechanics.",
         "icon": "gamepad-2",
-        "tech": ["Java", "Greenfoot"],
+        "tech": [
+          "Java",
+          "Greenfoot"
+        ],
         "liveUrl": "https://youtu.be/OaUEIvBQi_U?si=GZKdf60M0CcgC488"
       },
       {
         "title": "Designing Equality: Asa's Architectural Journey",
         "desc": "An animated short on gender equality, crafted through an architectural narrative.",
         "icon": "film",
-        "tech": ["Photoshop", "Corel", "Ibis Paint"],
+        "tech": [
+          "Photoshop",
+          "Corel",
+          "Ibis Paint"
+        ],
         "liveUrl": "https://youtu.be/dYx3ZVttnSg?si=-QKwj0EF9pe58Sgo"
       }
     ]
