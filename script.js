@@ -391,6 +391,8 @@ function initContentFromJson() {
             initSkillBars();
             initStatCounter();
             initScrollReveal();
+            initProjectsCarousel();
+            initProjectCardClicks();
         })
         .catch(() => {});
 }
@@ -511,28 +513,45 @@ function renderSkills(skills) {
 function renderProjects(projects) {
     const container = document.querySelector('#projects .container');
     if (!container || !projects) return;
-    const cards = (projects.items || []).map(p => {
+    
+    const items = projects.items || [];
+    const tripledItems = [...items, ...items, ...items];
+    
+    const cards = tripledItems.map(p => {
         const tech = (p.tech || []).map(t => `<span class="tech-tag">${t}</span>`).join('');
         const pickIcon = (url) => {
             if (!url) return 'external-link';
-            if (/github\\.com/i.test(url)) return 'github';
-            if (/youtu\\.be|youtube\\.com/i.test(url)) return 'youtube';
+            if (/github\.com/i.test(url)) return 'github';
+            if (/youtu\.be|youtube\.com/i.test(url)) return 'youtube';
             return 'external-link';
         };
         const codeLink = p.codeUrl ? `
-            <a href="${p.codeUrl}" class="project-link-btn" aria-label="View Code">
+            <a href="${p.codeUrl}" class="project-link-btn" aria-label="View Code" target="_blank" rel="noopener noreferrer">
                 <i data-lucide="${pickIcon(p.codeUrl)}"></i>
             </a>` : '';
         const liveLink = p.liveUrl ? `
-            <a href="${p.liveUrl}" class="project-link-btn" aria-label="Live Demo">
+            <a href="${p.liveUrl}" class="project-link-btn" aria-label="Live Demo" target="_blank" rel="noopener noreferrer">
                 <i data-lucide="${pickIcon(p.liveUrl)}"></i>
             </a>` : '';
+
+        let mediaTag = '';
+        if (p.thumbnail && p.thumbnail !== 'UAS') {
+            mediaTag = `<img src="${p.thumbnail}" alt="${p.title}" class="project-thumb-img">`;
+        } else {
+            mediaTag = `
+                <div class="project-placeholder uas-placeholder">
+                    <span class="uas-placeholder-text">UAS</span>
+                </div>
+            `;
+        }
+
+        const targetUrl = p.liveUrl || p.codeUrl || '';
+        const clickableClass = targetUrl ? 'clickable-card' : '';
+
         return `
-            <div class="project-card glass-card reveal-up" data-tilt>
+            <div class="project-card glass-card ${clickableClass}" data-tilt ${targetUrl ? `data-url="${targetUrl}"` : ''}>
                 <div class="project-image">
-                    <div class="project-placeholder">
-                        <i data-lucide="${p.icon || 'layers'}" class="project-placeholder-icon"></i>
-                    </div>
+                    ${mediaTag}
                     <div class="project-overlay">
                         <div class="project-links">
                             ${codeLink}
@@ -541,6 +560,7 @@ function renderProjects(projects) {
                     </div>
                 </div>
                 <div class="project-info">
+                    ${p.category ? `<span class="project-category">${p.category}</span>` : ''}
                     <h3 class="project-title">${p.title || ''}</h3>
                     <p class="project-desc">${p.desc || ''}</p>
                     <div class="project-tech">${tech}</div>
@@ -551,7 +571,15 @@ function renderProjects(projects) {
 
     container.innerHTML = `
         ${renderSectionTitle(projects.number || '03', projects.title || 'Featured Projects')}
-        <div class="projects-grid">${cards}</div>
+        <div class="projects-carousel-container reveal-up">
+            <button class="carousel-btn prev" id="proj-prev" aria-label="Previous Project">
+                <i data-lucide="chevron-left"></i>
+            </button>
+            <div class="projects-grid">${cards}</div>
+            <button class="carousel-btn next" id="proj-next" aria-label="Next Project">
+                <i data-lucide="chevron-right"></i>
+            </button>
+        </div>
     `;
 }
 
@@ -645,8 +673,10 @@ function initStatCounter() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const target = parseInt(entry.target.getAttribute('data-count'));
-                animateCounter(entry.target, target);
+                const targetAttr = entry.target.getAttribute('data-count');
+                const isFloat = targetAttr.includes('.');
+                const target = isFloat ? parseFloat(targetAttr) : parseInt(targetAttr);
+                animateCounter(entry.target, target, isFloat);
                 observer.unobserve(entry.target);
             }
         });
@@ -655,7 +685,7 @@ function initStatCounter() {
     stats.forEach(stat => observer.observe(stat));
 }
 
-function animateCounter(el, target) {
+function animateCounter(el, target, isFloat) {
     let current = 0;
     const duration = 1500;
     const step = target / (duration / 16);
@@ -663,10 +693,10 @@ function animateCounter(el, target) {
     function update() {
         current += step;
         if (current >= target) {
-            el.textContent = target;
+            el.textContent = isFloat ? target.toFixed(2) : target;
             return;
         }
-        el.textContent = Math.floor(current);
+        el.textContent = isFloat ? current.toFixed(2) : Math.floor(current);
         requestAnimationFrame(update);
     }
     update();
@@ -725,5 +755,124 @@ function initContactForm() {
             // Re-init icons
             if (window.lucide) lucide.createIcons();
         }, 2500);
+    });
+}
+
+/* ============ PROJECTS CAROUSEL NAVIGATION ============ */
+function initProjectsCarousel() {
+    const grid = document.querySelector('.projects-grid');
+    const prevBtn = document.getElementById('proj-prev');
+    const nextBtn = document.getElementById('proj-next');
+    if (!grid || !prevBtn || !nextBtn) return;
+
+    let isAutoScrolling = true;
+    let autoScrollSpeed = 0.5; // slow speed: 0.5 pixels per frame
+    let animationFrameId = null;
+    let interactionTimeout = null;
+    let setWidth = 0;
+
+    // Cache the setWidth and recalculate on resize or layout changes
+    const updateDimensions = () => {
+        setWidth = grid.scrollWidth / 3;
+    };
+
+    // Set initial scroll position once size calculations are ready
+    const setInitialScroll = () => {
+        updateDimensions();
+        if (setWidth > 0) {
+            grid.scrollLeft = setWidth;
+        } else {
+            requestAnimationFrame(setInitialScroll);
+        }
+    };
+    requestAnimationFrame(setInitialScroll);
+
+    window.addEventListener('resize', updateDimensions);
+
+    // Click navigation
+    prevBtn.addEventListener('click', () => {
+        const cardWidth = grid.querySelector('.project-card')?.offsetWidth || 350;
+        grid.scrollBy({ left: -(cardWidth + 24), behavior: 'smooth' });
+        pauseAutoScroll();
+    });
+
+    nextBtn.addEventListener('click', () => {
+        const cardWidth = grid.querySelector('.project-card')?.offsetWidth || 350;
+        grid.scrollBy({ left: cardWidth + 24, behavior: 'smooth' });
+        pauseAutoScroll();
+    });
+
+    // Infinite Loop Jump handler
+    const handleInfiniteScroll = () => {
+        if (setWidth <= 0) return;
+
+        // If we scroll past Set 2, jump back to Set 2
+        if (grid.scrollLeft >= 2 * setWidth) {
+            grid.scrollLeft -= setWidth;
+        }
+        // If we scroll before Set 2, jump forward to Set 2
+        else if (grid.scrollLeft < setWidth) {
+            grid.scrollLeft += setWidth;
+        }
+    };
+
+    grid.addEventListener('scroll', handleInfiniteScroll);
+
+    // Auto-scroll controller
+    const pauseAutoScroll = () => {
+        isAutoScrolling = false;
+        clearTimeout(interactionTimeout);
+        interactionTimeout = setTimeout(() => {
+            if (!grid.matches(':hover') && !prevBtn.matches(':hover') && !nextBtn.matches(':hover')) {
+                isAutoScrolling = true;
+            }
+        }, 3000); // Resume after 3s of idle
+    };
+
+    // Listeners to pause on manual user interactions
+    grid.addEventListener('touchstart', pauseAutoScroll, { passive: true });
+    grid.addEventListener('mousedown', pauseAutoScroll);
+    grid.addEventListener('wheel', pauseAutoScroll, { passive: true });
+
+    // Pause on Hover
+    const hoverElements = [grid, prevBtn, nextBtn];
+    hoverElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            isAutoScrolling = false;
+            clearTimeout(interactionTimeout);
+        });
+        el.addEventListener('mouseleave', () => {
+            clearTimeout(interactionTimeout);
+            interactionTimeout = setTimeout(() => {
+                isAutoScrolling = true;
+            }, 1000); // 1s delay after leaving hover
+        });
+    });
+
+    // Auto Scroll Loop
+    function step() {
+        if (isAutoScrolling) {
+            grid.scrollLeft += autoScrollSpeed;
+        }
+        animationFrameId = requestAnimationFrame(step);
+    }
+    animationFrameId = requestAnimationFrame(step);
+}
+
+/* ============ PROJECTS CARD CLICKS ============ */
+function initProjectCardClicks() {
+    const cards = document.querySelectorAll('.project-card[data-url]');
+    cards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            // If the user clicked on a link button inside the card, don't trigger the card's click redirect!
+            if (e.target.closest('.project-link-btn')) {
+                return;
+            }
+            
+            const url = card.getAttribute('data-url');
+            if (url) {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            }
+        });
     });
 }

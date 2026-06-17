@@ -1,15 +1,14 @@
 {
   "hero": {
     "greeting": "Hello, I'm",
-    "name": "Sapta",
+    "name": "Sapta Wiguna",
     "typedWords": [
-      "Developer",
-      "Editor",
-      "Tech Enthusiast",
-      "Problem Solver",
-      "Einstein"
+      "Fullstack Developer",
+      "AI Developer",
+      "IoT Specialist",
+      "Content Creator"
     ],
-    "description": "Leveling up the digital landscape through creative engineering. Building robust web architectures with the precision of a gamer and the vision of a developer.",
+    "description": "Building robust digital solutions with the precision of a programmer and the curiosity of a researcher. Informatics Engineering student specializing in AI integration, IoT systems, and full-stack web architectures.",
     "cta": [
       {
         "label": "View My Work",
@@ -33,7 +32,7 @@
       },
       {
         "label": "LinkedIn",
-        "href": "https://linkedin.com/in/sapta-wiguna-1a01a42a5",
+        "href": "https://www.linkedin.com/in/sapta-wiguna",
         "icon": "linkedin",
         "target": true
       },
@@ -81,23 +80,24 @@
     "number": "01",
     "title": "About Me",
     "paragraphs": [
-      "Hi! I'm <strong>Sapta</strong>, a passionate student who loves building things for the web and the experiments. My journey in tech is fueled by a deep curiosity for how digital experiences work, but my inspiration is equally driven by a love for science, gaming, and the ever-evolving world of pop culture. When I'm not coding or exploring the latest things, I’m usually immersing myself in films, music, video games or the latest scientific discoveries, always looking for that perfect intersection where logic meets creativity to push my skills even further"
+      "Hi! I'm <strong>Sapta Wiguna</strong>, a passionate Informatics Engineering Education student at Ganesha University of Education (Undiksha), Bali. With a GPA of 3.89, my academic journey is fueled by a deep curiosity for how technologies interact, specifically in AI integration, smart IoT systems, and web application architecture.",
+      "I love building solutions that make an impact—whether it's SAGE, an AI-powered grading engine utilizing Gemini API, or a smart hydroponics system. Outside of coding, I'm involved in leadership roles in student events, teaching assistantships, game development, and creating tech content."
     ],
     "stats": [
       {
+        "label": "GPA (Undiksha)",
+        "value": 3.89,
+        "suffix": ""
+      },
+      {
+        "label": "National Awards",
+        "value": 2,
+        "suffix": ""
+      },
+      {
         "label": "Projects Completed",
-        "value": 10,
-        "suffix": "+"
-      },
-      {
-        "label": "Technologies",
-        "value": 5,
-        "suffix": "+"
-      },
-      {
-        "label": "Years Learning",
-        "value": 10,
-        "suffix": "+"
+        "value": 11,
+        "suffix": ""
       },
       {
         "label": "Passion",
@@ -130,14 +130,19 @@
             "level": 80
           },
           {
+            "name": "TypeScript",
+            "icon": "code",
+            "level": 75
+          },
+          {
             "name": "React",
             "icon": "atom",
-            "level": 70
+            "level": 75
           }
         ]
       },
       {
-        "title": "Backend",
+        "title": "Backend & DB",
         "icon": "server",
         "skills": [
           {
@@ -153,22 +158,37 @@
           {
             "name": "Go",
             "icon": "cpu",
-            "level": 65
+            "level": 70
           },
           {
             "name": "SQL",
             "icon": "database",
             "level": 65
+          },
+          {
+            "name": "Java & Greenfoot",
+            "icon": "gamepad-2",
+            "level": 70
           }
         ]
       },
       {
-        "title": "Tools & Others",
+        "title": "Tools & Smart Systems",
         "icon": "wrench",
         "skills": [
           {
             "name": "Git & GitHub",
             "icon": "git-branch",
+            "level": 80
+          },
+          {
+            "name": "IoT & Smart Systems",
+            "icon": "cpu",
+            "level": 75
+          },
+          {
+            "name": "AI & LLM Integration",
+            "icon": "sparkles",
             "level": 80
           },
           {
@@ -179,17 +199,7 @@
           {
             "name": "Figma",
             "icon": "pen-tool",
-            "level": 60
-          },
-          {
-            "name": "Docker",
-            "icon": "box",
-            "level": 70
-          },
-          {
-            "name": "Tidur",
-            "icon": "cpu",
-            "level": 50
+            "level": 65
           }
         ]
       }
@@ -201,35 +211,157 @@
     "items": [
       {
         "title": "SAGE — Smart Automated Grading Engine",
-        "desc": "Thesis project: an automated essay scoring engine designed for consistent, rubric-aligned grading.",
+        "category": "AI & Web Development",
+        "desc": "An automated essay evaluation platform utilizing RAG (Retrieval-Augmented Generation) with LLMs. Built to assist educators in grading essays efficiently and objectively. Accepted as a peer-reviewed research paper.",
         "icon": "cpu",
         "tech": [
           "Go",
           "TypeScript",
-          "CSS"
+          "Gemini API",
+          "RAG"
         ],
-        "codeUrl": "https://github.com/8bitos/AUTOMATED-ESSAY-SCORING"
+        "liveUrl": "https://sage.sssevendayz.my.id/",
+        "codeUrl": "https://journal.ilmudata.co.id/index.php/RIGGS/article/view/8979",
+        "thumbnail": "assets/Project/sage.png"
       },
       {
-        "title": "Underwater Oddysey",
-        "desc": "Final team project: a Greenfoot game inspired by the quirks of a platypus, built with playful mechanics.",
+        "title": "My Journal BK Spensix",
+        "category": "Collaborative Web App",
+        "desc": "A database-free web journal application built for counselors at SMP Negeri 6 Singaraja. Syncs data directly with private Google Spreadsheets for collaborative, real-time logging.",
+        "icon": "book-open",
+        "tech": [
+          "HTML5",
+          "CSS3",
+          "JavaScript",
+          "Sheets API"
+        ],
+        "liveUrl": "https://bk-spensix.web.app/",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/spensix.png"
+      },
+      {
+        "title": "Next-Gen Hydroponics Mobile App",
+        "category": "IoT & Mobile Application",
+        "desc": "A smart hydroponics system integrated with IoT, Web, AI, and Solar Energy created during an MBKM internship with DAGO Engineering. Engineered the mobile application for real-time sensor monitoring and automation control.",
+        "icon": "smartphone",
+        "tech": [
+          "React Native",
+          "C++",
+          "IoT",
+          "Solar"
+        ],
+        "liveUrl": "https://www.instagram.com/nextgen.hydroponics?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/hydro.jpg"
+      },
+      {
+        "title": "Underwater Odyssey",
+        "category": "Game Development (Team)",
+        "desc": "A 2D adventure game featuring a platypus, created as a collaborative academic project. Acted as the Main Programmer, implementing game loops, state machines, and asset-based character behaviors.",
         "icon": "gamepad-2",
         "tech": [
           "Java",
           "Greenfoot"
         ],
-        "liveUrl": "https://youtu.be/OaUEIvBQi_U?si=GZKdf60M0CcgC488"
+        "liveUrl": "https://youtu.be/OaUEIvBQi_U?si=fjeqi9a47h0NZMR7",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/under.png"
       },
       {
-        "title": "Designing Equality: Asa's Architectural Journey",
-        "desc": "An animated short on gender equality, crafted through an architectural narrative.",
+        "title": "Feeding Frenzy Clone",
+        "category": "Game Development (Solo)",
+        "desc": "A fully independent 2D fish-eating game built from scratch using the Greenfoot engine. Developed custom collision systems and expanded game mechanics without third-party templates.",
+        "icon": "gamepad",
+        "tech": [
+          "Java",
+          "Greenfoot"
+        ],
+        "liveUrl": "https://youtu.be/O5WiJstnr28?si=CqBSodoHkZROQPF1",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/ikan.png"
+      },
+      {
+        "title": "Nugi Coffee Shop Reservation",
+        "category": "Freelance Client Work",
+        "desc": "A custom web-based reservation and seat-booking system designed for a local coffee shop, streamlining table booking and customer menu pre-orders.",
+        "icon": "coffee",
+        "tech": [
+          "HTML5",
+          "CSS3",
+          "JavaScript"
+        ],
+        "liveUrl": "https://nugi-statis-88i33nytd-8bitos-projects.vercel.app/",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/nugi.png"
+      },
+      {
+        "title": "BGH Villa Booking System",
+        "category": "Freelance Client Work",
+        "desc": "A responsive landing page and reservation system built for a villa rental service, allowing guests to view room options, select dates, and book reservations.",
+        "icon": "home",
+        "tech": [
+          "HTML5",
+          "CSS3",
+          "JavaScript"
+        ],
+        "liveUrl": "https://bgh-statis.vercel.app/",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/bgh.png"
+      },
+      {
+        "title": "Sahabat Tumbuhan Tri Hita Karana",
+        "category": "Educational Game",
+        "desc": "A web-based educational game centered around Balinese plant conservation. Features custom AI-generated graphics and interactive quiz challenges requested by the client.",
+        "icon": "sprout",
+        "tech": [
+          "HTML5",
+          "CSS3",
+          "JavaScript"
+        ],
+        "liveUrl": "https://sahabat-tumbuhan.web.app/",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/thk.png"
+      },
+      {
+        "title": "Designing Equality: Asa's Journey",
+        "category": "2D Animation Project",
+        "desc": "A 2D animated short film focusing on the UN Sustainable Development Goal of Gender Equality. Designed through tracing techniques and scene composition using The Sims 4 character models.",
         "icon": "film",
         "tech": [
           "Photoshop",
           "Corel",
           "Ibis Paint"
         ],
-        "liveUrl": "https://youtu.be/dYx3ZVttnSg?si=-QKwj0EF9pe58Sgo"
+        "liveUrl": "https://youtu.be/dYx3ZVttnSg?si=Gklyum__vYSd512x",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/asa.jpg"
+      },
+      {
+        "title": "Teaching Assistance SMPN 6 Singaraja",
+        "category": "Education & Media",
+        "desc": "A documentary video showcasing spontaneous, unscripted classroom teaching activities and student management at SMPN 6 Singaraja.",
+        "icon": "users",
+        "tech": [
+          "Education",
+          "Communication",
+          "Video Editing"
+        ],
+        "liveUrl": "https://www.youtube.com/watch?v=Jgnm7wBFZyk&t=1837s",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/am.jpg"
+      },
+      {
+        "title": "Mobile Recipe Application",
+        "category": "UAS Mobile Project",
+        "desc": "A cross-platform recipe browsing mobile application developed as a final exam project, featuring category filtering, detailed ingredient lists, and instructions.",
+        "icon": "utensils",
+        "tech": [
+          "Dart",
+          "Flutter"
+        ],
+        "liveUrl": "https://github.com/8bitos/UAS-MOBILE",
+        "codeUrl": "",
+        "thumbnail": "UAS"
       }
     ]
   },
@@ -238,19 +370,44 @@
     "title": "Experience",
     "items": [
       {
-        "date": "Present",
-        "title": "Last Semester Student",
-        "desc": "Building system for my Undergraduate Thesis. Focused on creating responsive, user friendly interfaces and seamless user experiences."
+        "date": "Dec 2025 — Present",
+        "title": "Web Developer at SAGE",
+        "desc": "Developed an AI-powered grading engine using LLM integration (Gemini API) and designed multi-role dashboards. Co-authored a published peer-reviewed research paper on Automated Essay Scoring using RAG in RIGGS journal."
       },
       {
-        "date": "2022 — 2026",
-        "title": "University Projects",
-        "desc": "Developed multiple academic projects including web apps, database management systems, and collaborative tools."
+        "date": "Sep 2025 — Dec 2025",
+        "title": "Teaching Assistant at SMPN 6 Singaraja",
+        "desc": "Assisted classroom teaching, managed student activities, and guided junior high school students in understanding technical and programming concepts."
       },
       {
-        "date": "2015 — 2022",
-        "title": "Self-Learning Journey",
-        "desc": "Started learning programming from scratch. Explored HTML, CSS, JavaScript, and built my first projects."
+        "date": "Oct 2024",
+        "title": "KRTI 2024 — National Finalist",
+        "desc": "Qualified as a national finalist in the prestigious Kontes Robot Terbang Indonesia (KRTI) 2024 robotics competition, contributing to flight system automation and telemetry control."
+      },
+      {
+        "date": "Sep 2024",
+        "title": "Inventia National Game Dev Competition — 3rd Place",
+        "desc": "Won 3rd Place nationally in the Inventia Game Development Competition, designing, modeling, and programming interactive gameplay loops."
+      },
+      {
+        "date": "Jan 2024 — Jul 2024",
+        "title": "Mobile & IoT Developer at PT. Dago Engineering",
+        "desc": "Engineered a solar-powered, AI-integrated smart hydroponics monitoring system (Next-Gen Hydroponics) during an MBKM internship. Developed the cross-platform mobile application for real-time sensor monitoring."
+      },
+      {
+        "date": "2022 — Present",
+        "title": "Freelance Developer",
+        "desc": "Developed custom web-based reporting systems, interactive educational games, and reservation softwares for clients, integrating third-party APIs and custom databases."
+      },
+      {
+        "date": "2020",
+        "title": "FIKSI National Competition — Finalist",
+        "desc": "Selected as a national finalist in the Festival Inovasi dan Kewirausahaan Siswa Indonesia (FIKSI) for developing innovative entrepreneurial technology solutions during SMKN 2 Tabanan."
+      },
+      {
+        "date": "Mar 2019 — May 2019",
+        "title": "Workshop Seminar Committee Lead",
+        "desc": "Led a student organization organizing committee, coordinating 20+ members to deliver a structured, high-impact technical seminar."
       }
     ]
   },
@@ -261,8 +418,8 @@
     "links": [
       {
         "label": "Email",
-        "value": "saptaw2801@gmail.com",
-        "href": "mailto:saptaw2801@gmail.com",
+        "value": "saptaprofess@gmail.com",
+        "href": "mailto:saptaprofess@gmail.com",
         "icon": "mail"
       },
       {
@@ -275,7 +432,7 @@
       {
         "label": "LinkedIn",
         "value": "linkedin.com/in/sapta-wiguna",
-        "href": "https://www.linkedin.com/in/sapta-wiguna-1a01a42a5",
+        "href": "https://www.linkedin.com/in/sapta-wiguna",
         "icon": "linkedin",
         "target": true
       }
