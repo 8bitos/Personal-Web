@@ -79,6 +79,22 @@ body {
         );
 }
 
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('assets/Background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.1;
+    z-index: -2;
+    pointer-events: none;
+}
+
 body.loading {
     overflow: hidden;
 }
@@ -551,21 +567,104 @@ body:hover #cursor-glow {
     color: var(--text-secondary);
 }
 
-.typed-text {
+/* ---- Glitch Swap — P3R themed ---- */
+.word-rotator {
+    display: inline-block;
+    position: relative;
+    vertical-align: baseline;
+}
+
+.rotator-text {
+    display: inline-block;
     color: var(--accent-cyan);
     font-family: var(--font-heading);
     font-weight: 700;
+    white-space: nowrap;
+    position: relative;
 }
 
-.cursor-blink {
-    color: var(--accent-red);
-    font-weight: 300;
-    animation: blink 0.8s step-end infinite;
+/* Glitch active state */
+.rotator-text.glitching {
+    animation: p3r-glitch 0.45s steps(1) forwards;
 }
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+@keyframes p3r-glitch {
+    0%   {
+        text-shadow: 2px 0 var(--accent-red), -2px 0 var(--accent-cyan);
+        clip-path: inset(0 0 80% 0);
+        transform: skewX(-8deg) translateX(3px);
+        opacity: 1;
+    }
+    12%  {
+        clip-path: inset(30% 0 40% 0);
+        transform: skewX(6deg) translateX(-4px);
+        text-shadow: -3px 0 var(--accent-red), 3px 0 var(--accent-cyan);
+    }
+    24%  {
+        clip-path: inset(60% 0 10% 0);
+        transform: skewX(-4deg) translateX(5px);
+        text-shadow: 4px 0 var(--accent-purple), -4px 0 var(--accent-red);
+    }
+    36%  {
+        clip-path: inset(10% 0 50% 0);
+        transform: skewX(10deg) translateX(-2px);
+        text-shadow: -2px 0 var(--accent-cyan), 2px 0 var(--accent-gold);
+        opacity: 0.7;
+    }
+    48%  {
+        clip-path: inset(75% 0 5% 0);
+        transform: skewX(-6deg) translateX(6px);
+        text-shadow: 3px 0 var(--accent-red), -3px 0 var(--accent-purple);
+        opacity: 0.5;
+    }
+    60%  {
+        clip-path: inset(0 0 0 0);
+        transform: skewX(0) translateX(0);
+        text-shadow: none;
+        opacity: 0;
+    }
+    100% {
+        clip-path: inset(0 0 0 0);
+        transform: skewX(0) translateX(0);
+        text-shadow: none;
+        opacity: 0;
+    }
+}
+
+/* Snap-in of new word */
+.rotator-text.glitch-in {
+    animation: p3r-glitch-in 0.35s steps(1) forwards;
+}
+
+@keyframes p3r-glitch-in {
+    0% {
+        opacity: 0;
+        transform: skewX(-6deg) translateX(-4px);
+        text-shadow: 3px 0 var(--accent-red), -3px 0 var(--accent-cyan);
+        clip-path: inset(50% 0 20% 0);
+    }
+    25% {
+        opacity: 0.6;
+        transform: skewX(4deg) translateX(3px);
+        text-shadow: -2px 0 var(--accent-purple), 2px 0 var(--accent-cyan);
+        clip-path: inset(10% 0 60% 0);
+    }
+    50% {
+        opacity: 0.85;
+        transform: skewX(-2deg) translateX(-1px);
+        text-shadow: 1px 0 var(--accent-red);
+        clip-path: inset(0 0 0 0);
+    }
+    75% {
+        transform: skewX(1deg) translateX(1px);
+        text-shadow: none;
+    }
+    100% {
+        opacity: 1;
+        transform: skewX(0) translateX(0);
+        text-shadow: none;
+        clip-path: inset(0 0 0 0);
+    }
 }
 
 .hero-description {
@@ -673,6 +772,7 @@ body:hover #cursor-glow {
 }
 
 .social-link {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -695,6 +795,10 @@ body:hover #cursor-glow {
 }
 
 .social-link svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 18px;
     height: 18px;
 }
@@ -896,8 +1000,10 @@ body:hover #cursor-glow {
    ============================== */
 .about-grid {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 60px;
+    grid-template-columns: 1fr;
+    max-width: 800px;
+    margin: 0 auto;
+    gap: 40px;
     align-items: start;
 }
 
@@ -906,6 +1012,7 @@ body:hover #cursor-glow {
     margin-bottom: 20px;
     font-size: 15px;
     line-height: 1.8;
+    text-align: justify;
 }
 
 .about-text strong {
@@ -959,104 +1066,154 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   💡 SKILLS SECTION
+   🃏 SKILLS SECTION — P3R Tarot Cards
    ============================== */
 .skills-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 32px;
+    perspective: 1200px;
 }
 
-.skill-category-title {
-    font-family: var(--font-heading);
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 20px;
+/* ---- Card Wrapper ---- */
+.tarot-card {
+    height: 420px;
+    cursor: pointer;
+}
+
+.tarot-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.tarot-card:hover .tarot-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* ---- Shared Face Styles ---- */
+.tarot-card-front,
+.tarot-card-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 4px;
+    padding: 36px 28px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    border: 1px solid rgba(0, 212, 255, 0.12);
+    background: linear-gradient(160deg, rgba(10, 15, 40, 0.95) 0%, rgba(5, 10, 28, 0.98) 100%);
+    clip-path: polygon(16px 0%, 100% 0%, calc(100% - 16px) 100%, 0% 100%);
+    overflow: hidden;
+}
+
+/* top and bottom decorative line */
+.tarot-card-front::before,
+.tarot-card-back::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+}
+
+.tarot-card-front::after,
+.tarot-card-back::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 10%; right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+}
+
+/* ---- Front Face ---- */
+.tarot-card-back {
+    transform: rotateY(180deg);
+    justify-content: center;
+}
+
+
+.tarot-big-icon {
+    width: 72px;
+    height: 72px;
     color: var(--accent-cyan);
+    margin: auto 0;
+    filter: drop-shadow(0 0 16px rgba(0, 212, 255, 0.5));
+}
+
+.tarot-big-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.tarot-front-title {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    color: var(--text-primary);
+    margin-top: auto;
+    text-align: center;
 }
 
-.skill-cat-icon {
-    width: 18px;
-    height: 18px;
+
+/* ---- Back Face ---- */
+.tarot-back-title {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
     color: var(--accent-cyan);
+    margin-bottom: 28px;
+    text-align: center;
 }
 
-.skill-items {
+.tarot-skills-list {
+    list-style: none;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.skill-item {
-    padding: 14px 18px;
+.tarot-skills-list li {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
     display: flex;
     align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-    /* P3R angular cut */
-    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    gap: 10px;
+    padding: 8px 12px;
+    background: rgba(0, 212, 255, 0.04);
+    border-left: 2px solid rgba(0, 212, 255, 0.3);
+    transition: all 0.25s;
 }
 
-.skill-item::before, .skill-item::after { display: none; }
+.tarot-skills-list li:hover {
+    background: rgba(0, 212, 255, 0.1);
+    border-left-color: var(--accent-cyan);
+    color: var(--text-primary);
+    padding-left: 18px;
+}
 
-.skill-icon {
-    width: 28px;
-    height: 28px;
-    color: var(--accent-blue);
+.tarot-skill-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--accent-cyan);
+    opacity: 0.7;
     flex-shrink: 0;
 }
 
-.skill-icon svg {
+.tarot-skill-icon svg {
     width: 100%;
     height: 100%;
-}
-
-.skill-name {
-    font-size: 13px;
-    font-weight: 700;
-    flex: 1;
-    min-width: 80px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.skill-bar {
-    width: 100%;
-    height: 3px;
-    background: rgba(0, 180, 255, 0.08);
-    overflow: hidden;
-    flex-basis: 100%;
-}
-
-.skill-fill {
-    height: 100%;
-    width: 0;
-    background: var(--gradient-primary);
-    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-}
-
-.skill-fill::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: -3px;
-    width: 8px;
-    height: 8px;
-    background: var(--accent-cyan);
-    box-shadow: 0 0 10px var(--accent-cyan);
-    opacity: 0;
-    transition: opacity 0.3s 1s;
-    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-}
-
-.skill-fill.animated::after {
-    opacity: 1;
 }
 
 /* ==============================
@@ -1215,6 +1372,7 @@ body:hover #cursor-glow {
 }
 
 .project-link-btn {
+    position: relative;
     width: 48px;
     height: 48px;
     display: flex;
@@ -1246,6 +1404,10 @@ body:hover #cursor-glow {
 }
 
 .project-link-btn svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 20px;
     height: 20px;
 }
@@ -1362,135 +1524,194 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   📬 CONTACT SECTION
+   📬 CONTACT SECTION — RPG Strip
    ============================== */
-.contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
-    align-items: start;
+.contact-rpg-arena {
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
 }
 
-.contact-desc {
-    font-size: 15px;
-    color: var(--text-secondary);
-    line-height: 1.8;
-    margin-bottom: 32px;
+.contact-arena-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-align: center;
+    margin-bottom: 48px;
+    font-weight: 600;
 }
 
-.contact-links {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.contact-link {
+/* ---- Each strip ---- */
+.contact-strip {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 20px;
-    /* P3R angular */
-    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    gap: 24px;
+    padding: 28px 36px;
+    margin-bottom: 4px;
+    overflow: hidden;
+    background: rgba(6, 12, 30, 0.7);
+    border-left: 3px solid rgba(0, 180, 255, 0.15);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Diagonal slash */
+    clip-path: polygon(0 0, 100% 0, calc(100% - 20px) 100%, 0 100%);
+    cursor: pointer;
 }
 
-.contact-link::before, .contact-link::after { display: none; }
+.contact-strip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        105deg,
+        rgba(0, 180, 255, 0) 0%,
+        rgba(0, 180, 255, 0.06) 50%,
+        rgba(0, 180, 255, 0) 100%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
 
-.contact-icon {
+/* Hover — slide the whole strip right & bloom */
+.contact-strip:hover {
+    transform: translateX(12px);
+    background: rgba(0, 50, 90, 0.75);
+    border-left-color: var(--accent-cyan);
+    box-shadow:
+        -4px 0 0 var(--accent-cyan),
+        0 0 40px rgba(0, 180, 255, 0.18),
+        inset 0 0 60px rgba(0, 180, 255, 0.06);
+}
+
+.contact-strip:hover::before {
+    transform: translateX(100%);
+}
+
+/* Staggered strip entrance delays */
+.contact-strip:nth-child(2) { transition-delay: 0s; }
+.contact-strip:nth-child(3) { transition-delay: 0.04s; }
+.contact-strip:nth-child(4) { transition-delay: 0.08s; }
+
+/* ---- Strip number ---- */
+.strip-number {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(0, 180, 255, 0.3);
+    letter-spacing: 3px;
+    min-width: 26px;
+    transition: color 0.3s;
+}
+
+.contact-strip:hover .strip-number {
+    color: var(--accent-cyan);
+}
+
+/* ---- Strip icon ---- */
+.strip-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 180, 255, 0.06);
+    border: 1px solid rgba(0, 180, 255, 0.12);
+    /* P3R diamond-ish */
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    flex-shrink: 0;
+    transition: all 0.35s;
+}
+
+.strip-icon svg {
+    width: 18px;
+    height: 18px;
+    color: var(--text-secondary);
+    transition: color 0.35s, transform 0.35s;
+}
+
+.contact-strip:hover .strip-icon {
+    background: rgba(0, 180, 255, 0.18);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 16px rgba(0, 180, 255, 0.35);
+}
+
+.contact-strip:hover .strip-icon svg {
+    color: var(--accent-cyan);
+    transform: scale(1.1);
+}
+
+/* ---- Strip body ---- */
+.strip-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.strip-label {
+    font-family: var(--font-heading);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    transition: color 0.3s;
+}
+
+.strip-value {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+    transition: color 0.3s, text-shadow 0.3s;
+}
+
+.contact-strip:hover .strip-label {
+    color: var(--accent-cyan);
+}
+
+.contact-strip:hover .strip-value {
+    color: #fff;
+    text-shadow: 0 0 20px rgba(0, 180, 255, 0.5);
+}
+
+/* ---- Arrow indicator ---- */
+.strip-arrow {
+    margin-left: auto;
+    flex-shrink: 0;
+    opacity: 0;
+    transform: translateX(-16px);
+    transition: opacity 0.35s, transform 0.35s;
+}
+
+.strip-arrow svg {
     width: 22px;
     height: 22px;
     color: var(--accent-cyan);
-    flex-shrink: 0;
 }
 
-.contact-link-label {
-    display: block;
-    font-size: 11px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    font-weight: 700;
+.contact-strip:hover .strip-arrow {
+    opacity: 1;
+    transform: translateX(0);
 }
 
-.contact-link-value {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-top: 2px;
-}
-
-/* Contact Form */
-.contact-form {
-    padding: 32px;
-}
-
-.contact-form::before, .contact-form::after { display: none; }
-
-.form-group {
-    position: relative;
-    margin-bottom: 28px;
-}
-
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 14px 0 10px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--text-primary);
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid rgba(0, 180, 255, 0.15);
-    outline: none;
-    transition: border-color var(--transition-base);
-    resize: none;
-}
-
-.form-group label {
-    position: absolute;
-    top: 14px;
-    left: 0;
-    font-size: 13px;
-    color: var(--text-muted);
-    pointer-events: none;
-    transition: all var(--transition-base);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 600;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-    border-bottom-color: var(--accent-cyan);
-}
-
-.form-group input:focus + label,
-.form-group input:not(:placeholder-shown) + label,
-.form-group textarea:focus + label,
-.form-group textarea:not(:placeholder-shown) + label {
-    top: -8px;
-    font-size: 10px;
-    color: var(--accent-cyan);
-}
-
-.form-line {
+/* ---- Glow bar at the bottom of each strip ---- */
+.strip-glow-bar {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 0;
     height: 2px;
-    background: var(--gradient-primary);
-    transition: width var(--transition-base);
+    background: linear-gradient(90deg, var(--accent-cyan), transparent);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
 }
 
-.form-group input:focus ~ .form-line,
-.form-group textarea:focus ~ .form-line {
+.contact-strip:hover .strip-glow-bar {
     width: 100%;
-}
-
-.btn-submit {
-    width: 100%;
-    justify-content: center;
 }
 
 /* ==============================
@@ -1586,6 +1807,7 @@ body:hover #cursor-glow {
     .skills-grid {
         grid-template-columns: 1fr 1fr;
     }
+    .tarot-card { height: 380px; }
 }
 
 @media (max-width: 768px) {
@@ -1680,7 +1902,8 @@ body:hover #cursor-glow {
     .hero-socials { justify-content: center; }
     .scroll-indicator { display: none; }
     .skills-grid { grid-template-columns: 1fr; }
-    .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+    .tarot-card { height: 360px; }
+    .contact-strip { padding: 22px 20px; gap: 16px; }
     .projects-grid { display: flex; }
     .p3r-topbar { padding: 14px 20px; }
     .p3r-topbar.scrolled { padding: 12px 20px; }
@@ -1705,7 +1928,8 @@ body:hover #cursor-glow {
     .stat-card { padding: 18px 12px; }
     .stat-number { font-size: 28px; }
     .btn { padding: 12px 22px; font-size: 12px; }
-    .contact-form { padding: 24px 20px; }
+    .strip-value { font-size: 14px; }
+    .contact-strip { padding: 18px 16px; gap: 12px; clip-path: none; }
 }
 
 /* ==============================

@@ -3,12 +3,12 @@
     "greeting": "Hello, I'm",
     "name": "Sapta Wiguna",
     "typedWords": [
-      "Fullstack Developer",
-      "AI Developer",
-      "IoT Specialist",
-      "Content Creator"
+      "Freelance Developer",
+      "Game Programmer",
+      "Creative Technologist",
+      "Informatics Educator"
     ],
-    "description": "Building robust digital solutions with the precision of a programmer and the curiosity of a researcher. Informatics Engineering student specializing in AI integration, IoT systems, and full-stack web architectures.",
+    "description": "A freelance developer, game builder, and media creator. I build web architectures, mobile apps, and digital experiences backed by core logic, rapid adaptation, and a lifelong love for pop culture.",
     "cta": [
       {
         "label": "View My Work",
@@ -80,30 +80,9 @@
     "number": "01",
     "title": "About Me",
     "paragraphs": [
-      "Hi! I'm <strong>Sapta Wiguna</strong>, a passionate Informatics Engineering Education student at Ganesha University of Education (Undiksha), Bali. With a GPA of 3.89, my academic journey is fueled by a deep curiosity for how technologies interact, specifically in AI integration, smart IoT systems, and web application architecture.",
-      "I love building solutions that make an impact—whether it's SAGE, an AI-powered grading engine utilizing Gemini API, or a smart hydroponics system. Outside of coding, I'm involved in leadership roles in student events, teaching assistantships, game development, and creating tech content."
-    ],
-    "stats": [
-      {
-        "label": "GPA (Undiksha)",
-        "value": 3.89,
-        "suffix": ""
-      },
-      {
-        "label": "National Awards",
-        "value": 2,
-        "suffix": ""
-      },
-      {
-        "label": "Projects Completed",
-        "value": 11,
-        "suffix": ""
-      },
-      {
-        "label": "Passion",
-        "value": 100,
-        "suffix": "%"
-      }
+      "I am a freelance developer and media creator who builds things across the digital landscape. From web architectures and mobile apps to 2D game programming, graphic design, and video editing, I am hands-on with technology and media. My journey started in elementary school, teaching myself to navigate the web, play PC games, and learn game modding entirely on my own. By junior high, I was writing code, and by high school, I was building functional web and mobile applications.",
+      "My approach to software is deeply fueled by a lifelong love for pop culture, including games, music, and movies. I don't just build applications. I understand how algorithms engage users and how game loops dictate experience. While AI allows me to ship complex features in days rather than weeks, I believe a true developer's level lies in understanding core logic and system flow. This foundation lets me adapt, learn new tech stacks rapidly, and deliver high-quality work that stands out.",
+      "Beyond code and media, I have a formal background in teaching, holding a degree in Informatics Engineering Education. This unique blend of tech expertise and pedagogical training makes me just as comfortable explaining complex architectures or mentoring teams as I am programming systems."
     ]
   },
   "skills": {

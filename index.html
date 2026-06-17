@@ -20,8 +20,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <!-- Lucide Icons Local -->
+    <script src="assets/lucide.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -130,36 +130,14 @@
             <div class="about-grid">
                 <div class="about-text reveal-up">
                     <p>
-                        Hi there! I'm <strong>Sapta Wiguna</strong>, a passionate developer who loves building things for the web.
-                        My interest in development started when I was curious about how websites work — and since then,
-                        I've been on a journey to learn and create.
+                        I am a freelance developer and media creator who builds things across the digital landscape. From web architectures and mobile apps to 2D game programming, graphic design, and video editing, I am hands-on with technology and media. My journey started in elementary school, teaching myself to navigate the web, play PC games, and learn game modding entirely on my own. By junior high, I was writing code, and by high school, I was building functional web and mobile applications.
                     </p>
                     <p>
-                        I focus on creating clean, efficient, and user-friendly applications. I enjoy exploring
-                        new technologies and staying updated with the latest trends in web development.
+                        My approach to software is deeply fueled by a lifelong love for pop culture, including games, music, and movies. I don't just build applications. I understand how algorithms engage users and how game loops dictate experience. While AI allows me to ship complex features in days rather than weeks, I believe a true developer's level lies in understanding core logic and system flow. This foundation lets me adapt, learn new tech stacks rapidly, and deliver high-quality work that stands out.
                     </p>
                     <p>
-                        When I'm not coding, you can find me exploring new tech, watching tutorials, or working on personal projects
-                        that push my skills further.
+                        Beyond code and media, I have a formal background in teaching, holding a degree in Informatics Engineering Education. This unique blend of tech expertise and pedagogical training makes me just as comfortable explaining complex architectures or mentoring teams as I am programming systems.
                     </p>
-                </div>
-                <div class="about-stats reveal-up">
-                    <div class="stat-card glass-card">
-                        <span class="stat-number" data-count="10">0</span><span class="stat-plus">+</span>
-                        <span class="stat-label">Projects Completed</span>
-                    </div>
-                    <div class="stat-card glass-card">
-                        <span class="stat-number" data-count="5">0</span><span class="stat-plus">+</span>
-                        <span class="stat-label">Technologies</span>
-                    </div>
-                    <div class="stat-card glass-card">
-                        <span class="stat-number" data-count="2">0</span><span class="stat-plus">+</span>
-                        <span class="stat-label">Years Learning</span>
-                    </div>
-                    <div class="stat-card glass-card">
-                        <span class="stat-number" data-count="100">0</span><span class="stat-plus">%</span>
-                        <span class="stat-label">Passion</span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -308,57 +286,45 @@
             <h2 class="section-title reveal-up">
                 <span class="section-number">05.</span> Get In Touch
             </h2>
-            <div class="contact-grid">
-                <div class="contact-info reveal-up">
-                    <p class="contact-desc">
-                        I'm currently open to new opportunities and collaborations.
-                        Whether you have a project in mind, a question, or just want to say hi — feel free to reach out!
-                    </p>
-                    <div class="contact-links">
-                        <a href="mailto:saptaprofess@gmail.com" class="contact-link glass-card">
-                            <i data-lucide="mail" class="contact-icon"></i>
-                            <div>
-                                <span class="contact-link-label">Email</span>
-                                <span class="contact-link-value">saptaprofess@gmail.com</span>
-                            </div>
-                        </a>
-                        <a href="https://github.com/8bitos" target="_blank" rel="noopener noreferrer" class="contact-link glass-card">
-                            <i data-lucide="github" class="contact-icon"></i>
-                            <div>
-                                <span class="contact-link-label">GitHub</span>
-                                <span class="contact-link-value">github.com/8bitos</span>
-                            </div>
-                        </a>
-                        <a href="https://www.linkedin.com/in/sapta-wiguna" target="_blank" rel="noopener noreferrer" class="contact-link glass-card">
-                            <i data-lucide="linkedin" class="contact-icon"></i>
-                            <div>
-                                <span class="contact-link-label">LinkedIn</span>
-                                <span class="contact-link-value">linkedin.com/in/sapta-wiguna</span>
-                            </div>
-                        </a>
+            <div class="contact-rpg-arena reveal-up">
+                <!-- Arena subtitle -->
+                <p class="contact-arena-sub">Choose your target. I'm reachable everywhere.</p>
+
+                <!-- Strip 01 — Email -->
+                <a href="mailto:saptaprofess@gmail.com" class="contact-strip" id="strip-email">
+                    <div class="strip-number">01</div>
+                    <div class="strip-icon"><i data-lucide="mail"></i></div>
+                    <div class="strip-body">
+                        <span class="strip-label">Email</span>
+                        <span class="strip-value">saptaprofess@gmail.com</span>
                     </div>
-                </div>
-                <form id="contact-form" class="contact-form glass-card reveal-up" autocomplete="off">
-                    <div class="form-group">
-                        <input type="text" id="form-name" name="name" placeholder=" " required>
-                        <label for="form-name">Your Name</label>
-                        <div class="form-line"></div>
+                    <div class="strip-arrow"><i data-lucide="arrow-right"></i></div>
+                    <div class="strip-glow-bar"></div>
+                </a>
+
+                <!-- Strip 02 — GitHub -->
+                <a href="https://github.com/8bitos" target="_blank" rel="noopener noreferrer" class="contact-strip" id="strip-github">
+                    <div class="strip-number">02</div>
+                    <div class="strip-icon"><i data-lucide="github"></i></div>
+                    <div class="strip-body">
+                        <span class="strip-label">GitHub</span>
+                        <span class="strip-value">github.com/8bitos</span>
                     </div>
-                    <div class="form-group">
-                        <input type="email" id="form-email" name="email" placeholder=" " required>
-                        <label for="form-email">Your Email</label>
-                        <div class="form-line"></div>
+                    <div class="strip-arrow"><i data-lucide="arrow-right"></i></div>
+                    <div class="strip-glow-bar"></div>
+                </a>
+
+                <!-- Strip 03 — LinkedIn -->
+                <a href="https://www.linkedin.com/in/sapta-wiguna" target="_blank" rel="noopener noreferrer" class="contact-strip" id="strip-linkedin">
+                    <div class="strip-number">03</div>
+                    <div class="strip-icon"><i data-lucide="linkedin"></i></div>
+                    <div class="strip-body">
+                        <span class="strip-label">LinkedIn</span>
+                        <span class="strip-value">linkedin.com/in/sapta-wiguna</span>
                     </div>
-                    <div class="form-group">
-                        <textarea id="form-message" name="message" rows="4" placeholder=" " required></textarea>
-                        <label for="form-message">Your Message</label>
-                        <div class="form-line"></div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-submit">
-                        <span>Send Message</span>
-                        <i data-lucide="send" class="btn-icon"></i>
-                    </button>
-                </form>
+                    <div class="strip-arrow"><i data-lucide="arrow-right"></i></div>
+                    <div class="strip-glow-bar"></div>
+                </a>
             </div>
         </div>
     </section>
@@ -375,7 +341,7 @@
                     <a href="https://linkedin.com/in/sapta-wiguna" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
                     <a href="https://instagram.com/sapta_2801" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram"><i data-lucide="instagram"></i></a>
                 </div>
-                <p class="footer-copy">&copy; 2026 Sapta Wiguna. Built with <span class="heart">&hearts;</span> and lots of coffee.</p>
+                <p class="footer-copy">&copy; 2026 Sapta Wiguna. All rights reserved.</p>
             </div>
         </div>
     </footer>

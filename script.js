@@ -150,44 +150,79 @@ function initCursorGlow() {
     });
 }
 
-/* ============ TYPING EFFECT ============ */
-function initTypingEffect() {
-    const el = document.getElementById('typed-text');
+/* ============ GLITCH SWAP EFFECT — P3R Themed ============ */
+function initWordRotator() {
+    const el = document.getElementById('rotator-text');
     if (!el) return;
 
     const words = Array.isArray(window.__typedWords) && window.__typedWords.length
         ? window.__typedWords
         : ['Web Developer', 'UI Designer', 'Tech Enthusiast', 'Problem Solver', 'Creative Coder'];
-    let wordIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
 
-    function type() {
-        const currentWord = words[wordIndex];
+    // Characters to scramble through during glitch
+    const glitchChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#@!%&?/$';
 
-        if (isDeleting) {
-            el.textContent = currentWord.substring(0, charIndex - 1);
-            charIndex--;
-        } else {
-            el.textContent = currentWord.substring(0, charIndex + 1);
-            charIndex++;
-        }
+    let index = 0;
+    let scrambleInterval = null;
 
-        let delay = isDeleting ? 40 : 80;
+    // Set initial word
+    el.textContent = words[index];
 
-        if (!isDeleting && charIndex === currentWord.length) {
-            delay = 2000; // pause at end
-            isDeleting = true;
-        } else if (isDeleting && charIndex === 0) {
-            isDeleting = false;
-            wordIndex = (wordIndex + 1) % words.length;
-            delay = 400;
-        }
+    function scramble(targetWord, duration, onDone) {
+        const len = targetWord.length;
+        const start = Date.now();
+        clearInterval(scrambleInterval);
+        scrambleInterval = setInterval(() => {
+            const elapsed = Date.now() - start;
+            const progress = Math.min(elapsed / duration, 1);
 
-        setTimeout(type, delay);
+            // Number of locked (correct) chars increases over time
+            const lockedCount = Math.floor(progress * len);
+            let result = '';
+            for (let i = 0; i < len; i++) {
+                if (targetWord[i] === ' ') {
+                    result += ' ';
+                } else if (i < lockedCount) {
+                    result += targetWord[i];
+                } else {
+                    result += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+                }
+            }
+            el.textContent = result;
+
+            if (progress >= 1) {
+                clearInterval(scrambleInterval);
+                el.textContent = targetWord;
+                if (onDone) onDone();
+            }
+        }, 30);
     }
 
-    setTimeout(type, 1000);
+    function rotate() {
+        const nextIndex = (index + 1) % words.length;
+        const nextWord = words[nextIndex];
+
+        // 1. Glitch OUT current word
+        el.classList.add('glitching');
+
+        // 2. At peak of glitch, swap & scramble IN
+        setTimeout(() => {
+            el.classList.remove('glitching');
+            index = nextIndex;
+            el.textContent = nextWord;
+            el.classList.add('glitch-in');
+
+            // Scramble resolve after glitch-in starts
+            setTimeout(() => {
+                el.classList.remove('glitch-in');
+                scramble(nextWord, 400, null);
+            }, 100);
+
+        }, 450); // matches glitch out duration
+    }
+
+    // Rotate every 3.5 seconds
+    setInterval(rotate, 3500);
 }
 
 /* ============ P3R MENU SYSTEM (inline hero nav) ============ */
@@ -387,14 +422,14 @@ function initContentFromJson() {
             renderContact(data.contact);
 
             if (window.lucide) lucide.createIcons();
-            initTypingEffect();
+            initWordRotator();
             initSkillBars();
             initStatCounter();
             initScrollReveal();
             initProjectsCarousel();
             initProjectCardClicks();
         })
-        .catch(() => {});
+        .catch(err => console.error("Error loading content:", err));
 }
 
 function renderSectionTitle(num, title) {
@@ -427,8 +462,9 @@ function renderHero(hero) {
         </h1>
         <div class="hero-title-wrapper reveal-up">
             <span class="hero-prefix">I'm a&nbsp;</span>
-            <span id="typed-text" class="typed-text"></span>
-            <span class="cursor-blink">|</span>
+            <span class="word-rotator">
+                <span id="rotator-text" class="rotator-text"></span>
+            </span>
         </div>
         <p class="hero-description reveal-up">${hero.description || ''}</p>
         <div class="hero-cta reveal-up">${ctas}</div>
@@ -459,18 +495,11 @@ function renderAbout(about) {
     const container = document.querySelector('#about .container');
     if (!container || !about) return;
     const paragraphs = (about.paragraphs || []).map(p => `<p>${p}</p>`).join('');
-    const stats = (about.stats || []).map(s => `
-        <div class="stat-card glass-card">
-            <span class="stat-number" data-count="${Number(s.value) || 0}">0</span><span class="stat-plus">${s.suffix || ''}</span>
-            <span class="stat-label">${s.label || ''}</span>
-        </div>
-    `).join('');
 
     container.innerHTML = `
         ${renderSectionTitle(about.number || '01', about.title || 'About Me')}
         <div class="about-grid">
             <div class="about-text reveal-up">${paragraphs}</div>
-            <div class="about-stats reveal-up">${stats}</div>
         </div>
     `;
 }
@@ -478,28 +507,35 @@ function renderAbout(about) {
 function renderSkills(skills) {
     const container = document.querySelector('#skills .container');
     if (!container || !skills) return;
-    const categories = (skills.categories || []).map(cat => {
-        const items = (cat.skills || []).map(sk => {
-            const level = Math.max(0, Math.min(100, Number(sk.level) || 0));
-            const skillIcon = sk.icon || 'sparkles';
-            const name = sk.name || 'Skill';
-            return `
-                <div class="skill-item glass-card">
-                    <div class="skill-icon">
-                        <i data-lucide="${skillIcon}"></i>
-                    </div>
-                    <span class="skill-name">${name}</span>
-                    <div class="skill-bar"><div class="skill-fill" data-level="${level}"></div></div>
-                </div>
-            `;
-        }).join('');
+
+    const categories = (skills.categories || []).map((cat) => {
+        const catIcon = cat.icon || 'star';
+
+        const skillRows = (cat.skills || []).map(sk => `
+            <li>
+                <span class="tarot-skill-icon"><i data-lucide="${sk.icon || 'sparkles'}"></i></span>
+                ${sk.name || ''}
+            </li>
+        `).join('');
+
         return `
-            <div class="skill-category reveal-up">
-                <h3 class="skill-category-title">
-                    <i data-lucide="${cat.icon || 'star'}" class="skill-cat-icon"></i>
-                    ${cat.title || 'Skills'}
-                </h3>
-                <div class="skill-items">${items}</div>
+            <div class="tarot-card reveal-up">
+                <div class="tarot-card-inner">
+                    <!-- Front -->
+                    <div class="tarot-card-front">
+                        <div class="tarot-big-icon">
+                            <i data-lucide="${catIcon}"></i>
+                        </div>
+                        <div class="tarot-front-title">${cat.title || 'Skills'}</div>
+                    </div>
+                    <!-- Back -->
+                    <div class="tarot-card-back">
+                        <div class="tarot-back-title">${cat.title || 'Skills'}</div>
+                        <ul class="tarot-skills-list">
+                            ${skillRows}
+                        </ul>
+                    </div>
+                </div>
             </div>
         `;
     }).join('');
