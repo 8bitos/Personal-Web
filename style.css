@@ -1,9 +1,9 @@
 /* ==============================
-   🎮 PERSONA 3 RELOAD — DESIGN TOKENS
+   ðŸŽ® PERSONA 3 RELOAD â€” DESIGN TOKENS
    Angular, geometric, bold blues
    ============================== */
 :root {
-    /* P3R Colors — deep blues, electric accents */
+    /* P3R Colors â€” deep blues, electric accents */
     --bg-primary: #04060e;
     --bg-secondary: #0a0f1e;
     --bg-tertiary: #111833;
@@ -47,7 +47,7 @@
 }
 
 /* ==============================
-   🔄 RESET & BASE
+   ðŸ”„ RESET & BASE
    ============================== */
 *, *::before, *::after {
     margin: 0;
@@ -86,13 +86,120 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('assets/Background.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0.1;
+    background: none; /* Disabled in favor of multi-layered parallax background */
     z-index: -2;
     pointer-events: none;
+}
+
+/* ========== LAYERED PARALLAX BACKGROUND ========== */
+.layered-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -3; /* Positioned behind main canvas elements */
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.bg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+}
+
+.bg-layer-sky {
+    z-index: 1;
+    height: 100%;
+    opacity: 1;
+}
+
+.bg-layer-cloud1 {
+    z-index: 2;
+    background-repeat: repeat-x;
+    animation: lofi-cloud-scroll-1 150s linear infinite;
+    opacity: 1;
+}
+
+.bg-layer-cloud2 {
+    z-index: 3;
+    background-repeat: repeat-x;
+    animation: lofi-cloud-scroll-2 100s linear infinite;
+    opacity: 1;
+}
+
+.bg-bird {
+    position: absolute;
+    left: 0;
+    bottom: 70%; /* Perfect position inside the train window */
+    width: 65px;
+    height: auto;
+    z-index: 5; /* In front of Front.png (z-index 4) but behind Front2.png (z-index 6) */
+    pointer-events: none;
+    opacity: 0; /* Hidden by default when not flying */
+    will-change: transform;
+    transition: opacity 0.1s ease;
+}
+
+.bg-bird.flying {
+    opacity: 1;
+    animation: lofi-bird-fly 2s linear forwards;
+}
+
+.bg-layer-front {
+    z-index: 4;
+    background-position: center bottom;
+    opacity: 1;
+}
+
+.bg-layer-front2 {
+    z-index: 6;
+    background-position: center bottom;
+    opacity: 1;
+}
+
+.bg-overlay-dim {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(4, 9, 22, 0.90); /* Darkened deep lofi blue overlay */
+    z-index: 7; /* Placed in front of all layers to dim the entire background stack */
+    pointer-events: none;
+}
+
+/* Endless rightward scrolling cloud animations with vertical bobbing wave */
+@keyframes lofi-cloud-scroll-1 {
+    0% { background-position: 0px 100%; }
+    25% { background-position: 500px 98.2%; }
+    50% { background-position: 1000px 100%; }
+    75% { background-position: 1500px 98.2%; }
+    100% { background-position: 2000px 100%; }
+}
+
+@keyframes lofi-cloud-scroll-2 {
+    0% { background-position: 0px 100%; }
+    25% { background-position: 500px 96.5%; }
+    50% { background-position: 1000px 100%; }
+    75% { background-position: 1500px 96.5%; }
+    100% { background-position: 2000px 100%; }
+}
+
+/* Endless horizontal flying bird animation with vertical gliding float */
+@keyframes lofi-bird-fly {
+    0% {
+        transform: translate(105vw, 0);
+    }
+    100% {
+        transform: translate(-100px, 0);
+    }
 }
 
 body.loading {
@@ -137,7 +244,7 @@ ul {
 }
 
 /* ==============================
-   ⏳ PAGE LOADER
+   â³ PAGE LOADER
    ============================== */
 .loader {
     position: fixed;
@@ -191,7 +298,7 @@ ul {
 }
 
 /* ==============================
-   ✨ PARTICLE CANVAS
+   âœ¨ PARTICLE CANVAS
    ============================== */
 #particle-canvas {
     position: fixed;
@@ -201,7 +308,7 @@ ul {
 }
 
 /* ==============================
-   🔮 CURSOR GLOW
+   ðŸ”® CURSOR GLOW
    ============================== */
 #cursor-glow {
     position: fixed;
@@ -221,7 +328,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   🧭 P3R TOP BAR — Minimal
+   ðŸ§­ P3R TOP BAR â€” Minimal
    ============================== */
 .p3r-topbar {
     position: fixed;
@@ -237,10 +344,10 @@ body:hover #cursor-glow {
 }
 
 .p3r-topbar.scrolled {
-    background: rgba(4, 6, 14, 0.92);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 1px 0 var(--border);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
     padding: 12px 40px;
 }
 
@@ -257,7 +364,7 @@ body:hover #cursor-glow {
     color: var(--accent-cyan);
 }
 
-/* P3R Menu Trigger — now the hero content area */
+/* P3R Menu Trigger â€” now the hero content area */
 .p3r-menu-trigger {
     display: none;
 }
@@ -310,7 +417,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   🎮 P3R HERO NAVIGATION (inline)
+   ðŸŽ® P3R HERO NAVIGATION (inline)
    ============================== */
 
 /* Left-side nav container */
@@ -387,7 +494,7 @@ body:hover #cursor-glow {
     z-index: 2;
 }
 
-/* Diagonal accent stripe behind item — P3R signature */
+/* Diagonal accent stripe behind item â€” P3R signature */
 .p3r-item-stripe {
     position: absolute;
     top: 0;
@@ -480,7 +587,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   🚀 HERO SECTION
+   ðŸš€ HERO SECTION
    ============================== */
 .hero {
     min-height: 100vh;
@@ -567,7 +674,7 @@ body:hover #cursor-glow {
     color: var(--text-secondary);
 }
 
-/* ---- Glitch Swap — P3R themed ---- */
+/* ---- Glitch Swap â€” P3R themed ---- */
 .word-rotator {
     display: inline-block;
     position: relative;
@@ -684,7 +791,7 @@ body:hover #cursor-glow {
     justify-content: flex-end;
 }
 
-/* Hero socials — right-aligned */
+/* Hero socials â€” right-aligned */
 .hero-socials {
     display: flex;
     gap: 8px;
@@ -709,7 +816,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   P3R BUTTONS — Angular cut
+   P3R BUTTONS â€” Angular cut
    ============================== */
 .btn {
     display: inline-flex;
@@ -765,7 +872,7 @@ body:hover #cursor-glow {
     box-shadow: 0 0 20px rgba(0, 180, 255, 0.2);
 }
 
-/* Social links — P3R angular boxes */
+/* Social links â€” P3R angular boxes */
 .hero-socials {
     display: flex;
     gap: 8px;
@@ -803,7 +910,7 @@ body:hover #cursor-glow {
     height: 18px;
 }
 
-/* Hero Image — P3R angular frame */
+/* Hero Image â€” P3R angular frame */
 .hero-image {
     position: relative;
     flex-shrink: 0;
@@ -929,7 +1036,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   📝 SECTION TITLES — P3R Style
+   ðŸ“ SECTION TITLES â€” P3R Style
    ============================== */
 .section-title {
     font-family: var(--font-heading);
@@ -951,7 +1058,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   🪟 GLASS CARD — P3R Angular
+   ðŸªŸ GLASS CARD â€” P3R Angular
    ============================== */
 .glass-card {
     background: var(--surface);
@@ -996,7 +1103,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   👤 ABOUT SECTION
+   ðŸ‘¤ ABOUT SECTION
    ============================== */
 .about-grid {
     display: grid;
@@ -1066,7 +1173,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   🃏 SKILLS SECTION — P3R Tarot Cards
+   ðŸƒ SKILLS SECTION â€” P3R Tarot Cards
    ============================== */
 .skills-grid {
     display: grid;
@@ -1217,7 +1324,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   📂 PROJECTS SECTION — P3R Cards
+   ðŸ“‚ PROJECTS SECTION â€” P3R Cards
    ============================== */
 .projects-carousel-container {
     position: relative;
@@ -1453,7 +1560,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   📅 EXPERIENCE / TIMELINE — P3R
+   ðŸ“… EXPERIENCE / TIMELINE â€” P3R
    ============================== */
 .timeline {
     position: relative;
@@ -1524,198 +1631,219 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   📬 CONTACT SECTION — RPG Strip
+   ✉️ CONTACT SECTION
    ============================== */
-.contact-rpg-arena {
-    max-width: 860px;
-    margin: 0 auto;
-    position: relative;
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 48px;
+    margin-top: 40px;
+    align-items: start;
 }
 
-.contact-arena-sub {
-    font-size: 13px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    text-align: center;
-    margin-bottom: 48px;
-    font-weight: 600;
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-/* ---- Each strip ---- */
-.contact-strip {
-    position: relative;
+.contact-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Glassmorphic link cards */
+.contact-link {
     display: flex;
     align-items: center;
-    gap: 24px;
-    padding: 28px 36px;
-    margin-bottom: 4px;
-    overflow: hidden;
-    background: rgba(6, 12, 30, 0.7);
-    border-left: 3px solid rgba(0, 180, 255, 0.15);
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    /* Diagonal slash */
-    clip-path: polygon(0 0, 100% 0, calc(100% - 20px) 100%, 0 100%);
-    cursor: pointer;
+    gap: 20px;
+    padding: 16px 20px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.contact-strip::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        105deg,
-        rgba(0, 180, 255, 0) 0%,
-        rgba(0, 180, 255, 0.06) 50%,
-        rgba(0, 180, 255, 0) 100%
-    );
-    transform: translateX(-100%);
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
+.contact-link:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(0, 180, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 180, 255, 0.15);
 }
 
-/* Hover — slide the whole strip right & bloom */
-.contact-strip:hover {
-    transform: translateX(12px);
-    background: rgba(0, 50, 90, 0.75);
-    border-left-color: var(--accent-cyan);
-    box-shadow:
-        -4px 0 0 var(--accent-cyan),
-        0 0 40px rgba(0, 180, 255, 0.18),
-        inset 0 0 60px rgba(0, 180, 255, 0.06);
-}
-
-.contact-strip:hover::before {
-    transform: translateX(100%);
-}
-
-/* Staggered strip entrance delays */
-.contact-strip:nth-child(2) { transition-delay: 0s; }
-.contact-strip:nth-child(3) { transition-delay: 0.04s; }
-.contact-strip:nth-child(4) { transition-delay: 0.08s; }
-
-/* ---- Strip number ---- */
-.strip-number {
-    font-family: var(--font-heading);
-    font-size: 11px;
-    font-weight: 700;
-    color: rgba(0, 180, 255, 0.3);
-    letter-spacing: 3px;
-    min-width: 26px;
-    transition: color 0.3s;
-}
-
-.contact-strip:hover .strip-number {
-    color: var(--accent-cyan);
-}
-
-/* ---- Strip icon ---- */
-.strip-icon {
-    width: 44px;
-    height: 44px;
+.contact-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 180, 255, 0.06);
-    border: 1px solid rgba(0, 180, 255, 0.12);
-    /* P3R diamond-ish */
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    flex-shrink: 0;
-    transition: all 0.35s;
-}
-
-.strip-icon svg {
-    width: 18px;
-    height: 18px;
-    color: var(--text-secondary);
-    transition: color 0.35s, transform 0.35s;
-}
-
-.contact-strip:hover .strip-icon {
-    background: rgba(0, 180, 255, 0.18);
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 16px rgba(0, 180, 255, 0.35);
-}
-
-.contact-strip:hover .strip-icon svg {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(0, 180, 255, 0.08);
     color: var(--accent-cyan);
-    transform: scale(1.1);
+    border: 1px solid rgba(0, 180, 255, 0.18);
+    transition: all 0.3s ease;
 }
 
-/* ---- Strip body ---- */
-.strip-body {
-    flex: 1;
+.contact-link:hover .contact-icon {
+    color: #fff;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 15px rgba(0, 180, 255, 0.5);
+    border-color: var(--accent-cyan);
+}
+
+.contact-link div {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
 }
 
-.strip-label {
-    font-family: var(--font-heading);
-    font-size: 10px;
-    font-weight: 700;
+.contact-link-label {
+    font-size: 11px;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 3px;
-    transition: color 0.3s;
-}
-
-.strip-value {
-    font-family: var(--font-heading);
-    font-size: 20px;
+    letter-spacing: 1.5px;
     font-weight: 700;
+}
+
+.contact-link-value {
+    font-size: 15px;
     color: var(--text-primary);
-    letter-spacing: 0.5px;
-    transition: color 0.3s, text-shadow 0.3s;
+    font-weight: 500;
+    transition: color 0.3s ease;
 }
 
-.contact-strip:hover .strip-label {
+.contact-link:hover .contact-link-value {
     color: var(--accent-cyan);
 }
 
-.contact-strip:hover .strip-value {
-    color: #fff;
-    text-shadow: 0 0 20px rgba(0, 180, 255, 0.5);
+/* Glassmorphic Contact Form */
+.contact-form {
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
 }
 
-/* ---- Arrow indicator ---- */
-.strip-arrow {
-    margin-left: auto;
-    flex-shrink: 0;
-    opacity: 0;
-    transform: translateX(-16px);
-    transition: opacity 0.35s, transform 0.35s;
-}
-
-.strip-arrow svg {
-    width: 22px;
-    height: 22px;
-    color: var(--accent-cyan);
-}
-
-.contact-strip:hover .strip-arrow {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-/* ---- Glow bar at the bottom of each strip ---- */
-.strip-glow-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent-cyan), transparent);
-    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
-}
-
-.contact-strip:hover .strip-glow-bar {
+.form-group {
+    position: relative;
     width: 100%;
 }
 
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 0;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.12);
+    color: var(--text-primary);
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-group textarea {
+    resize: none;
+}
+
+/* Floating Label styling */
+.form-group label {
+    position: absolute;
+    left: 0;
+    top: 12px;
+    color: var(--text-muted);
+    font-size: 16px;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform-origin: left top;
+}
+
+/* Move label up on focus or when input has content */
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label,
+.form-group textarea:focus ~ label,
+.form-group textarea:not(:placeholder-shown) ~ label {
+    transform: translateY(-24px) scale(0.85);
+    color: var(--accent-cyan);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Neon expanding underline */
+.form-line {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--accent-cyan);
+    transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px rgba(0, 180, 255, 0.5);
+}
+
+.form-group input:focus ~ .form-line,
+.form-group textarea:focus ~ .form-line {
+    width: 100%;
+}
+
+/* Align and style submit button */
+.contact-form .btn-submit {
+    align-self: flex-start;
+    margin-top: 8px;
+}
+
+.contact-form .btn-submit .btn-icon {
+    transition: transform 0.3s ease;
+}
+
+.contact-form .btn-submit:hover .btn-icon {
+    transform: translate(3px, -3px);
+}
+
+/* ---- Responsive adaptation ---- */
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+    }
+    .contact-form {
+        padding: 30px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-link {
+        padding: 12px 16px;
+        gap: 14px;
+    }
+    .contact-link-value {
+        font-size: 13.5px;
+    }
+    .contact-icon {
+        width: 40px;
+        height: 40px;
+    }
+}
+
 /* ==============================
-   🦶 FOOTER
+   ðŸ¦¶ FOOTER
    ============================== */
 .footer {
     border-top: 1px solid var(--border);
@@ -1763,7 +1891,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   🎭 REVEAL ANIMATIONS
+   ðŸŽ­ REVEAL ANIMATIONS
    ============================== */
 .reveal-up {
     opacity: 0;
@@ -1793,7 +1921,7 @@ body:hover #cursor-glow {
 .reveal-up:nth-child(4) { transition-delay: 0.3s; }
 
 /* ==============================
-   📱 RESPONSIVE
+   ðŸ“± RESPONSIVE
    ============================== */
 @media (max-width: 1024px) {
     .hero {
@@ -1933,7 +2061,7 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   ⚡ INTERACTIVE OVERLAY CANVASES
+   âš¡ INTERACTIVE OVERLAY CANVASES
    ============================== */
 #lanyard-canvas,
 #sparkle-canvas,
@@ -1974,10 +2102,10 @@ body:hover #cursor-glow {
 }
 
 /* ==============================
-   ⚡ INTERACTIVE TOGGLE PANEL — P3R
+   âš¡ INTERACTIVE TOGGLE PANEL â€” P3R
    ============================== */
 /* ==============================
-   📱 PHONE UI
+   ðŸ“± PHONE UI
    ============================== */
 
 /* Backdrop */
@@ -1997,6 +2125,10 @@ body:hover #cursor-glow {
     visibility: visible;
 }
 
+/* ======================================================
+   📱 PHONE PANEL — COZY BLUE POLAROID WIDGET (OPTION C.3)
+   ====================================================== */
+
 /* Panel container */
 .phone-panel {
     position: fixed;
@@ -2005,212 +2137,256 @@ body:hover #cursor-glow {
     z-index: 9500;
 }
 
-/* Trigger button — phone icon */
+/* ── Cozy Phone Trigger: Rounded Glow Capsule ── */
 .phone-trigger {
-    width: 50px;
-    height: 50px;
-    border: 2px solid var(--accent-cyan);
-    background: rgba(4, 6, 14, 0.9);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: var(--accent-cyan);
+    width: 54px;
+    height: 54px;
+    border: 1px solid rgba(96, 165, 250, 0.25);
+    background: rgba(26, 32, 54, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: rgba(96, 165, 250, 0.85);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all var(--transition-base);
-    box-shadow: 0 0 20px rgba(0, 180, 255, 0.2);
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 0 12px rgba(96, 165, 250, 0.03);
     position: relative;
     z-index: 2;
-    border-radius: 14px;
-}
-.phone-trigger:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 30px rgba(0, 180, 255, 0.4);
-    background: rgba(0, 180, 255, 0.1);
-}
-.phone-trigger.active {
-    background: var(--accent-cyan);
-    color: var(--bg-primary);
 }
 
-/* Phone frame — slides up from bottom-right */
+.phone-trigger:hover {
+    transform: scale(1.08) translateY(-2px);
+    box-shadow: 0 12px 40px rgba(96, 165, 250, 0.25), inset 0 0 12px rgba(96, 165, 250, 0.08);
+    color: #60a5fa;
+    border-color: rgba(96, 165, 250, 0.45);
+}
+
+.phone-trigger.active {
+    background: rgba(96, 165, 250, 0.15);
+    border-color: rgba(96, 165, 250, 0.6);
+    color: #60a5fa;
+    box-shadow: 0 0 24px rgba(96, 165, 250, 0.3), inset 0 0 12px rgba(96, 165, 250, 0.1);
+}
+
+/* ── Phone frame — Glassmorphic Capsule with Smooth Slide Transition ── */
 .phone-frame {
     position: absolute;
-    bottom: 60px;
+    bottom: 68px;
     right: 0;
-    width: 300px;
-    background: linear-gradient(145deg, #0a0e1a 0%, #0d1220 50%, #080c16 100%);
-    border: 1.5px solid rgba(0, 180, 255, 0.2);
+    width: 310px;
+    /* Deep midnight lofi blue glow background */
+    background: radial-gradient(circle at top, rgba(96, 165, 250, 0.08), transparent 75%), 
+                linear-gradient(160deg, rgba(20, 26, 46, 0.94) 0%, rgba(12, 16, 28, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 28px;
     overflow: hidden;
     box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.6),
-        0 0 40px rgba(0, 180, 255, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        0 24px 64px rgba(0, 0, 0, 0.55),
+        0 0 40px rgba(96, 165, 250, 0.04),
+        inset 0 0 24px rgba(255, 255, 255, 0.02);
 
-    /* Hidden by default */
+    /* Lag-free optimized translation only (GPU accelerated) */
     opacity: 0;
     visibility: hidden;
-    transform: translateY(30px) scale(0.92);
-    transform-origin: bottom right;
-    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                visibility 0.35s,
-                transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(15px);
+    will-change: transform, opacity;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+                transform 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+                visibility 0.3s;
 }
+
 .phone-frame.open {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
 }
 
-/* Status bar */
+/* Status Bar */
 .phone-statusbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 20px 6px;
+    padding: 14px 24px 6px;
     font-size: 11px;
-    font-weight: 600;
-    color: var(--text-secondary);
-}
-.phone-notch {
-    width: 80px;
-    height: 18px;
-    background: #000;
-    border-radius: 0 0 14px 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.45);
     position: relative;
-}
-.phone-notch::after {
-    content: '';
-    position: absolute;
-    top: 6px;
-    right: 14px;
-    width: 6px;
-    height: 6px;
-    background: rgba(0, 180, 255, 0.4);
-    border-radius: 50%;
-}
-.phone-status-icons {
-    display: flex;
-    gap: 4px;
-    color: var(--text-muted);
-}
-.phone-time {
-    font-family: var(--font-heading);
-    letter-spacing: 1px;
+    z-index: 2;
+    font-family: 'Outfit', sans-serif;
 }
 
-/* Phone content */
+.phone-notch {
+    width: 72px;
+    height: 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.phone-status-icons {
+    display: flex;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.phone-time {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #60a5fa;
+    text-shadow: 0 0 8px rgba(96, 165, 250, 0.35);
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+/* Glowing night sky crescent moon next to clock */
+.phone-time::before {
+    content: '🌙';
+    font-size: 12px;
+    margin-right: 6px;
+    color: #60a5fa;
+    text-shadow: 0 0 8px rgba(96, 165, 250, 0.6);
+    display: inline-block;
+}
+
+/* Phone content container */
 .phone-content {
-    padding: 12px 16px 8px;
+    padding: 6px 16px 12px;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    position: relative;
+    z-index: 2;
 }
 
-/* Home bar */
+/* Home pill bar */
 .phone-home-bar {
-    width: 100px;
+    width: 80px;
     height: 4px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 2px;
-    margin: 8px auto 10px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    margin: 8px auto 12px;
 }
 
-/* ---- MEDIA PLAYER WIDGET ---- */
+/* ======================================================
+   🎵 MEDIA PLAYER — Bedside Polaroid Picture Player
+   ====================================================== */
 .media-widget {
     display: flex;
     align-items: center;
     gap: 14px;
-    background: linear-gradient(135deg, rgba(0, 100, 255, 0.08) 0%, rgba(0, 180, 255, 0.04) 100%);
-    border: 1px solid rgba(0, 180, 255, 0.15);
-    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     padding: 12px;
+    border-radius: 20px;
     position: relative;
-    overflow: hidden;
-    min-height: 140px;
-}
-.media-widget::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue), transparent);
+    overflow: visible; /* Let sticky tape overflow */
 }
 
-/* Album art — circular */
+/* Cozy Polaroid Snapshot frame */
 .media-widget-art {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    overflow: hidden;
-    flex-shrink: 0;
-    border: 2px solid rgba(0, 180, 255, 0.25);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    width: 62px;
+    height: 72px; /* Taller than wide like a polaroid */
+    border-radius: 4px;
+    background: #faf9f6;
+    padding: 4px 4px 14px 4px; /* Thick bottom border for snapshot text feel */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.15);
+    border: 0.5px solid rgba(0, 0, 0, 0.12);
     position: relative;
+    flex-shrink: 0;
+    transform: rotate(-3deg);
+    transition: transform 0.3s ease;
 }
+
+/* Gentle swaying animation from the top sticky tape when music plays */
 .media-widget-art.spinning {
-    animation: media-spin 8s linear infinite;
+    animation: lofi-sway 4s ease-in-out infinite;
+    transform-origin: top center;
 }
-@keyframes media-spin {
-    to { transform: rotate(360deg); }
+
+@keyframes lofi-sway {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
 }
+
 .media-thumb-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-/* Song info */
+/* Sticky Tape decoration on polaroid */
+.media-widget-art::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%) rotate(2deg);
+    width: 28px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* Song info block */
 .media-widget-info {
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
 }
+
 .media-song-title {
-    font-family: var(--font-heading);
-    font-size: 13px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 13.5px;
     font-weight: 700;
-    color: var(--text-primary);
+    color: #f8f9fa;
     white-space: nowrap;
     overflow: hidden;
     position: relative;
 }
-.media-song-title.marquee {
-    text-overflow: clip;
-}
+
+.media-song-title.marquee { text-overflow: clip; }
 .media-song-title.marquee .marquee-inner {
     display: inline-block;
     padding-right: 40px;
     animation: marquee-scroll 8s linear infinite;
 }
-@keyframes marquee-scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
+
 .media-song-artist {
-    font-size: 10px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 9.5px;
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: 0.6px;
     white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
 }
-.media-song-artist.marquee {
-    text-overflow: clip;
-}
+
+.media-song-artist.marquee { text-overflow: clip; }
 .media-song-artist.marquee .marquee-inner {
     display: inline-block;
     padding-right: 32px;
     animation: marquee-scroll 10s linear infinite;
 }
 
-/* Gyro parallax helpers */
+/* Gyro parallax system alignment */
 body.gyro-enabled #particle-canvas,
 body.gyro-enabled #phone-panel,
 body.gyro-enabled .hero {
@@ -2218,50 +2394,61 @@ body.gyro-enabled .hero {
     transition: transform 0.08s linear;
 }
 
-/* Progress bar */
-.media-progress-wrap {
-    margin-top: 4px;
-}
+/* Cozy Custom Progress Bar */
+.media-progress-wrap { margin-top: 4px; }
+
 .media-progress {
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
     height: 4px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 2px;
+    background: linear-gradient(to right, #60a5fa 0%, #60a5fa var(--progress, 0%), rgba(255, 255, 255, 0.08) var(--progress, 0%));
+    border-radius: 10px;
     outline: none;
     cursor: pointer;
 }
+
+/* Slider Thumbs */
 .media-progress::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 10px;
     height: 10px;
-    background: var(--accent-cyan);
+    background: #60a5fa;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 0 8px rgba(0, 180, 255, 0.5);
+    box-shadow: 0 0 8px rgba(96, 165, 250, 0.8);
+    transition: transform 0.15s ease;
+}
+.media-progress::-webkit-slider-thumb:hover {
+    transform: scale(1.35);
 }
 .media-progress::-moz-range-thumb {
     width: 10px;
     height: 10px;
-    background: var(--accent-cyan);
-    border-radius: 50%;
+    background: #60a5fa;
     border: none;
+    border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 0 8px rgba(0, 180, 255, 0.5);
+    box-shadow: 0 0 8px rgba(96, 165, 250, 0.8);
+    transition: transform 0.15s ease;
 }
+.media-progress::-moz-range-thumb:hover {
+    transform: scale(1.35);
+}
+
+/* Chrome progress update track */
 .media-progress::-webkit-slider-runnable-track {
-    background: linear-gradient(to right, var(--accent-cyan) 0%, var(--accent-cyan) var(--progress, 0%), rgba(255,255,255,0.08) var(--progress, 0%));
-    border-radius: 2px;
+    background: transparent;
     height: 4px;
 }
+
 .media-time-row {
     display: flex;
     justify-content: space-between;
     font-size: 9px;
-    color: var(--text-muted);
-    margin-top: 2px;
-    font-family: var(--font-heading);
+    color: rgba(255, 255, 255, 0.35);
+    margin-top: 3px;
+    font-family: 'Outfit', sans-serif;
     letter-spacing: 0.5px;
 }
 
@@ -2271,48 +2458,60 @@ body.gyro-enabled .hero {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin-top: 2px;
+    margin-top: 4px;
 }
+
 .media-btn {
     width: 30px;
     height: 30px;
     border: none;
     background: none;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.45);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: all var(--transition-fast);
-}
-.media-btn:hover {
-    color: var(--accent-cyan);
-    background: rgba(0, 180, 255, 0.1);
-}
-.media-btn.shuffle-active {
-    color: var(--accent-cyan);
-}
-.media-btn-sm {
-    width: 26px;
-    height: 26px;
-}
-.media-btn-play {
-    width: 40px;
-    height: 40px;
-    background: rgba(0, 180, 255, 0.12);
-    border: 1.5px solid rgba(0, 180, 255, 0.3);
-    color: var(--accent-cyan);
-}
-.media-btn-play:hover {
-    background: rgba(0, 180, 255, 0.25);
-    box-shadow: 0 0 16px rgba(0, 180, 255, 0.3);
+    transition: all 0.2s ease;
 }
 
-/* ---- TOGGLE GRID (small tiles) ---- */
+.media-btn:hover {
+    color: #60a5fa;
+    background: rgba(255, 255, 255, 0.03);
+    filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.4));
+}
+
+.media-btn.shuffle-active { 
+    color: #60a5fa; 
+    filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.5));
+}
+
+.media-btn-sm { width: 26px; height: 26px; }
+
+/* Circular glowing play button */
+.media-btn-play {
+    width: 38px;
+    height: 38px;
+    background: rgba(96, 165, 250, 0.12);
+    border: 1px solid rgba(96, 165, 250, 0.35);
+    color: #60a5fa;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.1);
+}
+
+.media-btn-play:hover {
+    background: rgba(96, 165, 250, 0.22);
+    border-color: rgba(96, 165, 250, 0.6);
+    box-shadow: 0 4px 20px rgba(96, 165, 250, 0.3);
+    transform: scale(1.05);
+}
+
+/* ======================================================
+   🎛️ TOGGLE TILES — Soft Cozy Cards (Mixed Asymmetric Layout)
+   ====================================================== */
 .phone-toggles-pager {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
@@ -2320,9 +2519,8 @@ body.gyro-enabled .hero {
     -webkit-overflow-scrolling: touch;
     padding-bottom: 2px;
 }
-.phone-toggles-pager::-webkit-scrollbar {
-    display: none;
-}
+.phone-toggles-pager::-webkit-scrollbar { display: none; }
+
 .phone-toggles-page {
     min-width: 100%;
     display: grid;
@@ -2330,117 +2528,165 @@ body.gyro-enabled .hero {
     gap: 8px;
     scroll-snap-align: start;
 }
+
+/* Pager dots */
 .phone-toggles-dots {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    margin-top: 6px;
+    gap: 6px;
+    margin-top: 4px;
 }
+
 .phone-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 180, 255, 0.35);
-    background: rgba(0, 180, 255, 0.12);
+    width: 12px;
+    height: 5px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.12);
     cursor: pointer;
-    transition: transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .phone-dot.active {
-    background: var(--accent-cyan);
-    box-shadow: 0 0 10px rgba(0, 180, 255, 0.6);
-    transform: scale(1.1);
+    background: #60a5fa;
+    box-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
+    width: 24px;
 }
+
+/* Base Card Style */
 .phone-toggle-tile {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 5px;
     padding: 12px 4px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     cursor: pointer;
-    transition: all var(--transition-fast);
-    color: var(--text-secondary);
-}
-.phone-toggle-tile:hover {
-    background: rgba(0, 180, 255, 0.06);
-    border-color: rgba(0, 180, 255, 0.15);
-}
-.phone-toggle-tile.active {
-    background: rgba(0, 180, 255, 0.12);
-    border-color: rgba(0, 180, 255, 0.35);
-    box-shadow: 0 0 16px rgba(0, 180, 255, 0.1);
-}
-.phone-toggle-tile.active .tile-label {
-    color: var(--accent-cyan);
-}
-.tile-icon {
-    font-size: 22px;
-}
-.tile-label {
-    font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-muted);
-    transition: color var(--transition-fast);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    color: rgba(255, 255, 255, 0.45);
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
 }
 
-/* ---- Mobile overrides ---- */
+.phone-toggle-tile:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.75);
+    transform: translateY(-2px);
+}
+
+.phone-toggle-tile.active {
+    background: rgba(96, 165, 250, 0.12);
+    border-color: rgba(96, 165, 250, 0.45);
+    color: #60a5fa;
+    box-shadow: 
+        0 4px 16px rgba(96, 165, 250, 0.06), 
+        inset 0 0 8px rgba(96, 165, 250, 0.03);
+}
+
+.phone-toggle-tile.active .tile-icon svg {
+    filter: drop-shadow(0 0 5px rgba(96, 165, 250, 0.75));
+}
+
+/* Icon */
+.tile-icon {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tile-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    transition: filter 0.25s ease;
+}
+
+/* Soft font style label */
+.tile-label {
+    font-size: 8.5px;
+    font-weight: 600;
+    text-transform: capitalize;
+    letter-spacing: 0.4px;
+    color: inherit;
+    font-family: 'Outfit', sans-serif;
+    transition: color 0.25s ease;
+}
+
+/* ── Mixed Asymmetric Width Targets (Span 2 Grid Cards) ── */
+.phone-toggle-tile[data-feature="lanyard"],
+.phone-toggle-tile[data-feature="magnetic"],
+.phone-toggle-tile[data-feature="trail"],
+.phone-toggle-tile[data-feature="glitch"],
+.phone-toggle-tile[data-feature="audioReactive"],
+.phone-toggle-tile[data-feature="dvd"] {
+    grid-column: span 2;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 10px 14px;
+    gap: 12px;
+    align-items: center;
+}
+
+.phone-toggle-tile[data-feature="lanyard"] .tile-label,
+.phone-toggle-tile[data-feature="magnetic"] .tile-label,
+.phone-toggle-tile[data-feature="trail"] .tile-label,
+.phone-toggle-tile[data-feature="glitch"] .tile-label,
+.phone-toggle-tile[data-feature="audioReactive"] .tile-label,
+.phone-toggle-tile[data-feature="dvd"] .tile-label {
+    font-size: 9.5px;
+    letter-spacing: 0.2px;
+    text-align: left;
+}
+
+/* ---- Responsive Mobile adaptation ---- */
 @media (max-width: 480px) {
     .phone-panel { bottom: 16px; right: 16px; }
-    .phone-trigger { width: 44px; height: 44px; }
+    .phone-trigger { width: 48px; height: 48px; }
     .phone-frame {
-        width: min(92vw, 300px);
-        max-height: 72vh;
+        width: min(92vw, 310px);
+        max-height: 74vh;
+        border-radius: 24px;
     }
     .phone-content {
-        padding: 10px 12px 6px;
+        padding: 6px 12px 6px;
         gap: 10px;
         overflow-y: auto;
-        max-height: calc(72vh - 70px);
+        max-height: calc(74vh - 70px);
     }
-    .media-widget {
-        min-height: 120px;
-        padding: 10px;
-        gap: 10px;
+    .media-widget { padding: 10px; gap: 10px; border-radius: 16px; }
+    .media-widget-art { width: 56px; height: 56px; }
+    .media-controls { gap: 6px; }
+    .media-btn { width: 28px; height: 28px; }
+    .media-btn-play { width: 34px; height: 34px; }
+    .phone-toggles-page { gap: 6px; }
+    
+    .phone-toggle-tile { padding: 10px 4px; gap: 4px; border-radius: 12px; }
+    .tile-icon { width: 22px; height: 22px; }
+    .tile-icon svg { width: 18px; height: 18px; }
+    .tile-label { font-size: 7.5px; }
+
+    /* Span 2 horizontal padding fixes on mobile */
+    .phone-toggle-tile[data-feature="lanyard"],
+    .phone-toggle-tile[data-feature="magnetic"],
+    .phone-toggle-tile[data-feature="trail"],
+    .phone-toggle-tile[data-feature="glitch"],
+    .phone-toggle-tile[data-feature="audioReactive"],
+    .phone-toggle-tile[data-feature="dvd"] {
+        padding: 8px 10px;
+        gap: 8px;
     }
-    .media-widget-art {
-        width: 60px;
-        height: 60px;
-    }
-    .media-controls {
-        gap: 6px;
-    }
-    .media-btn {
-        width: 28px;
-        height: 28px;
-    }
-    .media-btn-play {
-        width: 36px;
-        height: 36px;
-    }
-    .phone-toggles-pager {
-        gap: 10px;
-    }
-    .phone-toggles-page {
-        gap: 6px;
-    }
-    .phone-dot {
-        width: 7px;
-        height: 7px;
-    }
-    .phone-toggle-tile {
-        padding: 10px 4px;
-        gap: 2px;
-    }
-    .tile-icon {
-        font-size: 20px;
-    }
-    .tile-label {
-        font-size: 8px;
-        letter-spacing: 0.4px;
+    .phone-toggle-tile[data-feature="lanyard"] .tile-label,
+    .phone-toggle-tile[data-feature="magnetic"] .tile-label,
+    .phone-toggle-tile[data-feature="trail"] .tile-label,
+    .phone-toggle-tile[data-feature="glitch"] .tile-label,
+    .phone-toggle-tile[data-feature="audioReactive"] .tile-label,
+    .phone-toggle-tile[data-feature="dvd"] .tile-label {
+        font-size: 8.5px;
     }
 }

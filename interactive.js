@@ -365,6 +365,17 @@
             });
         });
 
+        // Horizontal mouse wheel scroll support on hover
+        pager.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const pageWidth = pager.clientWidth || 1;
+            if (e.deltaY > 0) {
+                pager.scrollTo({ left: pager.scrollLeft + pageWidth, behavior: 'smooth' });
+            } else if (e.deltaY < 0) {
+                pager.scrollTo({ left: pager.scrollLeft - pageWidth, behavior: 'smooth' });
+            }
+        }, { passive: false });
+
         updateDots();
     }
 

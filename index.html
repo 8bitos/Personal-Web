@@ -8,17 +8,17 @@
     <meta name="author" content="Sapta Wiguna">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Sapta Wiguna — Personal Portfolio">
+    <meta property="og:title" content="Who's Sapta?">
     <meta property="og:description" content="Developer, Creator, and Tech Enthusiast.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="assets/profile.png">
 
-    <title>Sapta Wiguna — Personal Portfolio</title>
+    <title>Who's Sapta?</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 
     <!-- Lucide Icons Local -->
     <script src="assets/lucide.min.js"></script>
@@ -26,6 +26,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- ========== LAYERED PARALLAX BACKGROUND ========== -->
+    <div class="layered-bg">
+        <div class="bg-layer bg-layer-sky" style="background-image: url('assets/Background/Background.png');"></div>
+        <div class="bg-layer bg-layer-cloud1" style="background-image: url('assets/Background/cloud1.png');"></div>
+        <div class="bg-layer bg-layer-cloud2" style="background-image: url('assets/Background/cloud2.png');"></div>
+        <img class="bg-bird" src="assets/Background/bird.png?v=2" alt="Flying Bird">
+        <div class="bg-layer bg-layer-front" style="background-image: url('assets/Background/Front.png');"></div>
+        <div class="bg-layer bg-layer-front2" style="background-image: url('assets/Background/Front2.png');"></div>
+        <div class="bg-overlay-dim"></div>
+    </div>
+
     <!-- ========== LOADER ========== -->
     <div id="page-loader" class="loader">
         <div class="loader-inner">
@@ -410,78 +421,125 @@
                 <div class="phone-toggles-pager">
                     <div class="phone-toggles-page">
                         <button class="phone-toggle-tile" data-feature="lanyard" aria-label="Physics Lanyard">
-                            <span class="tile-icon">🎫</span>
+                            <span class="tile-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="6" y="8" width="12" height="13" rx="2" fill="currentColor" fill-opacity="0.1"/>
+                                    <path d="M12 2v6"/>
+                                    <circle cx="12" cy="8" r="1.5"/>
+                                </svg>
+                            </span>
                             <span class="tile-label">Lanyard</span>
                             <input type="checkbox" id="toggle-lanyard" class="toggle-input" data-feature="lanyard" hidden>
                         </button>
                         <button class="phone-toggle-tile" data-feature="sparkles" aria-label="Cursor Sparkles">
-                            <span class="tile-icon">✨</span>
+                            <span class="tile-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 3a1 1 0 0 0-1 1v6.5a1.5 1.5 0 0 1-1.5 1.5H3a1 1 0 0 0 0 2h6.5a1.5 1.5 0 0 1 1.5 1.5V20a1 1 0 0 0 2 0v-6.5a1.5 1.5 0 0 1 1.5-1.5H21a1 1 0 0 0 0-2h-6.5a1.5 1.5 0 0 1-1.5-1.5V4a1 1 0 0 0-1-1z" fill="currentColor" fill-opacity="0.1"/>
+                                </svg>
+                            </span>
                             <span class="tile-label">Sparkles</span>
                             <input type="checkbox" id="toggle-sparkles" class="toggle-input" data-feature="sparkles" hidden>
                         </button>
                         <button class="phone-toggle-tile" data-feature="gravity" aria-label="Gravity Balls">
-                            <span class="tile-icon">🎱</span>
+                            <span class="tile-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="7" r="4" fill="currentColor" fill-opacity="0.1"/>
+                                    <path d="M12 11v8M12 19l-3-3M12 19l3-3"/>
+                                    <line x1="6" y1="21" x2="18" y2="21"/>
+                                </svg>
+                            </span>
                             <span class="tile-label">Gravity</span>
                             <input type="checkbox" id="toggle-gravity" class="toggle-input" data-feature="gravity" hidden>
                         </button>
+                        <!-- MAGNETIC -->
                         <button class="phone-toggle-tile" data-feature="magnetic" aria-label="Magnetic Hover">
-                            <span class="tile-icon">🧲</span>
+                            <span class="tile-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 4v8a6 6 0 0 0 12 0V4"/><line x1="6" y1="4" x2="6" y2="7"/><line x1="18" y1="4" x2="18" y2="7"/><line x1="3" y1="4" x2="9" y2="4"/><line x1="15" y1="4" x2="21" y2="4"/></svg>
+                            </span>
                             <span class="tile-label">Magnetic</span>
                             <input type="checkbox" id="toggle-magnetic" class="toggle-input" data-feature="magnetic" hidden>
                         </button>
+                        <!-- SOUNDS -->
                         <button class="phone-toggle-tile" data-feature="sounds" aria-label="UI Sounds">
-                            <span class="tile-icon">🔊</span>
+                            <span class="tile-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" fill-opacity="0.2"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                            </span>
                             <span class="tile-label">Sounds</span>
                             <input type="checkbox" id="toggle-sounds" class="toggle-input" data-feature="sounds" hidden>
                         </button>
+                        <!-- TRAIL -->
                         <button class="phone-toggle-tile" data-feature="trail" aria-label="Cursor Trail">
-                            <span class="tile-icon">💫</span>
+                            <span class="tile-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 19l14-14"/><circle cx="5" cy="19" r="1.5" fill="currentColor" stroke="none"/><circle cx="10" cy="14" r="1" fill="currentColor" fill-opacity="0.5" stroke="none"/><circle cx="15" cy="9" r="0.7" fill="currentColor" fill-opacity="0.3" stroke="none"/><circle cx="19" cy="5" r="0.4" fill="currentColor" fill-opacity="0.2" stroke="none"/></svg>
+                            </span>
                             <span class="tile-label">Trail</span>
                             <input type="checkbox" id="toggle-trail" class="toggle-input" data-feature="trail" hidden>
                         </button>
                     </div>
                     <div class="phone-toggles-page">
+                        <!-- GLITCH -->
                         <button class="phone-toggle-tile" data-feature="glitch" aria-label="Glitch FX">
-                            <span class="tile-icon">📺</span>
+                            <span class="tile-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M2 9h6l2-3 2 6 2-3h8" stroke-width="1.5"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            </span>
                             <span class="tile-label">Glitch</span>
                             <input type="checkbox" id="toggle-glitch" class="toggle-input" data-feature="glitch" hidden>
                         </button>
+                        <!-- SCANLINES -->
                         <button class="phone-toggle-tile" data-feature="scanlines" aria-label="Scanlines">
-                            <span class="tile-icon">📡</span>
+                            <span class="tile-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="16" x2="21" y2="16"/></svg>
+                            </span>
                             <span class="tile-label">Scanlines</span>
                             <input type="checkbox" id="toggle-scanlines" class="toggle-input" data-feature="scanlines" hidden>
                         </button>
+                        <!-- GYRO -->
                         <button class="phone-toggle-tile" data-feature="gyro" aria-label="Gyro Parallax">
-                            <span class="tile-icon">🧭</span>
+                            <span class="tile-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="9" ry="4"/><ellipse cx="12" cy="12" rx="4" ry="9"/></svg>
+                            </span>
                             <span class="tile-label">Gyro</span>
                             <input type="checkbox" id="toggle-gyro" class="toggle-input" data-feature="gyro" hidden>
                         </button>
+                        <!-- AUDIO REACTIVE -->
                         <button class="phone-toggle-tile" data-feature="audioReactive" aria-label="Audio Reactive">
-                            <span class="tile-icon">🎵</span>
+                            <span class="tile-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="4" y1="18" x2="4" y2="14"/><line x1="8" y1="18" x2="8" y2="8"/><line x1="12" y1="18" x2="12" y2="4"/><line x1="16" y1="18" x2="16" y2="10"/><line x1="20" y1="18" x2="20" y2="15"/></svg>
+                            </span>
                             <span class="tile-label">Audio</span>
                             <input type="checkbox" id="toggle-audioReactive" class="toggle-input" data-feature="audioReactive" hidden>
                         </button>
+                        <!-- DVD -->
                         <button class="phone-toggle-tile" data-feature="dvd" aria-label="DVD Logo">
-                            <span class="tile-icon">📀</span>
+                            <span class="tile-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="3" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="21"/></svg>
+                            </span>
                             <span class="tile-label">DVD</span>
                             <input type="checkbox" id="toggle-dvd" class="toggle-input" data-feature="dvd" hidden>
                         </button>
+                        <!-- VORTEX -->
                         <button class="phone-toggle-tile" data-feature="vortex" aria-label="Gravity Vortex">
-                            <span class="tile-icon">🌀</span>
+                            <span class="tile-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2a9.96 9.96 0 0 1 7 2.87A10 10 0 1 1 5 5"/><path d="M12 6a6 6 0 1 1-4.24 1.76"/><circle cx="12" cy="12" r="2"/></svg>
+                            </span>
                             <span class="tile-label">Vortex</span>
                             <input type="checkbox" id="toggle-vortex" class="toggle-input" data-feature="vortex" hidden>
                         </button>
                     </div>
                 </div>
+
+                <!-- Page dots -->
                 <div class="phone-toggles-dots" role="tablist" aria-label="Toggle pages">
                     <button class="phone-dot active" data-page="0" aria-label="Page 1" aria-selected="true"></button>
                     <button class="phone-dot" data-page="1" aria-label="Page 2" aria-selected="false"></button>
                 </div>
 
-            <!-- Phone home indicator -->
+            </div><!-- end .phone-content -->
+
+            <!-- Home bar -->
             <div class="phone-home-bar"></div>
-        </div>
-    </div>
+        </div><!-- end #phone-frame -->
+    </div><!-- end #phone-panel -->
 
     <script src="script.js" defer></script>
     <script>

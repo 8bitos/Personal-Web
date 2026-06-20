@@ -33,6 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Contact Form
     initContactForm();
+
+    // Bird Spawner
+    initBirdSpawner();
 });
 
 /* ============ LOADER ============ */
@@ -911,4 +914,31 @@ function initProjectCardClicks() {
             }
         });
     });
+}
+
+/* ============ BIRD SPAWNER ============ */
+function initBirdSpawner() {
+    const bird = document.querySelector('.bg-bird');
+    if (!bird) return;
+
+    function spawnBird() {
+        // Remove class to reset animation and hide bird
+        bird.classList.remove('flying');
+        
+        // Force reflow to register style reset immediately
+        void bird.offsetWidth;
+        
+        // Random bottom position between 70% and 82% of viewport height
+        const randomBottom = 70 + Math.random() * 12;
+        bird.style.bottom = `${randomBottom}%`;
+        
+        // Trigger flight animation
+        bird.classList.add('flying');
+    }
+
+    // Initial spawn
+    spawnBird();
+
+    // Spawn every 5 seconds (2s flight + 3s pause)
+    setInterval(spawnBird, 5000);
 }
