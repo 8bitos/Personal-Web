@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Who's Sapta? — Personal Terminal">
+    <title>Sapta's Personal Space</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons Local -->
+    <script src="assets/lucide.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Extra styles specifically for personal layout page */
+        .personal-layout {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .personal-card {
+            max-width: 600px;
+            width: 100%;
+            padding: 48px 40px;
+            background: rgba(10, 15, 30, 0.85);
+            border: 1px solid rgba(0, 180, 255, 0.15);
+            border-radius: 24px;
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(0, 180, 255, 0.05),
+                inset 0 0 20px rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            position: relative;
+            /* P3R angular cuts */
+            clip-path: polygon(24px 0%, 100% 0%, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0% 100%, 0% 24px);
+        }
+
+        /* Top & Bottom Accent Lines */
+        .personal-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 10%; right: 10%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+        }
+        .personal-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 10%; right: 10%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+        }
+
+        .personal-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 24px;
+        }
+
+        .personal-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-cyan);
+            background: rgba(0, 180, 255, 0.05);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0, 180, 255, 0.25);
+        }
+
+        .personal-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .personal-avatar-icon {
+            color: var(--accent-cyan);
+            width: 32px;
+            height: 32px;
+        }
+
+        .personal-title-area h1 {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+        }
+
+        .personal-subtitle {
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .personal-info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-bottom: 36px;
+        }
+
+        .personal-info-item {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            font-size: 14.5px;
+            line-height: 1.6;
+        }
+
+        .info-label {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12px;
+            align-self: center;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .personal-bio {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.7;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+        }
+
+        .personal-footer {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        /* Responsive overrides */
+        @media (max-width: 480px) {
+            .personal-card {
+                padding: 36px 24px;
+            }
+            .personal-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 16px;
+            }
+            .personal-info-item {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+            .info-label {
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+<body style="overflow-x: hidden;">
+    <!-- ========== LAYERED PARALLAX BACKGROUND ========== -->
+    <div class="layered-bg">
+        <div class="bg-layer bg-layer-sky" style="background-image: url('assets/Background/Background.png');"></div>
+        <div class="bg-layer bg-layer-cloud1" style="background-image: url('assets/Background/cloud1.png');"></div>
+        <div class="bg-layer bg-layer-cloud2" style="background-image: url('assets/Background/cloud2.png');"></div>
+        <div class="bg-layer bg-layer-front" style="background-image: url('assets/Background/Front.png');"></div>
+        <div class="bg-layer bg-layer-front2" style="background-image: url('assets/Background/Front2.png');"></div>
+        <div class="bg-overlay-dim"></div>
+    </div>
+
+    <!-- ========== LOADER ========== -->
+    <div id="page-loader" class="loader">
+        <div class="loader-inner">
+            <div class="loader-circle"></div>
+            <span class="loader-text">Loading</span>
+        </div>
+    </div>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="personal-layout">
+        <div class="personal-card glass-card">
+            <div class="personal-header">
+                <div class="personal-avatar">
+                    <!-- Try loading sapta.png from root, fallback to user icon -->
+                    <img src="sapta.png" alt="Sapta Wiguna" onerror="this.style.display='none'; document.getElementById('avatar-fallback').style.display='flex';">
+                    <div id="avatar-fallback" style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">
+                        <i data-lucide="user" class="personal-avatar-icon"></i>
+                    </div>
+                </div>
+                <div class="personal-title-area">
+                    <h1>Sapta Wiguna</h1>
+                    <span class="personal-subtitle">Personal space</span>
+                </div>
+            </div>
+
+            <div class="personal-info-list">
+                <div class="personal-info-item">
+                    <span class="info-label">Full Name</span>
+                    <span class="info-value">I Gusti Nyoman Sapta Wiguna</span>
+                </div>
+                <div class="personal-info-item">
+                    <span class="info-label">Education</span>
+                    <span class="info-value">Informatics Engineering Education</span>
+                </div>
+                <div class="personal-info-item">
+                    <span class="info-label">Specialization</span>
+                    <span class="info-value">Frontend Dev, Game Logic & Pedagogical Tech</span>
+                </div>
+                <div class="personal-info-item">
+                    <span class="info-label">Current Focus</span>
+                    <span class="info-value">Building interactive digital systems & creative learning models</span>
+                </div>
+            </div>
+
+            <div class="personal-bio">
+                Welcome to my personal terminal. This section is designed to host my extended background, personal drafting updates, and private portfolio works. Feel free to navigate back or customize the interface via the triggers on the home screen.
+            </div>
+
+            <div class="personal-footer">
+                <a href="index.html" class="btn btn-outline">
+                    <i data-lucide="arrow-left" class="btn-icon" style="margin-right: 8px; margin-left: 0; transform: none;"></i>
+                    <span>Back to Home</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Init Lucide Icons
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+
+        // Page Loader fade-out
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 400);
+            }
+        });
+    </script>
+</body>
+</html>
