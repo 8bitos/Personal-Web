@@ -3,184 +3,602 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Who's Sapta? — Personal Terminal">
+    <meta name="description" content="Sapta's Personal Terminal — Retro Windows XP">
     <title>Sapta's Personal Space</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
     <!-- Lucide Icons Local -->
     <script src="assets/lucide.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Extra styles specifically for personal layout page */
-        .personal-layout {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 24px;
-            position: relative;
-            z-index: 2;
-        }
+        /* ======================================================
+           💿 WINDOWS XP RETRO DESKTOP STYLING
+           ====================================================== */
 
-        .personal-card {
-            max-width: 600px;
-            width: 100%;
-            padding: 48px 40px;
-            background: rgba(10, 15, 30, 0.85);
-            border: 1px solid rgba(0, 180, 255, 0.15);
-            border-radius: 24px;
-            box-shadow: 
-                0 20px 50px rgba(0, 0, 0, 0.4),
-                0 0 30px rgba(0, 180, 255, 0.05),
-                inset 0 0 20px rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            position: relative;
-            /* P3R angular cuts */
-            clip-path: polygon(24px 0%, 100% 0%, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0% 100%, 0% 24px);
-        }
-
-        /* Top & Bottom Accent Lines */
-        .personal-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 10%; right: 10%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
-        }
-        .personal-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 10%; right: 10%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
-        }
-
-        .personal-header {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            margin-bottom: 32px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding-bottom: 24px;
-        }
-
-        .personal-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 2px solid var(--accent-cyan);
-            background: rgba(0, 180, 255, 0.05);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 20px rgba(0, 180, 255, 0.25);
-        }
-
-        .personal-avatar img {
+        /* Root Page Setup */
+        body, html {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        .personal-avatar-icon {
-            color: var(--accent-cyan);
-            width: 32px;
-            height: 32px;
+        .desktop-area {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 40px); /* taskbar height is 40px */
+            z-index: 2;
+            overflow: hidden;
         }
 
-        .personal-title-area h1 {
-            font-family: var(--font-heading);
-            font-size: 24px;
-            font-weight: 700;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 4px;
+        /* ── Parallax Backdrop Blurring ── */
+        .layered-bg {
+            filter: saturate(1.2) contrast(1.1);
         }
 
-        .personal-subtitle {
-            font-family: 'Outfit', sans-serif;
-            font-size: 14px;
-            color: var(--accent-cyan);
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+        /* ── Desktop Grid & Icons ── */
+        .desktop-icons {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            display: grid;
+            grid-auto-flow: row;
+            grid-template-columns: repeat(auto-fill, 85px);
+            grid-template-rows: repeat(auto-fill, 100px);
+            gap: 20px 10px;
+            width: fit-content;
+            max-height: 85%;
         }
 
-        .personal-info-list {
+        .desktop-icon {
             display: flex;
             flex-direction: column;
-            gap: 18px;
-            margin-bottom: 36px;
+            align-items: center;
+            justify-content: center;
+            width: 85px;
+            height: 95px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            transition: background-color 0.15s;
+            text-align: center;
         }
 
-        .personal-info-item {
-            display: grid;
-            grid-template-columns: 140px 1fr;
-            font-size: 14.5px;
-            line-height: 1.6;
+        .desktop-icon:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.15);
         }
 
-        .info-label {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 12px;
-            align-self: center;
+        .desktop-icon:active, .desktop-icon.selected {
+            background-color: rgba(0, 180, 255, 0.25);
+            border-color: rgba(0, 180, 255, 0.4);
         }
 
-        .info-value {
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        .personal-bio {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.7;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            padding: 18px;
-            border-radius: 12px;
-            margin-bottom: 32px;
-        }
-
-        .personal-footer {
+        .icon-image {
+            width: 44px;
+            height: 44px;
+            color: var(--accent-cyan);
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
             display: flex;
-            justify-content: flex-start;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
         }
 
-        /* Responsive overrides */
+        .icon-image svg {
+            width: 36px;
+            height: 36px;
+            stroke-width: 1.5px;
+        }
+
+        .icon-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #ffffff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.95), 0 0 8px rgba(0, 0, 0, 0.6);
+            word-wrap: break-word;
+            padding: 0 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ======================================================
+           📁 INTERACTIVE WINDOW SHELL
+           ====================================================== */
+        .window {
+            position: absolute;
+            width: 460px;
+            background: #f0f0ed;
+            border: 4px solid #0054e3;
+            border-top: none;
+            border-radius: 6px 6px 0 0;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.55);
+            display: none; /* opened via JS */
+            flex-direction: column;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .window.active {
+            z-index: 200;
+            border-color: #0054e3;
+        }
+
+        .window.inactive {
+            border-color: #5587e6;
+        }
+
+        /* ── Blue XP Window Header ── */
+        .window-header {
+            background: linear-gradient(to bottom, #0058e6 0%, #257df4 8%, #1263eb 45%, #0054e3 100%);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: move;
+            user-select: none;
+            border-radius: 3px 3px 0 0;
+            box-shadow: inset 0 1px rgba(255,255,255,0.4);
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .window.inactive .window-header {
+            background: linear-gradient(to bottom, #7697e7 0%, #8ea7f2 45%, #7697e7 100%);
+        }
+
+        .window-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .window-title-icon {
+            width: 16px;
+            height: 16px;
+            stroke-width: 2px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 4px;
+        }
+
+        /* Window Buttons (Minimize, Maximize, Close) */
+        .win-btn {
+            width: 21px;
+            height: 21px;
+            border: 1.5px solid #ffffff;
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 900;
+            color: #ffffff;
+            box-shadow: inset 0 -2px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .win-btn-min {
+            background: linear-gradient(180deg, #5a8bf7 0%, #0040cc 100%);
+            align-items: flex-end;
+            padding-bottom: 2px;
+        }
+        .win-btn-min:hover { background: linear-gradient(180deg, #7ba4ff 0%, #1e5eed 100%); }
+
+        .win-btn-max {
+            background: linear-gradient(180deg, #5a8bf7 0%, #0040cc 100%);
+        }
+        .win-btn-max:hover { background: linear-gradient(180deg, #7ba4ff 0%, #1e5eed 100%); }
+
+        .win-btn-close {
+            background: linear-gradient(180deg, #f37c5f 0%, #c41e00 100%);
+            font-weight: 700;
+            border-color: #e0d0c0;
+        }
+        .win-btn-close:hover {
+            background: linear-gradient(180deg, #ff9b84 0%, #e02f0d 100%);
+        }
+
+        /* ── Window Content Body ── */
+        .window-body {
+            background: #ffffff;
+            color: #2b2b2b;
+            padding: 20px;
+            font-size: 13.5px;
+            line-height: 1.6;
+            overflow-y: auto;
+            flex-grow: 1;
+            height: 280px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Maximize Mode */
+        .window.maximized {
+            width: 100% !important;
+            height: calc(100% - 40px) !important;
+            top: 0 !important;
+            left: 0 !important;
+            border-radius: 0;
+            border: none;
+        }
+
+        /* ======================================================
+           ⚙️ SYSTEM WINDOW APPS CONTENT
+           ====================================================== */
+
+        /* About App styles */
+        .xp-avatar-wrap {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            border-bottom: 1.5px solid #e0e0d8;
+            padding-bottom: 16px;
+        }
+        .xp-avatar {
+            width: 64px;
+            height: 64px;
+            border: 2px solid #0054e3;
+            border-radius: 4px;
+            background: #fff;
+            padding: 2px;
+        }
+        .xp-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .xp-name h2 { font-size: 18px; margin: 4px 0 2px; font-weight: 700; color: #0048c4; font-family: 'Outfit', sans-serif; }
+        .xp-name p { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #707068; margin: 0; }
+
+        .xp-desc-box {
+            background: #f5f5f0;
+            border: 1px solid #d4d0c8;
+            padding: 12px;
+            font-size: 12.5px;
+            color: #4b4b45;
+            border-radius: 4px;
+            margin-top: 12px;
+        }
+
+        /* System App (My Computer Specs) */
+        .sys-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .sys-row {
+            display: grid;
+            grid-template-columns: 130px 1fr;
+            border-bottom: 1px solid #f0f0ed;
+            padding-bottom: 6px;
+        }
+        .sys-label { font-weight: bold; color: #505048; font-size: 12px; text-transform: uppercase; }
+        .sys-value { color: #0048c4; font-weight: 600; font-family: 'Space Grotesk', sans-serif; }
+
+        /* Skills App (XP checklist) */
+        .xp-skills-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .xp-skills-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+        .xp-chk {
+            width: 14px;
+            height: 14px;
+            border: 1px solid #0054e3;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2f8e1b;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        /* ======================================================
+           Taskbar
+           ====================================================== */
+        .taskbar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(to bottom, #1f70e7 0%, #2062dd 8%, #1952e2 45%, #174ce1 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* ── Green Start Button ── */
+        .start-button {
+            height: 100%;
+            padding: 0 20px;
+            background: linear-gradient(to bottom, #39b227 0%, #46c333 10%, #2f8e1b 50%, #298216 100%);
+            border: none;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            font-style: italic;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+            box-shadow: inset -1px 0 2px rgba(255,255,255,0.4), 2px 0 5px rgba(0,0,0,0.25);
+            transition: filter 0.15s;
+        }
+
+        .start-button:hover {
+            filter: brightness(1.1);
+        }
+
+        .start-flag {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── Taskbar Windows Tabs ── */
+        .taskbar-tabs {
+            display: flex;
+            gap: 6px;
+            flex-grow: 1;
+            margin: 0 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .taskbar-tabs::-webkit-scrollbar { display: none; }
+
+        .taskbar-tab {
+            width: 140px;
+            height: 28px;
+            background: linear-gradient(to bottom, #3c82eb 0%, #1e5ae2 100%);
+            border: 1px solid #083bb3;
+            border-radius: 3px;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            box-shadow: inset 0 1px rgba(255,255,255,0.2);
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .taskbar-tab.active {
+            background: #1c4bb5;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.4);
+            border-color: #0b2257;
+        }
+
+        /* ── System Tray Clock ── */
+        .system-tray {
+            height: 100%;
+            background: linear-gradient(to bottom, #0f76ef 0%, #0d96fd 10%, #0d8df4 50%, #0f76ef 100%);
+            border-left: 2px solid #146df2;
+            box-shadow: inset 1px 0 rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+
+        .tray-clock {
+            font-family: 'Space Grotesk', sans-serif;
+            color: #ffffff;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-shadow: 1px 1px rgba(0,0,0,0.3);
+            letter-spacing: 0.5px;
+        }
+
+        /* ======================================================
+           Start Menu
+           ====================================================== */
+        .start-menu {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 380px;
+            height: 450px;
+            background: #2f71e5;
+            border: 2px solid #0054e3;
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            display: none; /* opened via JS */
+            flex-direction: column;
+            z-index: 9999;
+            box-shadow: 5px -5px 25px rgba(0, 0, 0, 0.45);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .start-menu-header {
+            background: linear-gradient(to bottom, #0054e3 0%, #2079f2 12%, #1160e2 50%, #0054e3 100%);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            border-bottom: 2px solid #0045c4;
+            box-shadow: inset 0 1px rgba(255,255,255,0.3);
+        }
+        .start-user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 4px;
+            border: 2px solid #e0e8ff;
+            background: #fff;
+            overflow: hidden;
+        }
+        .start-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .start-username {
+            font-weight: 700;
+            font-size: 14.5px;
+            font-family: 'Outfit', sans-serif;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+        }
+
+        .start-menu-body {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            flex-grow: 1;
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        /* Left side shortcuts */
+        .start-left {
+            background: #ffffff;
+            padding: 12px 6px;
+            border-right: 1px solid #d3e5fa;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .start-item-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.15s;
+        }
+        .start-item-btn:hover {
+            background-color: #316ac5;
+            color: #fff;
+        }
+        .start-item-btn:hover .start-item-icon {
+            color: #fff;
+        }
+        .start-item-icon {
+            color: #0054e3;
+            width: 18px;
+            height: 18px;
+        }
+        .start-item-text {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Right side settings/socials */
+        .start-right {
+            background: #f0f8ff;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .start-section-title {
+            font-size: 9.5px;
+            font-weight: bold;
+            color: #4b75b3;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .start-social-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #2f568f;
+            text-decoration: none;
+            padding: 4px 6px;
+            border-radius: 3px;
+        }
+        .start-social-link:hover {
+            background-color: #316ac5;
+            color: #fff;
+        }
+
+        /* Bottom shutdown bar */
+        .start-menu-footer {
+            background: linear-gradient(to bottom, #0054e3 0%, #1e6fe2 100%);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1.5px solid #0045c4;
+            box-shadow: inset 0 1px rgba(255,255,255,0.2);
+        }
+        .shutdown-btn {
+            background: linear-gradient(to bottom, #e45839 0%, #b21e00 100%);
+            border: 1px solid #750f00;
+            border-radius: 3px;
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 6px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: inset 0 1px rgba(255,255,255,0.2);
+        }
+        .shutdown-btn:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Responsive */
         @media (max-width: 480px) {
-            .personal-card {
-                padding: 36px 24px;
+            .window {
+                width: 90% !important;
+                left: 5% !important;
             }
-            .personal-header {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                gap: 16px;
+            .start-menu {
+                width: 100%;
+                height: 380px;
             }
-            .personal-info-item {
+            .start-menu-body {
                 grid-template-columns: 1fr;
-                gap: 4px;
             }
-            .info-label {
-                align-self: flex-start;
+            .start-right {
+                display: none; /* Hide right column to fit start menu on mobile */
             }
         }
     </style>
 </head>
-<body style="overflow-x: hidden;">
+<body>
     <!-- ========== LAYERED PARALLAX BACKGROUND ========== -->
     <div class="layered-bg">
         <div class="bg-layer bg-layer-sky" style="background-image: url('assets/Background/Background.png');"></div>
@@ -188,7 +606,7 @@
         <div class="bg-layer bg-layer-cloud2" style="background-image: url('assets/Background/cloud2.png');"></div>
         <div class="bg-layer bg-layer-front" style="background-image: url('assets/Background/Front.png');"></div>
         <div class="bg-layer bg-layer-front2" style="background-image: url('assets/Background/Front2.png');"></div>
-        <div class="bg-overlay-dim"></div>
+        <div class="bg-overlay-dim" style="background: rgba(4, 9, 22, 0.85);"></div>
     </div>
 
     <!-- ========== LOADER ========== -->
@@ -199,71 +617,501 @@
         </div>
     </div>
 
-    <!-- ========== MAIN CONTENT ========== -->
-    <main class="personal-layout">
-        <div class="personal-card glass-card">
-            <div class="personal-header">
-                <div class="personal-avatar">
-                    <!-- Try loading sapta.png from root, fallback to user icon -->
-                    <img src="sapta.png" alt="Sapta Wiguna" onerror="this.style.display='none'; document.getElementById('avatar-fallback').style.display='flex';">
-                    <div id="avatar-fallback" style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">
-                        <i data-lucide="user" class="personal-avatar-icon"></i>
+    <!-- ========== DESKTOP AREA ========== -->
+    <main class="desktop-area" id="desktop">
+        <!-- Desktop Grid Icons -->
+        <div class="desktop-icons">
+            <div class="desktop-icon" onclick="openWindow('win-computer')">
+                <div class="icon-image"><i data-lucide="monitor"></i></div>
+                <span class="icon-label">My Computer</span>
+            </div>
+            <div class="desktop-icon" onclick="openWindow('win-about')">
+                <div class="icon-image"><i data-lucide="user"></i></div>
+                <span class="icon-label">About Sapta</span>
+            </div>
+            <div class="desktop-icon" onclick="openWindow('win-skills')">
+                <div class="icon-image"><i data-lucide="graduation-cap"></i></div>
+                <span class="icon-label">Specialization</span>
+            </div>
+            <div class="desktop-icon" onclick="openWindow('win-contact')">
+                <div class="icon-image"><i data-lucide="mail"></i></div>
+                <span class="icon-label">Contact.txt</span>
+            </div>
+        </div>
+
+        <!-- ======================================================
+             📁 WINDOW APPS
+             ====================================================== */ -->
+
+        <!-- 1. My Computer Window -->
+        <div id="win-computer" class="window" style="top: 80px; left: 100px;">
+            <div class="window-header">
+                <div class="window-title">
+                    <i data-lucide="monitor" class="window-title-icon"></i>
+                    <span>My Computer</span>
+                </div>
+                <div class="window-controls">
+                    <div class="win-btn win-btn-min" onclick="minimizeWindow('win-computer')">_</div>
+                    <div class="win-btn win-btn-max" onclick="toggleMaximize('win-computer')">▢</div>
+                    <div class="win-btn win-btn-close" onclick="closeWindow('win-computer')">X</div>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="sys-info">
+                    <div class="sys-row">
+                        <span class="sys-label">System</span>
+                        <span class="sys-value">Antigravity OS v1.0</span>
+                    </div>
+                    <div class="sys-row">
+                        <span class="sys-label">Processor</span>
+                        <span class="sys-value">Gemini Core Engine</span>
+                    </div>
+                    <div class="sys-row">
+                        <span class="sys-label">Developer</span>
+                        <span class="sys-value">Sapta Wiguna</span>
+                    </div>
+                    <div class="sys-row">
+                        <span class="sys-label">Local Host</span>
+                        <span class="sys-value">http://localhost:8000</span>
                     </div>
                 </div>
-                <div class="personal-title-area">
-                    <h1>Sapta Wiguna</h1>
-                    <span class="personal-subtitle">Personal space</span>
+                <div class="xp-desc-box" style="margin-top: 24px;">
+                    This simulated terminal coordinates and drafts interactive dashboard integrations.
                 </div>
             </div>
+        </div>
 
-            <div class="personal-info-list">
-                <div class="personal-info-item">
-                    <span class="info-label">Full Name</span>
-                    <span class="info-value">I Gusti Nyoman Sapta Wiguna</span>
+        <!-- 2. About Me Window -->
+        <div id="win-about" class="window" style="top: 100px; left: 150px;">
+            <div class="window-header">
+                <div class="window-title">
+                    <i data-lucide="user" class="window-title-icon"></i>
+                    <span>About Sapta</span>
                 </div>
-                <div class="personal-info-item">
-                    <span class="info-label">Education</span>
-                    <span class="info-value">Informatics Engineering Education</span>
-                </div>
-                <div class="personal-info-item">
-                    <span class="info-label">Specialization</span>
-                    <span class="info-value">Frontend Dev, Game Logic & Pedagogical Tech</span>
-                </div>
-                <div class="personal-info-item">
-                    <span class="info-label">Current Focus</span>
-                    <span class="info-value">Building interactive digital systems & creative learning models</span>
+                <div class="window-controls">
+                    <div class="win-btn win-btn-min" onclick="minimizeWindow('win-about')">_</div>
+                    <div class="win-btn win-btn-max" onclick="toggleMaximize('win-about')">▢</div>
+                    <div class="win-btn win-btn-close" onclick="closeWindow('win-about')">X</div>
                 </div>
             </div>
-
-            <div class="personal-bio">
-                Welcome to my personal terminal. This section is designed to host my extended background, personal drafting updates, and private portfolio works. Feel free to navigate back or customize the interface via the triggers on the home screen.
+            <div class="window-body">
+                <div class="xp-avatar-wrap">
+                    <div class="xp-avatar">
+                        <img src="sapta.png" alt="Sapta" onerror="this.style.display='none';">
+                    </div>
+                    <div class="xp-name">
+                        <h2>Sapta Wiguna</h2>
+                        <p>Freelance Developer</p>
+                    </div>
+                </div>
+                <p>Welcome! I'm a developer and media creator who builds interactive systems. My specialization covers web layout architectures, 2D game mechanics, and informatics education tools.</p>
+                <div class="xp-desc-box">
+                    I hold a degree in Informatics Engineering Education, blending pedagogical models with technical programming skills.
+                </div>
             </div>
+        </div>
 
-            <div class="personal-footer">
-                <a href="index.html" class="btn btn-outline">
-                    <i data-lucide="arrow-left" class="btn-icon" style="margin-right: 8px; margin-left: 0; transform: none;"></i>
-                    <span>Back to Home</span>
-                </a>
+        <!-- 3. Specialization/Skills Window -->
+        <div id="win-skills" class="window" style="top: 120px; left: 200px;">
+            <div class="window-header">
+                <div class="window-title">
+                    <i data-lucide="graduation-cap" class="window-title-icon"></i>
+                    <span>Specialization</span>
+                </div>
+                <div class="window-controls">
+                    <div class="win-btn win-btn-min" onclick="minimizeWindow('win-skills')">_</div>
+                    <div class="win-btn win-btn-max" onclick="toggleMaximize('win-skills')">▢</div>
+                    <div class="win-btn win-btn-close" onclick="closeWindow('win-skills')">X</div>
+                </div>
+            </div>
+            <div class="window-body">
+                <p style="margin-top: 0; font-weight: bold; color: #0048c4;">Core Tech Focus Checklist:</p>
+                <ul class="xp-skills-list">
+                    <li><span class="xp-chk">✓</span> Frontend Layouts (HTML5, CSS3, JS, React)</li>
+                    <li><span class="xp-chk">✓</span> Backend Logic (NodeJS, Python, Go)</li>
+                    <li><span class="xp-chk">✓</span> 2D Game Programming & Modding</li>
+                    <li><span class="xp-chk">✓</span> Instructional Design & Tech Tutoring</li>
+                </ul>
+                <div class="xp-desc-box" style="margin-top: 16px;">
+                    This workspace serves as a testing ground for experimental UI widgets.
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Contact Window -->
+        <div id="win-contact" class="window" style="top: 140px; left: 250px;">
+            <div class="window-header">
+                <div class="window-title">
+                    <i data-lucide="mail" class="window-title-icon"></i>
+                    <span>Contact Info</span>
+                </div>
+                <div class="window-controls">
+                    <div class="win-btn win-btn-min" onclick="minimizeWindow('win-contact')">_</div>
+                    <div class="win-btn win-btn-max" onclick="toggleMaximize('win-contact')">▢</div>
+                    <div class="win-btn win-btn-close" onclick="closeWindow('win-contact')">X</div>
+                </div>
+            </div>
+            <div class="window-body">
+                <p style="margin-top: 0;">Feel free to connect with me across these networks:</p>
+                <div class="sys-info">
+                    <div class="sys-row">
+                        <span class="sys-label">Email</span>
+                        <a href="mailto:saptaprofess@gmail.com" style="color:#0048c4; font-weight:bold;">saptaprofess@gmail.com</a>
+                    </div>
+                    <div class="sys-row">
+                        <span class="sys-label">GitHub</span>
+                        <a href="https://github.com/8bitos" target="_blank" style="color:#0048c4; font-weight:bold;">github.com/8bitos</a>
+                    </div>
+                    <div class="sys-row">
+                        <span class="sys-label">LinkedIn</span>
+                        <a href="https://www.linkedin.com/in/sapta-wiguna-1a01a42a5" target="_blank" style="color:#0048c4; font-weight:bold; word-break: break-all;">linkedin.com/in/sapta-wiguna-1a01a42a5</a>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 
+    <!-- ========== START MENU ========== -->
+    <div id="start-menu" class="start-menu">
+        <div class="start-menu-header">
+            <div class="start-user-avatar">
+                <img src="sapta.png" alt="Sapta" onerror="this.style.display='none';">
+            </div>
+            <span class="start-username">Sapta Wiguna</span>
+        </div>
+        <div class="start-menu-body">
+            <!-- Left Side Shortcuts -->
+            <div class="start-left">
+                <button class="start-item-btn" onclick="openWindow('win-about'); toggleStartMenu();">
+                    <i data-lucide="user" class="start-item-icon"></i>
+                    <span class="start-item-text">About Sapta</span>
+                </button>
+                <button class="start-item-btn" onclick="openWindow('win-computer'); toggleStartMenu();">
+                    <i data-lucide="monitor" class="start-item-icon"></i>
+                    <span class="start-item-text">My Computer</span>
+                </button>
+                <button class="start-item-btn" onclick="openWindow('win-skills'); toggleStartMenu();">
+                    <i data-lucide="graduation-cap" class="start-item-icon"></i>
+                    <span class="start-item-text">Specialization</span>
+                </button>
+                <button class="start-item-btn" onclick="openWindow('win-contact'); toggleStartMenu();">
+                    <i data-lucide="mail" class="start-item-icon"></i>
+                    <span class="start-item-text">Contact Info</span>
+                </button>
+            </div>
+            <!-- Right Side Settings/Socials -->
+            <div class="start-right">
+                <span class="start-section-title">My Socials</span>
+                <a href="https://github.com/8bitos" target="_blank" rel="noopener noreferrer" class="start-social-link">
+                    <i data-lucide="github" style="width:14px; height:14px;"></i>
+                    <span>GitHub</span>
+                </a>
+                <a href="https://www.linkedin.com/in/sapta-wiguna-1a01a42a5" target="_blank" rel="noopener noreferrer" class="start-social-link">
+                    <i data-lucide="linkedin" style="width:14px; height:14px;"></i>
+                    <span>LinkedIn</span>
+                </a>
+                <a href="https://instagram.com/sapta_2801" target="_blank" rel="noopener noreferrer" class="start-social-link">
+                    <i data-lucide="instagram" style="width:14px; height:14px;"></i>
+                    <span>Instagram</span>
+                </a>
+            </div>
+        </div>
+        <div class="start-menu-footer">
+            <button class="shutdown-btn" onclick="shutdownComputer()">
+                <!-- stylized turnoff red icon -->
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                <span>Turn Off Computer</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ========== TASKBAR ========== -->
+    <footer class="taskbar">
+        <!-- Green Start button -->
+        <button class="start-button" onclick="toggleStartMenu(event)">
+            <!-- Stylized Windows Flag -->
+            <div class="start-flag">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                </svg>
+            </div>
+            <span>start</span>
+        </button>
+
+        <!-- Staged Windows Tabs -->
+        <div class="taskbar-tabs" id="taskbar-tabs">
+            <!-- Tabs added dynamically via JS -->
+        </div>
+
+        <!-- System tray with local clock -->
+        <div class="system-tray">
+            <span class="tray-clock" id="tray-clock">18:00</span>
+        </div>
+    </footer>
+
+    <!-- ======================================================
+         💿 DRAGGING & WINDOWS MANAGER SCRIPT
+         ====================================================== -->
     <script>
-        // Init Lucide Icons
+        // Init Lucide icons
         if (window.lucide) {
             lucide.createIcons();
         }
 
-        // Page Loader fade-out
+        // Loader fade-out
         window.addEventListener('load', () => {
             const loader = document.getElementById('page-loader');
             if (loader) {
                 loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                }, 400);
+                setTimeout(() => { loader.style.display = 'none'; }, 400);
             }
         });
+
+        // ── Clock updates ──
+        function updateClock() {
+            const el = document.getElementById('tray-clock');
+            if (!el) return;
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // hour '0' is '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            el.textContent = `${hours}:${minutes} ${ampm}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // ── Window Dragging Logic ──
+        let activeWindow = null;
+        let zIndexCounter = 200;
+
+        function makeDraggable(win) {
+            const header = win.querySelector('.window-header');
+            let isDragging = false;
+            let startX, startY, winX, winY;
+
+            header.addEventListener('mousedown', (e) => {
+                // Prevent drag if clicking window buttons
+                if (e.target.classList.contains('win-btn')) return;
+                if (win.classList.contains('maximized')) return;
+                
+                isDragging = true;
+                focusWindow(win);
+                
+                startX = e.clientX;
+                startY = e.clientY;
+                
+                winX = parseInt(win.style.left) || 100;
+                winY = parseInt(win.style.top) || 100;
+                
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            // Touch support for mobile dragging
+            header.addEventListener('touchstart', (e) => {
+                if (e.target.classList.contains('win-btn')) return;
+                if (win.classList.contains('maximized')) return;
+
+                isDragging = true;
+                focusWindow(win);
+
+                const touch = e.touches[0];
+                startX = touch.clientX;
+                startY = touch.clientY;
+
+                winX = parseInt(win.style.left) || 100;
+                winY = parseInt(win.style.top) || 100;
+
+                document.addEventListener('touchmove', onTouchMove);
+                document.addEventListener('touchend', onTouchEnd);
+            });
+
+            function onMouseMove(e) {
+                if (!isDragging) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                win.style.left = `${winX + dx}px`;
+                win.style.top = `${winY + dy}px`;
+            }
+
+            function onTouchMove(e) {
+                if (!isDragging) return;
+                const touch = e.touches[0];
+                const dx = touch.clientX - startX;
+                const dy = touch.clientY - startY;
+                win.style.left = `${winX + dx}px`;
+                win.style.top = `${winY + dy}px`;
+            }
+
+            function onMouseUp() {
+                isDragging = false;
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
+
+            function onTouchEnd() {
+                isDragging = false;
+                document.removeEventListener('touchmove', onTouchMove);
+                document.removeEventListener('touchend', onTouchEnd);
+            }
+        }
+
+        // Initialize dragging for all windows
+        document.querySelectorAll('.window').forEach(win => {
+            makeDraggable(win);
+            // Clicking window focuses it
+            win.addEventListener('mousedown', () => focusWindow(win));
+        });
+
+        // ── Window Operations ──
+        const openWindowsList = [];
+
+        function focusWindow(win) {
+            document.querySelectorAll('.window').forEach(w => {
+                w.classList.remove('active');
+                w.classList.add('inactive');
+            });
+            win.classList.remove('inactive');
+            win.classList.add('active');
+            zIndexCounter += 2;
+            win.style.zIndex = zIndexCounter;
+            activeWindow = win;
+
+            updateTaskbarTabs();
+        }
+
+        function openWindow(id) {
+            const win = document.getElementById(id);
+            if (!win) return;
+
+            win.style.display = 'flex';
+            focusWindow(win);
+
+            if (!openWindowsList.includes(id)) {
+                openWindowsList.push(id);
+            }
+            updateTaskbarTabs();
+            
+            // Close start menu
+            const menu = document.getElementById('start-menu');
+            if (menu) menu.style.display = 'none';
+        }
+
+        function closeWindow(id) {
+            const win = document.getElementById(id);
+            if (win) {
+                win.style.display = 'none';
+            }
+            const index = openWindowsList.indexOf(id);
+            if (index > -1) {
+                openWindowsList.splice(index, 1);
+            }
+            updateTaskbarTabs();
+        }
+
+        function minimizeWindow(id) {
+            const win = document.getElementById(id);
+            if (win) {
+                win.style.display = 'none';
+            }
+            updateTaskbarTabs();
+        }
+
+        function toggleMaximize(id) {
+            const win = document.getElementById(id);
+            if (win) {
+                win.classList.toggle('maximized');
+            }
+        }
+
+        // ── Taskbar Tabs Sync ──
+        function updateTaskbarTabs() {
+            const container = document.getElementById('taskbar-tabs');
+            if (!container) return;
+            container.innerHTML = '';
+
+            openWindowsList.forEach(id => {
+                const win = document.getElementById(id);
+                if (!win) return;
+                
+                const titleText = win.querySelector('.window-title span').textContent;
+                const icon = win.querySelector('.window-title-icon').getAttribute('data-lucide') || 'window';
+                const isFocused = win.classList.contains('active') && win.style.display !== 'none';
+
+                const tab = document.createElement('div');
+                tab.className = `taskbar-tab ${isFocused ? 'active' : ''}`;
+                tab.innerHTML = `
+                    <i data-lucide="${icon}" style="width:12px; height:12px; stroke-width:2.5px;"></i>
+                    <span>${titleText}</span>
+                `;
+                
+                tab.addEventListener('click', () => {
+                    if (win.style.display === 'none') {
+                        win.style.display = 'flex';
+                        focusWindow(win);
+                    } else if (win.classList.contains('active')) {
+                        win.style.display = 'none';
+                    } else {
+                        focusWindow(win);
+                    }
+                    updateTaskbarTabs();
+                });
+
+                container.appendChild(tab);
+            });
+
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        // ── Start Menu Operations ──
+        function toggleStartMenu(e) {
+            if (e) e.stopPropagation();
+            const menu = document.getElementById('start-menu');
+            if (!menu) return;
+            
+            if (menu.style.display === 'flex') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'flex';
+            }
+        }
+
+        function toggleStartMenu() {
+            const menu = document.getElementById('start-menu');
+            if (menu) {
+                menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+            }
+        }
+
+        // Clicking desktop closes start menu
+        document.getElementById('desktop').addEventListener('click', (e) => {
+            const menu = document.getElementById('start-menu');
+            if (menu && menu.style.display === 'flex') {
+                // Check if clicked button
+                if (!e.target.closest('.start-button')) {
+                    menu.style.display = 'none';
+                }
+            }
+        });
+
+        // Shutdown Action (back to home)
+        function shutdownComputer() {
+            // Loader shows up
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.querySelector('.loader-text').textContent = 'Shutting Down...';
+                loader.style.display = 'flex';
+                loader.style.opacity = '1';
+            }
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 800);
+        }
     </script>
 </body>
 </html>
