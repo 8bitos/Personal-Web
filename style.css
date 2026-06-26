@@ -58,6 +58,8 @@
 html {
     scroll-behavior: smooth;
     scroll-padding-top: 80px;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -65,6 +67,7 @@ body {
     background: var(--bg-primary);
     color: var(--text-primary);
     line-height: 1.7;
+    width: 100%;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -230,6 +233,7 @@ ul {
 .section {
     padding: var(--section-padding);
     position: relative;
+    overflow-x: hidden;
 }
 
 /* P3R geometric accent lines on sections */
@@ -1336,6 +1340,9 @@ body:hover #cursor-glow {
 .projects-grid {
     display: flex;
     overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
     gap: 24px;
     padding: 20px 4px 28px;
     width: 100%;
@@ -1672,6 +1679,7 @@ body:hover #cursor-glow {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    min-width: 0; /* Allow flex item to shrink below content size */
 }
 
 .contact-link:hover {
@@ -1705,6 +1713,7 @@ body:hover #cursor-glow {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    min-width: 0; /* Allow flex child to shrink and wrap */
 }
 
 .contact-link-label {
@@ -1720,6 +1729,7 @@ body:hover #cursor-glow {
     color: var(--text-primary);
     font-weight: 500;
     transition: color 0.3s ease;
+    word-break: break-all; /* Force long URLs/emails to wrap on mobile */
 }
 
 .contact-link:hover .contact-link-value {
