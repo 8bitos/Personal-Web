@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>8BitShiftIMG — Universal Image Converter</title>
+
+  <!-- PWA & Mobile Web App Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0ea5e9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="8BitShiftIMG">
+  <meta name="description" content="100% Client-Side Universal Image Converter with Zero Server & Zero Database">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+
+  <!-- Immediate Theme Detection (Auto-detect OS: Dark / Light) -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"DM Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Google Fonts: Space Grotesk & DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Google Material Symbols Outlined -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+
+  <!-- Core External Libraries (Deferred for non-blocking mobile render) -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/utif/3.1.0/UTIF.min.js"></script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+
+    /* High-Contrast Liquid Glass Aesthetics (Both Light and Dark Mode) */
+    :root {
+      /* Elegant Slate-Silver Canvas for Light Mode (Not washed out) */
+      --bg-canvas: #e8ebf0;
+      --glass-surface: rgba(255, 255, 255, 0.94);
+      --glass-border: rgba(15, 23, 42, 0.13);
+      --glass-specular: rgba(255, 255, 255, 1);
+      --glass-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.09), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+      --card-highlight: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+      --input-bg: #ffffff;
+      --input-border: rgba(15, 23, 42, 0.18);
+      --text-main: #090d16;
+      --text-muted: #475569;
+      --accent: #0284c7;
+      --accent-glow: rgba(2, 132, 199, 0.15);
+    }
+
+    html.dark {
+      --bg-canvas: #090a0d;
+      --glass-surface: rgba(17, 20, 28, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-specular: rgba(255, 255, 255, 0.14);
+      --glass-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.65);
+      --card-highlight: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+      --input-bg: rgba(9, 11, 16, 0.75);
+      --input-border: rgba(255, 255, 255, 0.09);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.2);
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      background-image: 
+        radial-gradient(circle 600px at 50% -15%, rgba(2, 132, 199, 0.08), transparent 70%),
+        radial-gradient(circle 500px at 100% 50%, rgba(14, 165, 233, 0.06), transparent 70%),
+        radial-gradient(circle 500px at 0% 80%, rgba(56, 189, 248, 0.06), transparent 70%);
+      background-attachment: fixed;
+    }
+
+    html.dark body {
+      background-image: 
+        radial-gradient(circle 600px at 50% -15%, rgba(56, 189, 248, 0.08), transparent 70%),
+        radial-gradient(circle 500px at 100% 50%, rgba(14, 165, 233, 0.05), transparent 70%),
+        radial-gradient(circle 500px at 0% 80%, rgba(56, 189, 248, 0.05), transparent 70%);
+    }
+
+    .liquid-glass {
+      background: var(--glass-surface);
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
+      border: 1px solid var(--glass-border);
+      box-shadow: 
+        inset 0 1px 1.5px 0 var(--glass-specular),
+        var(--glass-shadow);
+      position: relative;
+    }
+
+    .liquid-glass::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 12%;
+      right: 12%;
+      height: 1px;
+      background: var(--card-highlight);
+      pointer-events: none;
+    }
+
+    .btn-liquid-primary {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.9) 0%, rgba(14, 165, 233, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.4),
+        0 6px 18px -4px rgba(2, 132, 199, 0.35);
+      color: #ffffff;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html.dark .btn-liquid-primary {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(14, 165, 233, 0.28) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.25),
+        0 6px 20px -4px rgba(56, 189, 248, 0.25);
+      color: #e0f2fe;
+    }
+
+    .btn-liquid-primary:hover:not(:disabled) {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .btn-liquid-success {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.9) 0%, rgba(5, 150, 105, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 18px -4px rgba(16, 185, 129, 0.35);
+      color: #ffffff;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html.dark .btn-liquid-success {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(5, 150, 105, 0.28) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      box-shadow: 
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.25),
+        0 6px 20px -4px rgba(16, 185, 129, 0.25);
+      color: #ecfdf5;
+    }
+
+    .btn-liquid-success:hover:not(:disabled) {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .btn-liquid-ghost {
+      background: rgba(125, 135, 150, 0.1);
+      border: 1px solid var(--glass-border);
+      transition: all 0.2s ease;
+    }
+
+    .btn-liquid-ghost:hover {
+      background: rgba(125, 135, 150, 0.18);
+    }
+
+    .glass-input {
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: var(--text-main);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+    }
+
+    .glass-input:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .liquid-dropzone {
+      background: var(--glass-surface);
+      border: 1.5px dashed var(--glass-border);
+      backdrop-filter: blur(20px);
+      transition: all 0.25s ease;
+    }
+
+    .liquid-dropzone:hover, .liquid-dropzone.drag-active {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    /* Fun Fact Slide Animation */
+    .fact-slide-box {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fact-text-anim {
+      transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fact-text-anim.slide-out {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    .fact-text-anim.slide-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(125, 135, 150, 0.28); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(125, 135, 150, 0.45); }
+
+    /* Mobile Performance Boost & Anti-Lag */
+    @media (max-width: 768px) {
+      body {
+        background-attachment: scroll !important;
+        background-image: none !important;
+      }
+      html.dark body {
+        background-attachment: scroll !important;
+        background-image: none !important;
+      }
+
+      /* Disable heavy multi-pass GPU backdrop-filters on mobile */
+      .liquid-glass,
+      .liquid-dropzone,
+      header,
+      #mobile-action-bar,
+      #lang-menu {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      /* Solid, crisp high-performance surfaces on mobile */
+      :root {
+        --glass-surface: #ffffff;
+      }
+      html.dark {
+        --glass-surface: #0f172a;
+      }
+      header {
+        background-color: #ffffff !important;
+      }
+      html.dark header {
+        background-color: #0b0f19 !important;
+      }
+      #mobile-action-bar {
+        background-color: #ffffff !important;
+      }
+      html.dark #mobile-action-bar {
+        background-color: #0b0f19 !important;
+      }
+
+      /* Confine paint / reflow boundary on image queue */
+      #queue-list {
+        contain: content;
+      }
+
+      /* Remove extra pseudo elements to reduce compositor layer count */
+      .liquid-glass::before {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="selection:bg-sky-500/25 selection:text-sky-900 dark:selection:text-sky-200">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 border-b border-black/[0.08] dark:border-white/[0.06] backdrop-blur-xl bg-white/85 dark:bg-black/40 transition-colors">
+    <div class="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-15 py-2 sm:py-3 flex items-center justify-between">
+      
+      <!-- Brand Name & 8BiTools Hub Return Link -->
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+        <a href="../../../index.html" class="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-black/[0.04] dark:hover:bg-white/[0.05] border border-black/10 dark:border-white/10 transition-all flex-shrink-0" title="Kembali ke Menu 8BiTools">
+          <span class="material-symbols-outlined text-[15px] sm:text-[16px]">arrow_back</span>
+          <span class="font-display font-extrabold tracking-tight hidden xs:inline sm:inline">8BiTools</span>
+        </a>
+        <div class="h-4 w-[1px] bg-black/10 dark:bg-white/10 hidden sm:block"></div>
+        <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl liquid-glass flex items-center justify-center text-sky-600 dark:text-sky-400 flex-shrink-0">
+            <span class="material-symbols-outlined text-[18px] sm:text-[20px]">sync</span>
+          </div>
+          <h1 id="app-title" class="font-display font-bold text-sm sm:text-lg tracking-tight text-slate-900 dark:text-white truncate">
+            8BitShiftIMG
+          </h1>
+        </div>
+      </div>
+
+      <!-- Actions: Install PWA + Language Selector & Theme Toggle -->
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+        
+        <!-- PWA Install Prompt Button (Shown when browser allows install) -->
+        <button id="pwa-install-btn" class="hidden btn-liquid-primary px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm" title="Install 8BitShiftIMG sebagai Aplikasi">
+          <span class="material-symbols-outlined text-[16px]">install_mobile</span>
+          <span class="hidden sm:inline">Install</span>
+        </button>
+
+        <!-- Language Selector Dropdown -->
+        <div class="relative" id="lang-dropdown-wrapper">
+          <button id="lang-toggle-btn" class="btn-liquid-ghost px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1 sm:gap-1.5 transition-colors" title="Ganti Bahasa">
+            <span id="current-flag" class="text-sm sm:text-base leading-none">🇮🇩</span>
+            <span id="current-lang-code" class="font-mono text-[10px] sm:text-[11px] uppercase font-bold text-slate-700 dark:text-slate-300">ID</span>
+            <span class="material-symbols-outlined text-[15px] sm:text-[16px] text-slate-500 dark:text-slate-400">expand_more</span>
+          </button>
+
+          <!-- Language Menu -->
+          <div id="lang-menu" class="hidden absolute right-0 mt-2 w-48 liquid-glass rounded-xl shadow-2xl py-1.5 z-50 border border-black/15 dark:border-white/10 text-xs font-medium">
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="en">
+              <span class="text-base">🇬🇧</span> English
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="id">
+              <span class="text-base">🇮🇩</span> Bahasa Indonesia
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="zh">
+              <span class="text-base">🇨🇳</span> 简体中文 (Chinese)
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="es">
+              <span class="text-base">🇪🇸</span> Español (Spanish)
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="ar">
+              <span class="text-base">🇸🇦</span> العربية (Arabic)
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="fr">
+              <span class="text-base">🇫🇷</span> Français (French)
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="ja">
+              <span class="text-base">🇯🇵</span> 日本語 (Japanese)
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="pt">
+              <span class="text-base">🇧🇷</span> Português (Portuguese)
+            </button>
+          </div>
+        </div>
+
+        <!-- Dark/Light Mode Switcher -->
+        <button id="theme-toggle" class="btn-liquid-ghost p-1.5 sm:p-2 rounded-xl text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition-colors flex items-center justify-center" title="Ganti Tema (Dark / Light)">
+          <span class="material-symbols-outlined text-[18px] hidden dark:block">light_mode</span>
+          <span class="material-symbols-outlined text-[18px] block dark:hidden">dark_mode</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container: Desktop Two-Column Grid / Mobile Single Column -->
+  <main class="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-8 pb-24 sm:pb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:items-center min-h-[calc(100vh-140px)]">
+      
+      <!-- Left Column: Converter Core (8 cols on desktop) -->
+      <div class="lg:col-span-8 space-y-3.5 sm:space-y-5">
+        
+        <!-- Global Control Console -->
+        <section class="liquid-glass rounded-xl sm:rounded-2xl p-3 sm:p-5">
+          <!-- Mode Toggle Bar -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 sm:pb-3.5 mb-2.5 sm:mb-3.5 border-b border-black/[0.08] dark:border-white/[0.06]">
+            <div class="flex items-center justify-between sm:justify-start gap-2">
+              <span id="mode-label" class="text-xs font-bold sm:font-semibold tracking-wider uppercase text-slate-700 dark:text-slate-300">
+                Mode Format:
+              </span>
+              <span id="mode-hint" class="hidden sm:inline text-[11px] text-slate-500 dark:text-slate-400">
+                (Semua file otomatis mengikuti format yang sama)
+              </span>
+            </div>
+            
+            <!-- Segmented Control Button (Full width 50/50 on mobile) -->
+            <div class="grid grid-cols-2 sm:inline-flex p-1 rounded-xl bg-black/[0.06] dark:bg-white/[0.05] border border-black/[0.08] dark:border-white/[0.08] text-xs w-full sm:w-auto">
+              <button id="mode-batch-btn" type="button" class="px-2.5 sm:px-3 py-1.5 rounded-lg font-semibold transition-all shadow-sm bg-white dark:bg-sky-500/20 text-sky-700 dark:text-sky-300 border border-black/[0.08] dark:border-sky-400/30 text-center text-[11px] sm:text-xs">
+                Serentak (Batch)
+              </button>
+              <button id="mode-custom-btn" type="button" class="px-2.5 sm:px-3 py-1.5 rounded-lg font-medium text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition-all text-center text-[11px] sm:text-xs">
+                Kustom per Baris
+              </button>
+            </div>
+          </div>
+
+          <!-- Target Format Selector (1:1 Quality) -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3">
+            <label for="master-format" id="master-format-label" class="text-[11px] sm:text-xs font-bold sm:font-semibold tracking-wider uppercase text-slate-700 dark:text-slate-300 whitespace-nowrap">
+              Format Tujuan:
+            </label>
+            <select id="master-format" class="glass-input text-xs sm:text-sm rounded-xl px-3 py-2 sm:py-2.5 font-medium cursor-pointer w-full flex-1">
+              <optgroup label="Format Web & Standar Digital">
+                <option value="webp" selected>WEBP — Sangat Ringan & Rekomendasi Web</option>
+                <option value="jpg">JPG — Universal & Kompatibel</option>
+                <option value="png">PNG — Lossless & Transparan</option>
+                <option value="avif">AVIF — Rasio Kompresi Maksimal</option>
+                <option value="gif">GIF — Format Grafis</option>
+              </optgroup>
+              <optgroup label="Fotografi & Kamera RAW">
+                <option value="dng">DNG — Adobe Digital Negative RAW</option>
+                <option value="tiff">TIFF — Arsip Berkualitas Tinggi</option>
+              </optgroup>
+              <optgroup label="Ikon & Desain Grafis">
+                <option value="ico">ICO — Favicon / Icon Website</option>
+                <option value="cur">CUR — Kursor Windows</option>
+                <option value="svg">SVG — Vector Image Wrapper</option>
+              </optgroup>
+              <optgroup label="Dokumen & Publikasi">
+                <option value="pdf">PDF — Dokumen Portabel / Siap Cetak</option>
+              </optgroup>
+              <optgroup label="Game Dev & Grafis Klasik">
+                <option value="tga">TGA — Truevision / Tekstur 3D Game</option>
+                <option value="bmp">BMP — Windows Bitmap</option>
+                <option value="ppm">PPM — Netpbm Portable Pixmap P6</option>
+                <option value="wbmp">WBMP — Wireless Bitmap Monokrom</option>
+              </optgroup>
+            </select>
+          </div>
+        </section>
+
+        <!-- Liquid Drop Zone (Compact & Action-Oriented on Mobile) -->
+        <section id="drop-zone" class="liquid-dropzone rounded-xl sm:rounded-2xl p-4 sm:p-9 text-center cursor-pointer group active:scale-[0.99] transition-all">
+          <input type="file" id="file-input" multiple accept="image/*,.heic,.heif,.dng,.cr2,.cr3,.nef,.nrw,.arw,.srf,.sr2,.raf,.orf,.rw2,.pef,.raw,.tif,.tiff,.svg,.ico,.bmp,.tga,.ppm,.wbmp,.cur,.gif,.webp,.avif" class="hidden">
+          
+          <div class="flex flex-col items-center justify-center gap-2 sm:gap-3 pointer-events-none">
+            <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.1] dark:border-white/10 flex items-center justify-center text-sky-600 dark:text-sky-400 group-hover:scale-105 transition-all duration-300 shadow-sm">
+              <span class="material-symbols-outlined text-[24px] sm:text-[28px]">add_photo_alternate</span>
+            </div>
+
+            <div class="space-y-0.5 sm:space-y-1">
+              <p class="font-display font-semibold text-xs sm:text-base text-slate-900 dark:text-slate-100">
+                <span class="sm:hidden">Ketuk untuk <span class="text-sky-600 dark:text-sky-400 underline underline-offset-4 font-bold">Pilih Foto / Gambar</span></span>
+                <span class="hidden sm:inline"><span id="drop-title">Tarik & jatuhkan gambar ke sini, atau</span> <span id="drop-browse" class="text-sky-600 dark:text-sky-400 group-hover:underline underline-offset-4">pilih file</span></span>
+              </p>
+              <p id="drop-supported" class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 max-w-sm sm:max-w-md mx-auto truncate sm:whitespace-normal">
+                JPG, PNG, WEBP, AVIF, HEIC, RAW (DNG, CR2, NEF, ARW), SVG, ICO, BMP, TIFF, GIF, TGA, PPM, CUR, WBMP
+              </p>
+            </div>
+
+            <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/[0.04] dark:bg-white/[0.03] border border-black/[0.08] dark:border-white/[0.06] text-[11px] text-slate-600 dark:text-slate-400">
+              <kbd class="px-1.5 py-0.5 rounded bg-black/[0.08] dark:bg-white/[0.08] text-slate-800 dark:text-slate-300 font-mono text-[10px]">Ctrl</kbd>+<kbd class="px-1.5 py-0.5 rounded bg-black/[0.08] dark:bg-white/[0.08] text-slate-800 dark:text-slate-300 font-mono text-[10px]">V</kbd>
+              <span id="drop-paste-hint">bisa langsung paste dari clipboard</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Conversion Queue Section -->
+        <section id="queue-section" class="hidden space-y-2.5 sm:space-y-3">
+          
+          <!-- Toolbar Header -->
+          <div class="flex items-center justify-between gap-2 px-1">
+            <div class="flex items-center gap-2">
+              <h2 id="queue-title" class="font-display font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-200">Antrean Gambar</h2>
+              <span id="queue-count" class="text-[10px] sm:text-[11px] font-mono px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-700 dark:text-sky-400 border border-sky-500/25"></span>
+            </div>
+
+            <!-- Desktop & Tablet Toolbar Buttons -->
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <button id="convert-all-btn" class="btn-liquid-primary px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 sm:gap-1.5">
+                <span class="material-symbols-outlined text-[15px] sm:text-[16px]">play_arrow</span>
+                <span id="btn-text-convert-all" class="hidden xs:inline sm:inline">Konversi Semua</span>
+              </button>
+              <button id="download-zip-btn" disabled class="btn-liquid-success px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 sm:gap-1.5 disabled:opacity-35 disabled:pointer-events-none">
+                <span class="material-symbols-outlined text-[15px] sm:text-[16px]">folder_zip</span>
+                <span id="btn-text-download-zip" class="hidden xs:inline sm:inline">Unduh ZIP</span>
+              </button>
+              <button id="clear-all-btn" class="btn-liquid-ghost text-slate-700 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 p-1.5 sm:px-3 sm:py-2 rounded-xl text-xs font-medium flex items-center justify-center gap-1" title="Hapus Semua">
+                <span class="material-symbols-outlined text-[16px]">delete</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Queue Cards Container -->
+          <div id="queue-list" class="space-y-2">
+            <!-- Rendered dynamically by app.js -->
+          </div>
+
+        </section>
+
+        <!-- Empty State -->
+        <div id="empty-placeholder" class="py-6 sm:py-8 text-center text-slate-500 dark:text-slate-500 text-xs">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-black/[0.04] dark:bg-white/[0.02] border border-black/[0.08] dark:border-white/[0.05] mx-auto flex items-center justify-center text-slate-400 dark:text-slate-500 mb-1.5">
+            <span class="material-symbols-outlined text-[18px] sm:text-[20px]">image</span>
+          </div>
+          <span id="empty-queue-text">Belum ada gambar yang dimasukkan.</span>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Interactive Fun Fact & Privacy Sidebar (4 cols on desktop, vertically centered) -->
+      <aside class="lg:col-span-4 lg:self-center space-y-3 sm:space-y-4">
+        <!-- Fun Fact Card (Compact on mobile) -->
+        <div id="funfact-card" class="liquid-glass rounded-xl sm:rounded-2xl p-4 sm:p-6 overflow-hidden transition-all group">
+          
+          <!-- Fun Fact Header -->
+          <div class="flex items-center gap-2 pb-2.5 sm:pb-3 mb-2.5 sm:mb-3 border-b border-black/[0.08] dark:border-white/[0.06]">
+            <span class="material-symbols-outlined text-sky-600 dark:text-sky-400 text-[18px] sm:text-[20px]">auto_awesome</span>
+            <span id="funfact-title-label" class="font-display font-bold text-[11px] sm:text-xs tracking-wider uppercase text-slate-800 dark:text-slate-200">
+              Fakta Menarik Gambar
+            </span>
+          </div>
+
+          <!-- Slide Box with Automatic Animation -->
+          <div class="fact-slide-box flex items-center min-h-[70px] sm:min-h-[110px]">
+            <p id="funfact-text" class="fact-text-anim text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              <!-- Dynamically populated from 50 funfacts -->
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Privacy & Zero Database Card (Compact on mobile) -->
+        <div id="privacy-card" class="liquid-glass rounded-xl sm:rounded-2xl p-3.5 sm:p-5 transition-all">
+          <div class="flex items-center gap-2 pb-2 mb-2 border-b border-black/[0.08] dark:border-white/[0.06]">
+            <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-[18px] sm:text-[19px]">verified_user</span>
+            <span id="privacy-title-label" class="font-display font-bold text-[11px] sm:text-xs tracking-wider uppercase text-slate-800 dark:text-slate-200">
+              Privasi & Pemrosesan Lokal
+            </span>
+          </div>
+          <p id="privacy-desc" class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Seluruh proses konversi berjalan langsung di browser dan RAM perangkat Anda. Web ini tidak memiliki database atau server eksternal, sehingga foto dan data pribadi Anda tidak pernah diunggah, disimpan, atau dilacak oleh pihak manapun.
+          </p>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Sticky Mobile Floating Bottom Action Bar -->
+  <div id="mobile-action-bar" class="sm:hidden fixed bottom-0 left-0 right-0 z-40 p-2.5 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border-t border-black/10 dark:border-white/10 shadow-2xl flex items-center gap-2 transform translate-y-full transition-transform duration-300">
+    <button id="mobile-convert-btn" class="btn-liquid-primary flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm">
+      <span class="material-symbols-outlined text-[17px]">play_arrow</span>
+      <span id="mobile-btn-text-convert">Konversi Semua</span>
+    </button>
+    <button id="mobile-download-btn" disabled class="btn-liquid-success flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-40 disabled:pointer-events-none">
+      <span class="material-symbols-outlined text-[17px]">folder_zip</span>
+      <span id="mobile-btn-text-zip">Unduh ZIP</span>
+    </button>
+  </div>
+
+    </div>
+  </main>
+
+  <!-- Inspection Modal -->
+  <div id="preview-modal" class="fixed inset-0 bg-black/75 dark:bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="liquid-glass rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="px-4 py-3 border-b border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between">
+        <h3 id="modal-title" class="font-display font-bold text-xs uppercase tracking-wider text-slate-900 dark:text-slate-200 flex items-center gap-2">
+          <span class="material-symbols-outlined text-sky-600 dark:text-sky-400 text-[18px]">visibility</span> Inspeksi Gambar
+        </h3>
+        <button id="modal-close" class="text-slate-500 hover:text-slate-950 dark:hover:text-white p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-4 sm:p-5 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Original -->
+        <div class="space-y-2">
+          <div id="modal-orig-label" class="text-[11px] font-mono tracking-wider uppercase text-slate-600 dark:text-slate-400">File Asli</div>
+          <div class="aspect-video bg-black/5 dark:bg-black/50 rounded-xl overflow-hidden border border-black/[0.08] dark:border-white/[0.08] flex items-center justify-center">
+            <img id="modal-orig-img" class="max-w-full max-h-full object-contain" alt="Original">
+          </div>
+          <div id="modal-orig-info" class="text-xs text-slate-700 dark:text-slate-400 bg-black/[0.03] dark:bg-white/[0.03] p-3 rounded-xl border border-black/[0.08] dark:border-white/[0.06] font-mono leading-relaxed"></div>
+        </div>
+
+        <!-- Converted -->
+        <div class="space-y-2">
+          <div id="modal-conv-label" class="text-[11px] font-mono tracking-wider uppercase text-sky-600 dark:text-sky-400">Hasil Konversi</div>
+          <div class="aspect-video bg-black/5 dark:bg-black/50 rounded-xl overflow-hidden border border-black/[0.08] dark:border-white/[0.08] flex items-center justify-center">
+            <img id="modal-conv-img" class="max-w-full max-h-full object-contain" alt="Converted">
+          </div>
+          <div id="modal-conv-info" class="text-xs text-slate-700 dark:text-slate-400 bg-black/[0.03] dark:bg-white/[0.03] p-3 rounded-xl border border-black/[0.08] dark:border-white/[0.06] font-mono leading-relaxed"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Application Logic -->
+  <script type="module" src="./app.js"></script>
+
+  <script>
+    // Theme Switcher & System Auto-Detection Logic
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const htmlEl = document.documentElement;
+
+    function applyTheme(isDark, userInitiated = false) {
+      if (isDark) {
+        htmlEl.classList.add('dark');
+        if (userInitiated) {
+          localStorage.setItem('theme', 'dark');
+          localStorage.setItem('theme_user_chosen', 'true');
+        }
+      } else {
+        htmlEl.classList.remove('dark');
+        if (userInitiated) {
+          localStorage.setItem('theme', 'light');
+          localStorage.setItem('theme_user_chosen', 'true');
+        }
+      }
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      const willBeDark = !htmlEl.classList.contains('dark');
+      applyTheme(willBeDark, true);
+    });
+
+    // Auto-detect OS change in real-time if user hasn't explicitly locked preference
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('theme_user_chosen')) {
+        applyTheme(e.matches, false);
+      }
+    });
+
+    // PWA Service Worker Registration & Install Prompt Handler
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => console.log('PWA ServiceWorker ready:', reg.scope))
+          .catch((err) => console.warn('PWA ServiceWorker error:', err));
+      });
+    }
+
+    let deferredPrompt = null;
+    const pwaInstallBtn = document.getElementById('pwa-install-btn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (pwaInstallBtn) {
+        pwaInstallBtn.classList.remove('hidden');
+      }
+    });
+
+    if (pwaInstallBtn) {
+      pwaInstallBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          pwaInstallBtn.classList.add('hidden');
+        }
+        deferredPrompt = null;
+      });
+    }
+
+    window.addEventListener('appinstalled', () => {
+      if (pwaInstallBtn) pwaInstallBtn.classList.add('hidden');
+      console.log('8BitShiftIMG PWA installed successfully');
+    });
+  </script>
+</body>
+</html>
