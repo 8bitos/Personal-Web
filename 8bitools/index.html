@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>8BiTools</title>
+  <meta name="description" content="8BiTools — Koleksi alat multimedia dan dokumen.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            display: ['"Outfit"', '"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Google Material Symbols Rounded -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <style>
+    .material-symbols-rounded {
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+
+    :root {
+      --bg-deep: #070d1a;
+      --blue-accent: #38bdf8;
+      --glass-bg: rgba(255, 255, 255, 0.045);
+      --glass-border: rgba(255, 255, 255, 0.13);
+      --glass-border-hover: rgba(56, 189, 248, 0.42);
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      background-image:
+        radial-gradient(ellipse 75% 50% at 50% 0%, rgba(30, 64, 175, 0.36) 0%, transparent 70%),
+        radial-gradient(circle 500px at 85% 25%, rgba(56, 189, 248, 0.10) 0%, transparent 70%),
+        radial-gradient(circle 550px at 15% 80%, rgba(37, 99, 235, 0.22) 0%, transparent 70%),
+        linear-gradient(180deg, #0b1528 0%, #070d1a 60%, #050912 100%);
+      background-attachment: fixed;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .glass-bar {
+      background: var(--glass-bg);
+      backdrop-filter: blur(22px) saturate(150%);
+      -webkit-backdrop-filter: blur(22px) saturate(150%);
+      border: 1px solid var(--glass-border);
+      box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.12),
+        0 18px 40px -15px rgba(0, 0, 0, 0.55);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tool-card {
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.025) 100%);
+      backdrop-filter: blur(22px) saturate(150%);
+      -webkit-backdrop-filter: blur(22px) saturate(150%);
+      border: 1px solid var(--glass-border);
+      box-shadow:
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.14),
+        0 20px 45px -15px rgba(0, 0, 0, 0.55);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tool-card:hover {
+      transform: translateY(-6px);
+      background: linear-gradient(165deg, rgba(56, 189, 248, 0.09) 0%, rgba(255, 255, 255, 0.035) 100%);
+      border-color: var(--glass-border-hover);
+      box-shadow:
+        inset 0 1px 0 0 rgba(186, 230, 253, 0.25),
+        0 28px 55px -15px rgba(0, 0, 0, 0.65),
+        0 0 32px -10px rgba(56, 189, 248, 0.22);
+    }
+
+    .card-action-box {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+      transition: all 0.25s ease;
+    }
+
+    .tool-card:hover .card-action-box {
+      background: #38bdf8;
+      color: #06101f;
+      border-color: #38bdf8;
+      transform: scale(1.06);
+    }
+
+    .icon-pedestal {
+      position: relative;
+    }
+
+    @media (min-width: 640px) {
+      .icon-pedestal::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 68px;
+        height: 16px;
+        background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.38) 0%, transparent 70%);
+        filter: blur(5px);
+        pointer-events: none;
+      }
+    }
+
+    .filter-pill {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(255, 255, 255, 0.72);
+      transition: all 0.2s ease;
+    }
+
+    .filter-pill:hover {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: #ffffff;
+    }
+
+    .filter-pill.active {
+      background: #38bdf8;
+      color: #06101f;
+      border-color: #38bdf8;
+      font-weight: 600;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #060b16; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.18); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.35); }
+  </style>
+</head>
+<body class="relative selection:bg-sky-400/30 selection:text-white">
+
+  <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 py-4 sm:py-10 min-h-screen flex flex-col justify-between">
+
+    <div>
+      <!-- Minimal Top Navigation -->
+      <header class="flex items-center justify-between gap-3 mb-7 sm:mb-14">
+        <a href="index.html" class="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl glass-bar flex items-center justify-center font-display font-extrabold text-sm sm:text-base tracking-tight group-hover:scale-105 transition-transform">
+            <span class="bg-gradient-to-br from-white to-sky-400 bg-clip-text text-transparent">8Bi</span>
+          </div>
+          <span class="font-display font-bold text-lg sm:text-xl tracking-tight text-white">8BiTools</span>
+        </a>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Search Input -->
+          <div class="glass-bar rounded-full px-3 sm:px-3.5 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 w-32 sm:w-64 focus-within:border-sky-400/50 transition-colors">
+            <span class="material-symbols-rounded text-[16px] sm:text-[18px] text-white/55">search</span>
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Cari..."
+              class="w-full bg-transparent border-0 text-xs sm:text-sm text-white placeholder-white/40 focus:outline-none"
+            >
+            <button id="clear-btn" class="hidden text-white/50 hover:text-white">
+              <span class="material-symbols-rounded text-[15px]">close</span>
+            </button>
+          </div>
+
+          <!-- Language Selector Dropdown -->
+          <div class="relative" id="lang-dropdown">
+            <button id="lang-btn" class="glass-bar px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full text-xs font-semibold text-white/85 hover:text-sky-300 transition-colors flex items-center gap-1.5">
+              <span id="lang-flag" class="text-sm leading-none">🇮🇩</span>
+              <span id="lang-label">ID</span>
+              <span class="material-symbols-rounded text-[15px] text-white/55">expand_more</span>
+            </button>
+
+            <div id="lang-menu" class="hidden absolute right-0 mt-2 w-44 rounded-2xl py-1.5 z-50 bg-[#0b1528]/95 backdrop-blur-2xl border border-white/15 shadow-2xl text-xs font-medium text-white/85">
+              <button class="w-full px-3.5 py-2 text-left flex items-center gap-2.5 hover:bg-sky-400/15 hover:text-white transition-colors" data-lang="id">
+                <span class="text-sm">🇮🇩</span> Bahasa Indonesia
+              </button>
+              <button class="w-full px-3.5 py-2 text-left flex items-center gap-2.5 hover:bg-sky-400/15 hover:text-white transition-colors" data-lang="en">
+                <span class="text-sm">🇬🇧</span> English
+              </button>
+              <button class="w-full px-3.5 py-2 text-left flex items-center gap-2.5 hover:bg-sky-400/15 hover:text-white transition-colors" data-lang="zh">
+                <span class="text-sm">🇨🇳</span> 简体中文
+              </button>
+              <button class="w-full px-3.5 py-2 text-left flex items-center gap-2.5 hover:bg-sky-400/15 hover:text-white transition-colors" data-lang="es">
+                <span class="text-sm">🇪🇸</span> Español
+              </button>
+              <button class="w-full px-3.5 py-2 text-left flex items-center gap-2.5 hover:bg-sky-400/15 hover:text-white transition-colors" data-lang="ar">
+                <span class="text-sm">🇸🇦</span> العربية
+              </button>
+              <button class="w-full px-3.5 py-2 text-left flex items-center gap-2.5 hover:bg-sky-400/15 hover:text-white transition-colors" data-lang="fr">
+                <span class="text-sm">🇫🇷</span> Français
+              </button>
+              <button class="w-full px-3.5 py-2 text-left flex items-center gap-2.5 hover:bg-sky-400/15 hover:text-white transition-colors" data-lang="ja">
+                <span class="text-sm">🇯🇵</span> 日本語
+              </button>
+              <button class="w-full px-3.5 py-2 text-left flex items-center gap-2.5 hover:bg-sky-400/15 hover:text-white transition-colors" data-lang="pt">
+                <span class="text-sm">🇧🇷</span> Português
+              </button>
+            </div>
+          </div>
+
+          <!-- Portfolio Link -->
+          <a href="../index.html" class="glass-bar w-8 h-8 sm:w-auto sm:px-4 sm:py-2 rounded-full flex items-center justify-center gap-1.5 text-xs font-semibold text-white/85 hover:text-sky-300 transition-colors" title="Portofolio">
+            <span class="material-symbols-rounded text-[16px] sm:text-[17px]">apps</span>
+            <span class="hidden sm:inline" id="nav-portfolio">Portofolio</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Tools Section (Straight to the Point) -->
+      <main>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-8">
+          <h1 class="font-display font-bold text-xl sm:text-3xl text-white tracking-tight" id="section-title">
+            All Tools
+          </h1>
+
+          <!-- Filter Pills -->
+          <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 sm:pb-0" id="filter-container">
+            <button class="filter-pill shrink-0 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-xs active" data-filter="all" id="f-all">Semua</button>
+            <button class="filter-pill shrink-0 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-xs" data-filter="image" id="f-img">Gambar</button>
+            <button class="filter-pill shrink-0 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-xs" data-filter="video" id="f-vid">Video</button>
+            <button class="filter-pill shrink-0 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-xs" data-filter="document" id="f-doc">Dokumen &amp; Kompresi</button>
+          </div>
+        </div>
+
+        <!-- 2x2 Square Grid on Mobile, 4-Column Grid on Desktop -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6" id="tools-grid">
+
+          <!-- 1. Image Converter -->
+          <a href="tool/format/image/index.html" class="tool-card rounded-2xl sm:rounded-[26px] p-4 sm:p-6 flex flex-col justify-between group" data-category="image" data-keywords="image gambar foto converter raw heic dng webp avif png jpg tiff">
+            <div>
+              <div class="h-16 sm:h-28 flex items-center justify-center icon-pedestal mb-3 sm:mb-4">
+                <div class="w-12 h-12 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-sky-400/25 to-blue-600/25 border border-sky-300/30 flex items-center justify-center text-sky-300 shadow-lg sm:shadow-xl group-hover:scale-110 transition-transform duration-300">
+                  <span class="material-symbols-rounded text-[26px] sm:text-[40px]">image</span>
+                </div>
+              </div>
+
+              <h2 class="font-display font-bold text-sm sm:text-lg text-white leading-tight">Image Converter</h2>
+              <p class="text-[11px] sm:text-xs text-white/60 mt-1 leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none" data-i18n="card-img-desc">
+                Konversi RAW, HEIC, &amp; 15+ format gambar.
+              </p>
+            </div>
+
+            <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex items-center justify-between">
+              <span class="text-[11px] sm:text-xs font-semibold text-sky-300/90">15+ Format</span>
+              <div class="card-action-box w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center text-white">
+                <span class="material-symbols-rounded text-[15px] sm:text-[18px]">arrow_outward</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- 2. LiveBit Studio -->
+          <a href="tool/format/video to live foto/index.html" class="tool-card rounded-2xl sm:rounded-[26px] p-4 sm:p-6 flex flex-col justify-between group" data-category="video" data-keywords="video live photo motion photo android tiktok samsung google photos mp4 jpg mov">
+            <div>
+              <div class="h-16 sm:h-28 flex items-center justify-center icon-pedestal mb-3 sm:mb-4">
+                <div class="w-12 h-12 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-blue-400/25 to-indigo-600/25 border border-blue-300/30 flex items-center justify-center text-blue-300 shadow-lg sm:shadow-xl group-hover:scale-110 transition-transform duration-300">
+                  <span class="material-symbols-rounded text-[26px] sm:text-[40px]">motion_photos_on</span>
+                </div>
+              </div>
+
+              <h2 class="font-display font-bold text-sm sm:text-lg text-white leading-tight">LiveBit Studio</h2>
+              <p class="text-[11px] sm:text-xs text-white/60 mt-1 leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none" data-i18n="card-vid-desc">
+                Ubah video jadi Motion &amp; Live Photo.
+              </p>
+            </div>
+
+            <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex items-center justify-between">
+              <span class="text-[11px] sm:text-xs font-semibold text-blue-300/90">Android · iOS</span>
+              <div class="card-action-box w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center text-white">
+                <span class="material-symbols-rounded text-[15px] sm:text-[18px]">arrow_outward</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- 3. 8BitCompress -->
+          <a href="tool/format/compressor/index.html" class="tool-card rounded-2xl sm:rounded-[26px] p-4 sm:p-6 flex flex-col justify-between group" data-category="document" data-keywords="compress compressor kompresi video audio gambar pdf kecilkan ukuran">
+            <div>
+              <div class="h-16 sm:h-28 flex items-center justify-center icon-pedestal mb-3 sm:mb-4">
+                <div class="w-12 h-12 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-cyan-400/25 to-sky-600/25 border border-cyan-300/30 flex items-center justify-center text-cyan-300 shadow-lg sm:shadow-xl group-hover:scale-110 transition-transform duration-300">
+                  <span class="material-symbols-rounded text-[26px] sm:text-[40px]">compress</span>
+                </div>
+              </div>
+
+              <h2 class="font-display font-bold text-sm sm:text-lg text-white leading-tight">8BitCompress</h2>
+              <p class="text-[11px] sm:text-xs text-white/60 mt-1 leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none" data-i18n="card-comp-desc">
+                Kompresi presisi video, audio, gambar &amp; PDF.
+              </p>
+            </div>
+
+            <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex items-center justify-between">
+              <span class="text-[11px] sm:text-xs font-semibold text-cyan-300/90">Multi-Media</span>
+              <div class="card-action-box w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center text-white">
+                <span class="material-symbols-rounded text-[15px] sm:text-[18px]">arrow_outward</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- 4. 8BitDoc -->
+          <a href="tool/format/pdf/index.html" class="tool-card rounded-2xl sm:rounded-[26px] p-4 sm:p-6 flex flex-col justify-between group" data-category="document" data-keywords="pdf doc document scanner scan camscanner luruskan kertas filter">
+            <div>
+              <div class="h-16 sm:h-28 flex items-center justify-center icon-pedestal mb-3 sm:mb-4">
+                <div class="w-12 h-12 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-400/25 to-blue-700/25 border border-indigo-300/30 flex items-center justify-center text-indigo-300 shadow-lg sm:shadow-xl group-hover:scale-110 transition-transform duration-300">
+                  <span class="material-symbols-rounded text-[26px] sm:text-[40px]">document_scanner</span>
+                </div>
+              </div>
+
+              <h2 class="font-display font-bold text-sm sm:text-lg text-white leading-tight">8BitDoc</h2>
+              <p class="text-[11px] sm:text-xs text-white/60 mt-1 leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none" data-i18n="card-pdf-desc">
+                Smart scanner dokumen &amp; Image ke PDF.
+              </p>
+            </div>
+
+            <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex items-center justify-between">
+              <span class="text-[11px] sm:text-xs font-semibold text-indigo-300/90">PDF Studio</span>
+              <div class="card-action-box w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center text-white">
+                <span class="material-symbols-rounded text-[15px] sm:text-[18px]">arrow_outward</span>
+              </div>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Empty Search State -->
+        <div id="no-results" class="hidden glass-bar rounded-3xl text-center py-14 mt-4">
+          <span class="material-symbols-rounded text-4xl text-white/40 mb-2">search_off</span>
+          <p class="text-sm text-white/60" id="no-result-text">Alat tidak ditemukan</p>
+        </div>
+      </main>
+    </div>
+
+    <!-- Minimal Footer -->
+    <footer class="mt-16 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/45">
+      <span class="font-display font-bold text-white/85">8BiTools</span>
+      <div class="flex items-center gap-5 flex-wrap justify-center">
+        <a href="tool/format/image/index.html" class="hover:text-sky-300 transition-colors">Image</a>
+        <a href="tool/format/video to live foto/index.html" class="hover:text-sky-300 transition-colors">LiveBit</a>
+        <a href="tool/format/compressor/index.html" class="hover:text-sky-300 transition-colors">Compress</a>
+        <a href="tool/format/pdf/index.html" class="hover:text-sky-300 transition-colors">8BitDoc</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Minimal Script for Search, Filter & Bilingual Toggle -->
+  <script>
+    const flags = {
+      id: "🇮🇩", en: "🇬🇧", zh: "🇨🇳", es: "🇪🇸", ar: "🇸🇦", fr: "🇫🇷", ja: "🇯🇵", pt: "🇧🇷"
+    };
+
+    const dict = {
+      id: {
+        sectionTitle: "All Tools",
+        fAll: "Semua",
+        fImg: "Gambar",
+        fVid: "Video",
+        fDoc: "Dokumen & Kompresi",
+        cardImgDesc: "Konversi RAW, HEIC, & 15+ format gambar.",
+        cardVidDesc: "Ubah video jadi Motion & Live Photo.",
+        cardCompDesc: "Kompresi presisi video, audio, gambar & PDF.",
+        cardPdfDesc: "Smart scanner dokumen & Image ke PDF.",
+        searchPlaceholder: "Cari...",
+        noResults: "Alat tidak ditemukan",
+        navPortfolio: "Portofolio"
+      },
+      en: {
+        sectionTitle: "All Tools",
+        fAll: "All",
+        fImg: "Image",
+        fVid: "Video",
+        fDoc: "Docs & Compress",
+        cardImgDesc: "Convert RAW, HEIC, & 15+ image formats.",
+        cardVidDesc: "Turn videos into Motion & Live Photos.",
+        cardCompDesc: "Precision compression for video, audio, & PDF.",
+        cardPdfDesc: "Smart document scanner & Image to PDF.",
+        searchPlaceholder: "Search...",
+        noResults: "No tools found",
+        navPortfolio: "Portfolio"
+      },
+      zh: {
+        sectionTitle: "全部工具",
+        fAll: "全部",
+        fImg: "图片",
+        fVid: "视频",
+        fDoc: "文档与压缩",
+        cardImgDesc: "转换 RAW、HEIC 及 15+ 种图片格式。",
+        cardVidDesc: "将视频转换为动态照片和实况照片。",
+        cardCompDesc: "高精度压缩视频、音频、图片和 PDF。",
+        cardPdfDesc: "智能文档扫描仪与图片转 PDF。",
+        searchPlaceholder: "搜索...",
+        noResults: "未找到相关工具",
+        navPortfolio: "作品集"
+      },
+      es: {
+        sectionTitle: "Herramientas",
+        fAll: "Todas",
+        fImg: "Imagen",
+        fVid: "Video",
+        fDoc: "Docs y Compresión",
+        cardImgDesc: "Convierte RAW, HEIC y más de 15 formatos.",
+        cardVidDesc: "Convierte videos en Motion y Live Photo.",
+        cardCompDesc: "Compresión precisa de video, audio y PDF.",
+        cardPdfDesc: "Escáner inteligente e Imagen a PDF.",
+        searchPlaceholder: "Buscar...",
+        noResults: "No se encontraron herramientas",
+        navPortfolio: "Portafolio"
+      },
+      ar: {
+        sectionTitle: "جميع الأدوات",
+        fAll: "الكل",
+        fImg: "الصور",
+        fVid: "الفيديو",
+        fDoc: "المستندات والضغط",
+        cardImgDesc: "تحويل RAW و HEIC وأكثر من 15 صيغة.",
+        cardVidDesc: "تحويل الفيديو إلى صور متحركة و Live Photo.",
+        cardCompDesc: "ضغط دقيق للفيديو والصوت والصور و PDF.",
+        cardPdfDesc: "ماسح مستندات ذكي وتحويل الصور إلى PDF.",
+        searchPlaceholder: "بحث...",
+        noResults: "لم يتم العثور على أدوات",
+        navPortfolio: "معرض الأعمال"
+      },
+      fr: {
+        sectionTitle: "Tous les Outils",
+        fAll: "Tous",
+        fImg: "Image",
+        fVid: "Vidéo",
+        fDoc: "Docs & Compression",
+        cardImgDesc: "Convertissez RAW, HEIC et 15+ formats.",
+        cardVidDesc: "Transformez vos vidéos en Motion & Live Photo.",
+        cardCompDesc: "Compression précise vidéo, audio, image & PDF.",
+        cardPdfDesc: "Scanner intelligent et Image vers PDF.",
+        searchPlaceholder: "Rechercher...",
+        noResults: "Aucun outil trouvé",
+        navPortfolio: "Portfolio"
+      },
+      ja: {
+        sectionTitle: "すべてのツール",
+        fAll: "すべて",
+        fImg: "画像",
+        fVid: "動画",
+        fDoc: "文書・圧縮",
+        cardImgDesc: "RAW、HEIC、15種類以上の画像形式を変換。",
+        cardVidDesc: "動画をモーション＆ライブフォトに変換。",
+        cardCompDesc: "動画・音声・画像・PDFを高精度に圧縮。",
+        cardPdfDesc: "スマート文書スキャン＆画像をPDF化。",
+        searchPlaceholder: "検索...",
+        noResults: "ツールが見つかりません",
+        navPortfolio: "ポートフォリオ"
+      },
+      pt: {
+        sectionTitle: "Ferramentas",
+        fAll: "Todas",
+        fImg: "Imagem",
+        fVid: "Vídeo",
+        fDoc: "Docs e Compressão",
+        cardImgDesc: "Converta RAW, HEIC e mais de 15 formatos.",
+        cardVidDesc: "Transforme vídeos em Motion e Live Photo.",
+        cardCompDesc: "Compressão precisa de vídeo, áudio e PDF.",
+        cardPdfDesc: "Scanner inteligente e Imagem para PDF.",
+        searchPlaceholder: "Buscar...",
+        noResults: "Nenhuma ferramenta encontrada",
+        navPortfolio: "Portfólio"
+      }
+    };
+
+    let lang = localStorage.getItem('8bi_lang') || 'id';
+    if (!dict[lang]) lang = 'id';
+
+    function applyLang(l) {
+      lang = dict[l] ? l : 'id';
+      localStorage.setItem('8bi_lang', lang);
+      document.documentElement.lang = lang;
+      document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+
+      const t = dict[lang];
+      document.getElementById('lang-flag').textContent = flags[lang] || "🇮🇩";
+      document.getElementById('lang-label').textContent = lang.toUpperCase();
+      document.getElementById('section-title').textContent = t.sectionTitle;
+      document.getElementById('f-all').textContent = t.fAll;
+      document.getElementById('f-img').textContent = t.fImg;
+      document.getElementById('f-vid').textContent = t.fVid;
+      document.getElementById('f-doc').textContent = t.fDoc;
+      document.getElementById('search-input').placeholder = t.searchPlaceholder;
+      document.getElementById('no-result-text').textContent = t.noResults;
+      document.getElementById('nav-portfolio').textContent = t.navPortfolio;
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (k === 'card-img-desc') el.textContent = t.cardImgDesc;
+        if (k === 'card-vid-desc') el.textContent = t.cardVidDesc;
+        if (k === 'card-comp-desc') el.textContent = t.cardCompDesc;
+        if (k === 'card-pdf-desc') el.textContent = t.cardPdfDesc;
+      });
+    }
+
+    const langBtn = document.getElementById('lang-btn');
+    const langMenu = document.getElementById('lang-menu');
+
+    langBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      langMenu.classList.toggle('hidden');
+    });
+
+    document.querySelectorAll('#lang-menu button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        applyLang(btn.getAttribute('data-lang'));
+        langMenu.classList.add('hidden');
+      });
+    });
+
+    document.addEventListener('click', () => {
+      langMenu.classList.add('hidden');
+    });
+
+    const searchInput = document.getElementById('search-input');
+    const clearBtn = document.getElementById('clear-btn');
+    const pills = document.querySelectorAll('#filter-container button');
+    const cards = document.querySelectorAll('.tool-card');
+    const noResults = document.getElementById('no-results');
+    let currentFilter = 'all';
+
+    function updateGrid() {
+      const q = searchInput.value.trim().toLowerCase();
+      clearBtn.classList.toggle('hidden', q.length === 0);
+      let visible = 0;
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        const keys = (card.getAttribute('data-keywords') || '') + ' ' + card.innerText.toLowerCase();
+        const okCat = currentFilter === 'all' || cat === currentFilter;
+        const okQuery = q === '' || keys.includes(q);
+        if (okCat && okQuery) {
+          card.classList.remove('hidden');
+          visible++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      noResults.classList.toggle('hidden', visible > 0);
+    }
+
+    searchInput.addEventListener('input', updateGrid);
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      updateGrid();
+      searchInput.focus();
+    });
+
+    pills.forEach(p => {
+      p.addEventListener('click', () => {
+        pills.forEach(x => x.classList.remove('active'));
+        p.classList.add('active');
+        currentFilter = p.getAttribute('data-filter');
+        updateGrid();
+      });
+    });
+
+    applyLang(lang);
+
+    // Ensure tool links resolve even if served at /8bitools without trailing slash
+    if (!location.pathname.endsWith('/') && !location.pathname.endsWith('.html')) {
+      const seg = location.pathname.split('/').filter(Boolean).pop();
+      if (seg) {
+        document.querySelectorAll('a[href^="tool/"]').forEach(a => {
+          a.setAttribute('href', seg + '/' + a.getAttribute('href'));
+        });
+        const backBtn = document.querySelector('a[title="Portofolio"]');
+        if (backBtn) backBtn.setAttribute('href', './');
+      }
+    }
+  </script>
+</body>
+</html>

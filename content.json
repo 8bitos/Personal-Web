@@ -80,105 +80,383 @@
     "number": "01",
     "title": "About Me",
     "paragraphs": [
-      "I am a freelance developer and media creator who builds things across the digital landscape. From web architectures and mobile apps to 2D game programming, graphic design, and video editing, I am hands-on with technology and media. My journey started in elementary school, teaching myself to navigate the web, play PC games, and learn game modding entirely on my own. By junior high, I was writing code, and by high school, I was building functional web and mobile applications.",
-      "My approach to software is deeply fueled by a lifelong love for pop culture, including games, music, and movies. I don't just build applications. I understand how algorithms engage users and how game loops dictate experience. While AI allows me to ship complex features in days rather than weeks, I believe a true developer's level lies in understanding core logic and system flow. This foundation lets me adapt, learn new tech stacks rapidly, and deliver high-quality work that stands out.",
-      "Beyond code and media, I have a formal background in teaching, holding a degree in Informatics Engineering Education. This unique blend of tech expertise and pedagogical training makes me just as comfortable explaining complex architectures or mentoring teams as I am programming systems."
+      "Hi, I’m Sapta, a graduate of Informatics Engineering Education from Universitas Pendidikan Ganesha (Undiksha), where I completed my degree on time in 8 semesters with a 3.90 GPA.",
+      "I have a deep curiosity for learning new things, and my strongest natural aptitude lies in technology—specifically anything related to computers, software engineering, and digital systems. While my formal academic background combines technology with pedagogy, my primary passion has always been on the pure IT and engineering side. Having been fascinated by computers, gaming, and how digital ecosystems work since childhood, building software and exploring new tech stacks feels like second nature to me.",
+      "Nowadays, I continue to actively learn and explore new technologies. My educational background serves as a unique bonus, allowing me to communicate complex technical logic clearly, write structured documentation, and collaborate effectively with both technical teams and end users."
+    ],
+    "chapters": [
+      {
+        "index": "01",
+        "label": "Who Am I?",
+        "headline": "About Me",
+        "paragraphs": [
+          "Hi, I’m Sapta, a graduate of Informatics Engineering Education from Universitas Pendidikan Ganesha (Undiksha), where I completed my degree on time in 8 semesters with a 3.90 GPA.",
+          "I have a deep curiosity for learning new things, and my strongest natural aptitude lies in technology—specifically anything related to computers, software engineering, and digital systems. While my formal academic background combines technology with pedagogy, my primary passion has always been on the pure IT and engineering side. Having been fascinated by computers, gaming, and how digital ecosystems work since childhood, building software and exploring new tech stacks feels like second nature to me.",
+          "Nowadays, I continue to actively learn and explore new technologies. My educational background serves as a unique bonus, allowing me to communicate complex technical logic clearly, write structured documentation, and collaborate effectively with both technical teams and end users."
+        ],
+        "highlights": ["Undiksha (3.90 GPA)", "Software Engineering", "Continuous Learner"]
+      },
+      {
+        "index": "02",
+        "label": "Personal Interest",
+        "headline": "What Keeps Me Inspired",
+        "paragraphs": [
+          "I am driven by a deep love for pop culture, from video games and music to cinema. Growing up immersed in these worlds taught me more than just appreciation for storytelling; it showed me how interactive mechanics, pacing, and algorithms keep people engaged.",
+          "Because I spend a lot of time exploring the broader international internet, I naturally stay on top of the latest updates, tech shifts, and creative trends. Having a broad mental library of references helps me see patterns everywhere, making it feel like everything is connected. While some consider gaming or watching films a distraction, I genuinely believe they are among the most enjoyable and effective ways to gain knowledge, build intuition, and fuel creativity."
+        ],
+        "highlights": ["Games, Music & Cinema", "Interactive Mechanics", "Tech & Creative Trends"]
+      },
+      {
+        "index": "03",
+        "label": "Life Journeys",
+        "headline": "How It All Started",
+        "paragraphs": [
+          "My journey has been shaped by curiosity, persistence, and a willingness to dive into new experiences. Throughout my school years, I consistently ranked among the top three students in my class while actively participating in numerous competitions. Even though I rarely took home the trophy, stepping into those arenas taught me something far more valuable: how to think under pressure, learn from failure, and stay resilient when tackling unfamiliar problems.",
+          "My fascination with technology started back in elementary school, where I taught myself how to navigate the web, explore PC games, and experiment with game modding. By junior high, I was writing my first lines of code, and by high school, I had moved on to building functional web and mobile applications."
+        ],
+        "highlights": ["Top 3 Student", "Competition Resilience", "Self-Taught Since SD"]
+      }
+    ],
+    "milestones": [
+      { "stage": "SD", "title": "SDN 1 Tajen" },
+      { "stage": "SMP", "title": "SMP N 4 Tabanan" },
+      { "stage": "SMK", "title": "SMK Negeri 2 Tabanan" },
+      { "stage": "Kuliah", "title": "Undiksha" }
     ]
   },
   "skills": {
     "number": "02",
     "title": "Skills & Tech Stack",
+    "subtitle": "Interactive RPG capability constellation — explore each specialization tree and click any node to inspect.",
+    "core": {
+      "name": "Core Logic",
+      "branch": "Developer Foundation",
+      "tier": "CORE HUB",
+      "level": 95,
+      "desc": "Understanding core logic, system flow, and game loops allows rapid adaptation across any tech stack—combining engineering fundamentals with AI-accelerated execution.",
+      "projects": ["System Architecture", "AI Workflow", "Pedagogical Clarity"]
+    },
     "categories": [
       {
-        "title": "Frontend",
-        "icon": "layout",
+        "title": "Programming Languages",
+        "shortTitle": "Languages",
+        "icon": "code-2",
         "skills": [
-          {
-            "name": "HTML5",
-            "icon": "code-2",
-            "level": 90
-          },
-          {
-            "name": "CSS",
-            "icon": "palette",
-            "level": 85
-          },
-          {
-            "name": "JavaScript",
-            "icon": "zap",
-            "level": 80
-          },
-          {
-            "name": "TypeScript",
-            "icon": "code",
-            "level": 75
-          },
-          {
-            "name": "React",
-            "icon": "atom",
-            "level": 75
-          }
-        ]
-      },
-      {
-        "title": "Backend & DB",
-        "icon": "server",
-        "skills": [
-          {
-            "name": "Node.js",
-            "icon": "terminal-square",
-            "level": 70
-          },
           {
             "name": "Python",
-            "icon": "cpu",
-            "level": 75
+            "shortName": "Python",
+            "icon": "terminal-square",
+            "level": 80,
+            "tier": "Tier II",
+            "desc": "Automation, AI/RAG prototyping, data processing scripts, and teaching programming fundamentals.",
+            "projects": ["AI Prototyping", "Data Workflows", "Teaching"]
           },
           {
-            "name": "Go",
+            "name": "Go (Golang)",
+            "shortName": "Go (Golang)",
             "icon": "cpu",
-            "level": 70
+            "level": 75,
+            "tier": "Tier III",
+            "desc": "High-performance backend services powering automated essay grading pipelines and multi-role dashboards.",
+            "projects": ["SAGE Grading Engine", "Backend APIs"]
+          },
+          {
+            "name": "JavaScript (ES6+) & TypeScript",
+            "shortName": "JS (ES6+) & TS",
+            "icon": "zap",
+            "level": 85,
+            "tier": "Tier III",
+            "desc": "Modern browser & full-stack application logic, type-safe architectures, Web Workers, and Canvas/Media processing.",
+            "projects": ["8BiTools", "SAGE Frontend", "My Journal BK"]
+          },
+          {
+            "name": "PHP",
+            "shortName": "PHP",
+            "icon": "code",
+            "level": 75,
+            "tier": "Tier II",
+            "desc": "Server-side web application development and MVC backends with Laravel.",
+            "projects": ["Web Applications", "Laravel Backends"]
+          },
+          {
+            "name": "Dart",
+            "shortName": "Dart",
+            "icon": "smartphone",
+            "level": 70,
+            "tier": "Tier II",
+            "desc": "Cross-platform mobile UI and state logic powering Flutter applications.",
+            "projects": ["Flutter Mobile Apps"]
           },
           {
             "name": "SQL",
+            "shortName": "SQL",
             "icon": "database",
-            "level": 65
+            "level": 75,
+            "tier": "Tier I",
+            "desc": "Relational schema design, complex queries, indexing, and data integrity for PostgreSQL and MySQL.",
+            "projects": ["PostgreSQL", "MySQL", "SAGE Platform"]
           },
           {
-            "name": "Java & Greenfoot",
+            "name": "Luau",
+            "shortName": "Luau",
             "icon": "gamepad-2",
-            "level": 70
+            "level": 75,
+            "tier": "Tier II",
+            "desc": "Gameplay scripting, client-server replication, and interactive mechanics in Roblox Studio.",
+            "projects": ["EduKoding Mentoring", "Roblox Games"]
+          },
+          {
+            "name": "C++",
+            "shortName": "C++",
+            "icon": "cpu",
+            "level": 70,
+            "tier": "Tier II",
+            "desc": "Embedded firmware, microcontroller sensor loops, and hardware actuator control for IoT and robotics.",
+            "projects": ["Next-Gen Hydroponics", "KRTI 2024 Robotics"]
+          },
+          {
+            "name": "Pascal",
+            "shortName": "Pascal",
+            "icon": "terminal",
+            "level": 75,
+            "tier": "Tier I",
+            "desc": "Structured algorithmic thinking, foundational data structures, and competitive programming basics.",
+            "projects": ["Algorithm Foundations", "School Competitions"]
           }
         ]
       },
       {
-        "title": "Tools & Smart Systems",
-        "icon": "wrench",
+        "title": "Web & Mobile Frameworks",
+        "shortTitle": "Web & Mobile",
+        "icon": "layout",
         "skills": [
           {
-            "name": "Git & GitHub",
-            "icon": "git-branch",
-            "level": 80
+            "name": "HTML5 & CSS3",
+            "shortName": "HTML5 & CSS3",
+            "icon": "palette",
+            "level": 90,
+            "tier": "Tier I",
+            "desc": "Semantic markup, custom Liquid Glass design systems, responsive Grid/Flexbox, and smooth animations.",
+            "projects": ["Personal Web", "8BiTools", "My Journal BK"]
           },
           {
-            "name": "IoT & Smart Systems",
-            "icon": "cpu",
-            "level": 75
+            "name": "Next.js & React",
+            "shortName": "Next.js & React",
+            "icon": "atom",
+            "level": 80,
+            "tier": "Tier III",
+            "desc": "Component-driven web apps, SSR/App Router, and cross-platform React Native mobile interfaces.",
+            "projects": ["SAGE Frontend", "Next-Gen Hydroponics"]
           },
           {
-            "name": "AI & LLM Integration",
+            "name": "Node.js",
+            "shortName": "Node.js",
+            "icon": "server",
+            "level": 75,
+            "tier": "Tier II",
+            "desc": "Event-driven REST APIs, build tooling, and lightweight backend services.",
+            "projects": ["Web APIs", "Dev Tooling"]
+          },
+          {
+            "name": "Laravel",
+            "shortName": "Laravel",
+            "icon": "layers",
+            "level": 75,
+            "tier": "Tier II",
+            "desc": "Rapid full-stack PHP web development with Eloquent ORM, auth, and Blade/API backends.",
+            "projects": ["Full-Stack Web Apps"]
+          },
+          {
+            "name": "Flutter",
+            "shortName": "Flutter",
+            "icon": "smartphone",
+            "level": 70,
+            "tier": "Tier II",
+            "desc": "Cross-platform Android/iOS mobile app development with expressive widget architectures.",
+            "projects": ["Mobile Apps"]
+          }
+        ]
+      },
+      {
+        "title": "AI, LLM & Data Workflows",
+        "shortTitle": "AI & LLM",
+        "icon": "sparkles",
+        "skills": [
+          {
+            "name": "Retrieval-Augmented Generation (RAG)",
+            "shortName": "RAG Pipelines",
+            "icon": "book-open",
+            "level": 82,
+            "tier": "Tier III",
+            "desc": "Designing context-retrieval and semantic grounding pipelines for objective automated essay evaluation.",
+            "projects": ["SAGE Engine", "RIGGS Journal Paper"]
+          },
+          {
+            "name": "Gemini API & LLM Integration",
+            "shortName": "Gemini API & LLM",
             "icon": "sparkles",
-            "level": 80
+            "level": 85,
+            "tier": "Tier III",
+            "desc": "Integrating Gemini and LLM inference APIs into production web platforms with structured outputs.",
+            "projects": ["SAGE Engine", "AI Grading"]
           },
           {
-            "name": "Photoshop",
+            "name": "Prompt Engineering & Model Evaluation",
+            "shortName": "Prompt Eng. & Eval",
+            "icon": "sliders",
+            "level": 85,
+            "tier": "Tier II",
+            "desc": "Crafting systematic prompts, rubrics, and quality benchmarks to evaluate LLM reasoning accuracy.",
+            "projects": ["TELUS AI Data", "SAGE Rubrics"]
+          },
+          {
+            "name": "Multimodal Data Annotation & Labeling",
+            "shortName": "Multimodal Annotation",
+            "icon": "tags",
+            "level": 88,
+            "tier": "Tier I",
+            "desc": "High-precision annotation and QA across text, image, and video datasets under strict SLAs.",
+            "projects": ["TELUS Digital"]
+          },
+          {
+            "name": "AI Content Moderation & Red-Teaming",
+            "shortName": "AI Safety & Red-Team",
+            "icon": "shield-check",
+            "level": 85,
+            "tier": "Tier II",
+            "desc": "Adversarial testing, policy alignment evaluation, and safety edge-case detection for Generative AI.",
+            "projects": ["TELUS Digital", "GenAI Alignment"]
+          },
+          {
+            "name": "AI-Assisted Development (Claude Code, GitHub Copilot, Cursor)",
+            "shortName": "AI-Assisted Dev",
+            "icon": "bot",
+            "level": 90,
+            "tier": "Tier III",
+            "desc": "Shipping complex features rapidly with agentic coding workflows while maintaining core architectural control.",
+            "projects": ["Rapid Prototyping", "Full-Stack Delivery"]
+          }
+        ]
+      },
+      {
+        "title": "Databases, Cloud & DevOps",
+        "shortTitle": "Cloud & DevOps",
+        "icon": "server",
+        "skills": [
+          {
+            "name": "PostgreSQL",
+            "shortName": "PostgreSQL",
+            "icon": "database",
+            "level": 75,
+            "tier": "Tier II",
+            "desc": "Production relational database design, migrations, and analytical queries.",
+            "projects": ["Backend Platforms"]
+          },
+          {
+            "name": "MySQL",
+            "shortName": "MySQL",
+            "icon": "database",
+            "level": 78,
+            "tier": "Tier I",
+            "desc": "Relational data modeling and query optimization for PHP/Laravel and web applications.",
+            "projects": ["Web Applications"]
+          },
+          {
+            "name": "Redis",
+            "shortName": "Redis",
+            "icon": "zap",
+            "level": 68,
+            "tier": "Tier II",
+            "desc": "In-memory caching, session storage, and fast key-value state management.",
+            "projects": ["Caching & Queues"]
+          },
+          {
+            "name": "Docker",
+            "shortName": "Docker",
+            "icon": "box",
+            "level": 72,
+            "tier": "Tier II",
+            "desc": "Containerizing services and reproducible local/production deployment environments.",
+            "projects": ["Service Deployment"]
+          },
+          {
+            "name": "Git & GitHub",
+            "shortName": "Git & GitHub",
+            "icon": "git-branch",
+            "level": 85,
+            "tier": "Tier I",
+            "desc": "Version control, branching workflows, code reviews, and GitHub Pages static hosting.",
+            "projects": ["All Repositories", "GitHub Pages"]
+          },
+          {
+            "name": "AWS (EC2) & Oracle Cloud",
+            "shortName": "AWS & Oracle Cloud",
+            "icon": "cloud",
+            "level": 72,
+            "tier": "Tier III",
+            "desc": "Provisioning cloud VMs, reverse proxies, SSL/TLS, and self-hosted web app infrastructure.",
+            "projects": ["VPS Hosting", "SAGE Deployment"]
+          },
+          {
+            "name": "Linux (Fedora) & Windows Administration",
+            "shortName": "Linux & Windows",
+            "icon": "terminal",
+            "level": 80,
+            "tier": "Tier II",
+            "desc": "Daily Linux (Fedora) workflow, shell scripting, system troubleshooting, and Windows environments.",
+            "projects": ["System Admin", "Dev Environment"]
+          }
+        ]
+      },
+      {
+        "title": "Creative, Game Dev & Productivity",
+        "shortTitle": "Creative & Games",
+        "icon": "gamepad-2",
+        "skills": [
+          {
+            "name": "Roblox Studio, Construct 3 & Scratch",
+            "shortName": "Roblox, Construct & Scratch",
+            "icon": "gamepad-2",
+            "level": 82,
+            "tier": "Tier II",
+            "desc": "2D/3D game prototyping, visual logic blocks, and project-based coding instruction for K-12 students.",
+            "projects": ["EduKoding", "Traditional Game Award"]
+          },
+          {
+            "name": "Adobe Photoshop, Premiere Pro & Illustrator",
+            "shortName": "Photoshop, Premiere & AI",
             "icon": "image",
-            "level": 85
+            "level": 85,
+            "tier": "Tier II",
+            "desc": "Graphic design, vector assets, UI visuals, and video editing for digital media production.",
+            "projects": ["Creative Media", "Brand Assets"]
           },
           {
-            "name": "Figma",
-            "icon": "pen-tool",
-            "level": 65
+            "name": "Technical Documentation & Academic Writing",
+            "shortName": "Tech Docs & Writing",
+            "icon": "file-text",
+            "level": 85,
+            "tier": "Tier III",
+            "desc": "Co-authoring peer-reviewed research papers and writing clear system documentation.",
+            "projects": ["RIGGS Journal Paper", "System Docs"]
+          },
+          {
+            "name": "Curriculum Design & Technical Instruction",
+            "shortName": "Curriculum & Teaching",
+            "icon": "graduation-cap",
+            "level": 88,
+            "tier": "Tier III",
+            "desc": "Designing RPP lesson plans, lab rubrics, and 1-on-1 programming mentorship.",
+            "projects": ["SMPN 6 Singaraja", "EduKoding"]
+          },
+          {
+            "name": "Microsoft Office",
+            "shortName": "Microsoft Office",
+            "icon": "file-spreadsheet",
+            "level": 88,
+            "tier": "Tier I",
+            "desc": "Structured reporting, spreadsheet modeling, and presentation decks for academic & team workflows.",
+            "projects": ["Reporting & Admin"]
           }
         ]
       }
@@ -200,7 +478,12 @@
           "RAG"
         ],
         "liveUrl": "https://sage.sssevendayz.my.id/",
-        "codeUrl": "https://journal.ilmudata.co.id/index.php/RIGGS/article/view/8979",
+        "liveDisabled": true,
+        "liveDisabledReason": "Mohon maaf, live demo sudah tidak berfungsi karena Sapta memutuskan untuk tidak lanjut membayar sewa VPS-nya.",
+        "liveFallbackUrl": "https://github.com/8bitos",
+        "liveFallbackLabel": "Lihat di GitHub",
+        "codeUrl": "https://www.researchgate.net/scientific-contributions/I-Gusti-Nyoman-Sapta-Wiguna-2350738390",
+        "codeLabel": "View Article",
         "thumbnail": "assets/Project/sage.png"
       },
       {
@@ -217,6 +500,66 @@
         "liveUrl": "https://bk-spensix.web.app/",
         "codeUrl": "",
         "thumbnail": "assets/Project/spensix.png"
+      },
+      {
+        "title": "Universal Image Converter",
+        "category": "Client-Side Web Tool",
+        "desc": "A 100% client-side image converter supporting 15+ formats including DSLR RAW, iPhone HEIC, WebP, AVIF, TIFF, DNG, and PDF with 1:1 full resolution, batch processing, and ZIP export.",
+        "icon": "image",
+        "tech": [
+          "HTML5",
+          "Canvas API",
+          "WebAssembly",
+          "JavaScript"
+        ],
+        "liveUrl": "8bitools/tool/format/image/index.html",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/tool-image.png"
+      },
+      {
+        "title": "8BitDoc — Smart Scanner & PDF",
+        "category": "Document Web Tool",
+        "desc": "An in-browser document scanner and PDF builder featuring 4-point homography perspective correction, 3x precision loupe, Magic Color & shadow-free B&W filters, and A4/F4 multi-page export.",
+        "icon": "file-text",
+        "tech": [
+          "HTML5",
+          "Canvas 2D",
+          "Homography",
+          "JavaScript"
+        ],
+        "liveUrl": "8bitools/tool/format/pdf/index.html",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/tool-pdf.png"
+      },
+      {
+        "title": "LiveBit — Video to Motion Photo",
+        "category": "Motion Photo Web Tool",
+        "desc": "Converts video clips into Google Photos & Samsung compatible Android Motion Photos (.jpg), TikTok Live Motion (.mp4), and Apple Live Photos (.zip) with 0–270° physical rotation correction.",
+        "icon": "clapperboard",
+        "tech": [
+          "HTML5",
+          "MP4 Muxer",
+          "XMP / SEF",
+          "JavaScript"
+        ],
+        "liveUrl": "8bitools/tool/format/video to live foto/index.html",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/tool-livebit.png"
+      },
+      {
+        "title": "8BitCompress — Universal Compressor",
+        "category": "Compression Web Tool",
+        "desc": "A versatile local-RAM file compressor for images (WebP, JPG, AVIF, PNG), video (MP4/WebM bitrate control), audio (MP3/WAV mono downmix), and PDF/ZIP Deflate Level 9 archives.",
+        "icon": "file-archive",
+        "tech": [
+          "HTML5",
+          "Web Workers",
+          "Deflate",
+          "JavaScript"
+        ],
+        "liveUrl": "8bitools/tool/format/compressor/index.html",
+        "codeUrl": "",
+        "thumbnail": "assets/Project/tool-compress.svg"
       },
       {
         "title": "Next-Gen Hydroponics Mobile App",
@@ -349,44 +692,174 @@
     "title": "Experience",
     "items": [
       {
+        "date": "Jul 2026 — Oct 2026",
+        "year": "2026",
+        "category": "Tech & AI",
+        "icon": "shield-check",
+        "org": "TELUS Digital · Full-time (Remote / Denpasar, Bali)",
+        "title": "Content Moderator (AI Data & Safety)",
+        "desc": "Evaluated and annotated multimodal datasets to support Generative AI alignment, red-teaming, and strict QA.",
+        "fullDesc": "Reviewed, annotated, and categorized multimodal datasets (text, image, and video) to support the training, fine-tuning, and alignment of Generative AI models under fast-paced SLAs.",
+        "achievements": [
+          "Evaluated AI-generated outputs against strict safety guidelines and policy frameworks to mitigate bias and toxic responses.",
+          "Executed high-precision data labeling and adversarial red-teaming tasks meeting stringent Quality Assurance (QA) targets.",
+          "Delivered analytical edge-case documentation to improve dataset diversity and machine learning model robustness."
+        ],
+        "tags": ["AI Evaluation", "Data Annotation", "Generative AI", "Red-Teaming", "Quality Assurance", "Policy Compliance"]
+      },
+      {
+        "date": "May 2026 — Present",
+        "year": "2026",
+        "category": "Teaching",
+        "icon": "graduation-cap",
+        "org": "EduKoding · Part-time (Hybrid / Remote)",
+        "title": "Private Online Coding Tutor",
+        "desc": "Mentored K-12 students in game development, block coding, ML basics, and web technologies via 1-on-1 projects.",
+        "fullDesc": "Instructed K-12 students in game development, block-based coding, Machine Learning for Kids, and foundational web technologies (Roblox Studio, Scratch, HTML/CSS/PHP).",
+        "achievements": [
+          "Designed personalized learning paths that simplified complex programming logic and ML fundamentals for young learners.",
+          "Mentored students through project-based learning to build playable games and functional mini web apps independently.",
+          "Fostered algorithmic thinking, debugging habits, and creative game logic design in 1-on-1 sessions."
+        ],
+        "tags": ["Tutoring", "Roblox Studio (Luau)", "Scratch", "Web Development", "Machine Learning Basics", "Project-Based Learning"]
+      },
+      {
         "date": "Dec 2025 — Present",
+        "year": "2025",
+        "category": "Tech & AI",
+        "icon": "cpu",
+        "org": "SAGE · AI & Web Engineering",
         "title": "Web Developer at SAGE",
-        "desc": "Developed an AI-powered grading engine using LLM integration (Gemini API) and designed multi-role dashboards. Co-authored a published peer-reviewed research paper on Automated Essay Scoring using RAG in RIGGS journal."
+        "desc": "Engineered an LLM/RAG automated essay grading platform and co-authored a published RIGGS research paper.",
+        "fullDesc": "Developed an AI-powered automated essay evaluation platform utilizing Retrieval-Augmented Generation (RAG) with Gemini API and designed multi-role educator/student dashboards.",
+        "achievements": [
+          "Built a scalable RAG + LLM grading pipeline enabling fast, objective, rubric-aligned essay assessment.",
+          "Designed and implemented multi-role dashboards for instructors, evaluators, and administrators.",
+          "Co-authored a peer-reviewed research paper on Automated Essay Scoring using RAG published in the RIGGS journal."
+        ],
+        "tags": ["Go", "TypeScript", "Gemini API", "RAG", "LLM Integration"]
       },
       {
         "date": "Sep 2025 — Dec 2025",
-        "title": "Teaching Assistant at SMPN 6 Singaraja",
-        "desc": "Assisted classroom teaching, managed student activities, and guided junior high school students in understanding technical and programming concepts."
-      },
-      {
-        "date": "Oct 2024",
-        "title": "KRTI 2024 — National Finalist",
-        "desc": "Qualified as a national finalist in the prestigious Kontes Robot Terbang Indonesia (KRTI) 2024 robotics competition, contributing to flight system automation and telemetry control."
+        "year": "2025",
+        "category": "Teaching",
+        "icon": "book-open",
+        "org": "SMPN 6 Singaraja · Teaching Internship",
+        "title": "Teaching Assistant (Informatics / ICT)",
+        "desc": "Supported Informatics/ICT classroom instruction, co-designed lab rubrics, and mentored junior high students.",
+        "fullDesc": "Supported lead educators in classroom management and instructional delivery for junior high school Informatics/ICT classes, fostering an interactive and engaging learning environment.",
+        "achievements": [
+          "Prepared and delivered hands-on Informatics learning materials breaking down programming logic into student-friendly lessons.",
+          "Co-designed structured lesson plans (RPP), lab exercises, and assignment rubrics aligned with curriculum standards.",
+          "Provided targeted 1-on-1 academic mentoring, improving overall class comprehension and practical coding skills."
+        ],
+        "tags": ["Informatics Education", "Classroom Management", "Lesson Planning", "Curriculum Development", "Student Mentoring"]
       },
       {
         "date": "Sep 2024",
-        "title": "Inventia National Game Dev Competition — 3rd Place",
-        "desc": "Won 3rd Place nationally in the Inventia Game Development Competition, designing, modeling, and programming interactive gameplay loops."
+        "year": "2024",
+        "category": "Awards",
+        "icon": "award",
+        "org": "BPTI & Puspresnas Kemendikbudristek · UNY Yogyakarta",
+        "title": "KRTI 2024 — National Finalist (Racing Plane)",
+        "desc": "National Finalist in the Racing Plane division at Kontes Robot Terbang Indonesia (KRTI) 2024 in Yogyakarta.",
+        "fullDesc": "Represented Universitas Pendidikan Ganesha as a National Finalist in the Racing Plane division at the 2024 Kontes Robot Terbang Indonesia (KRTI), held offline on September 12–19, 2024 by Balai Pengembangan Talenta Indonesia (BPTI) under Pusat Prestasi Nasional, Ministry of Education, Culture, Research, and Technology (Kemendikbudristek) in collaboration with Universitas Negeri Yogyakarta (Certificate No. 26242/BPTI/DIKTI/2024).",
+        "achievements": [
+          "Qualified as a National Finalist in the Racing Plane division among top university aerospace teams across Indonesia.",
+          "Contributed to flight system automation logic, sensor feedback loops, and ground-station telemetry monitoring."
+        ],
+        "tags": ["Racing Plane", "Robotics", "Flight Automation", "Telemetry"]
+      },
+      {
+        "date": "Sep 2024",
+        "year": "2024",
+        "category": "Awards",
+        "icon": "trophy",
+        "org": "Inventia · National Competition",
+        "title": "Inventia Game Dev — 3rd Place",
+        "desc": "Won 3rd Place nationally for designing, modeling, and programming interactive gameplay loops.",
+        "fullDesc": "Competed in the Inventia National Game Development Competition, leading gameplay architecture, interactive mechanics, and visual integration from concept to playable build.",
+        "achievements": [
+          "Awarded 3rd Place nationally against competing student game development teams.",
+          "Engineered core gameplay loops, state machines, and responsive player controls under competition deadlines."
+        ],
+        "tags": ["Game Dev", "Gameplay Loop", "2D/3D", "Game Design"]
       },
       {
         "date": "Jan 2024 — Jul 2024",
-        "title": "Mobile & IoT Developer at PT. Dago Engineering",
-        "desc": "Engineered a solar-powered, AI-integrated smart hydroponics monitoring system (Next-Gen Hydroponics) during an MBKM internship. Developed the cross-platform mobile application for real-time sensor monitoring."
+        "year": "2024",
+        "category": "Tech & AI",
+        "icon": "smartphone",
+        "org": "PT. Dago Engineering · MBKM Internship",
+        "title": "Mobile & IoT Developer",
+        "desc": "Built the cross-platform mobile app for a solar-powered, AI-integrated smart hydroponics IoT system.",
+        "fullDesc": "Engineered Next-Gen Hydroponics, a solar-powered and AI-integrated smart hydroponics monitoring system during an MBKM industry internship with PT. Dago Engineering.",
+        "achievements": [
+          "Developed the cross-platform React Native mobile application for real-time IoT sensor monitoring and automation.",
+          "Integrated live telemetry streams (pH, TDS, temperature, solar power) with automated actuator control."
+        ],
+        "tags": ["React Native", "C++", "IoT", "Solar Energy", "AI"]
+      },
+      {
+        "date": "Sep 2023",
+        "year": "2023",
+        "category": "Awards",
+        "icon": "trophy",
+        "org": "Universitas Nusa Cendana · National Competition",
+        "title": "3rd Place — National Traditional Game Development",
+        "desc": "Won 3rd Place nationally in the Lomba Nasional Pengembangan Game Tradisional hosted by Universitas Nusa Cendana.",
+        "fullDesc": "Awarded 3rd Place (Juara Ketiga) in the Lomba Nasional Pengembangan Game Tradisional, organized by the Computer Science Study Program of Universitas Nusa Cendana on September 22–23, 2023 (Certificate No. 32/UN15.18.12/KM/2023).",
+        "achievements": [
+          "Secured 3rd Place nationally for designing and building a digital adaptation of traditional games.",
+          "Engineered core gameplay loops, interactive rulesets, and polished 2D visuals under competition timelines."
+        ],
+        "tags": ["Game Dev", "Traditional Game", "2D Game", "National Award"]
       },
       {
         "date": "2022 — Present",
-        "title": "Freelance Developer",
-        "desc": "Developed custom web-based reporting systems, interactive educational games, and reservation softwares for clients, integrating third-party APIs and custom databases."
+        "year": "2022",
+        "category": "Tech & AI",
+        "icon": "code-2",
+        "org": "Independent · Self-Employed",
+        "title": "Freelance Full-Stack Developer & Media Creator",
+        "desc": "Shipped commercial websites, booking systems, educational games, and visual media for external clients.",
+        "fullDesc": "Developed and deployed responsive commercial websites, reservation platforms, interactive educational games, and digital media assets for external clients.",
+        "achievements": [
+          "Delivered end-to-end client web systems including Nugi Coffee Shop Reservation, BGH Villa Booking, and My Journal BK Spensix.",
+          "Integrated modern front-end UIs with REST APIs, Google Sheets/NoSQL backends, and custom client branding.",
+          "Produced UI designs, graphic assets, and edited video content for educational and commercial platforms."
+        ],
+        "tags": ["Full-Stack", "React", "Node.js", "Python", "Go", "PHP", "UI/UX", "Video Editing"]
       },
       {
         "date": "2020",
+        "year": "2020",
+        "category": "Awards",
+        "icon": "sparkles",
+        "org": "FIKSI · SMKN 2 Tabanan",
         "title": "FIKSI National Competition — Finalist",
-        "desc": "Selected as a national finalist in the Festival Inovasi dan Kewirausahaan Siswa Indonesia (FIKSI) for developing innovative entrepreneurial technology solutions during SMKN 2 Tabanan."
+        "desc": "Selected as National Finalist in Indonesia's student innovation and entrepreneurship competition.",
+        "fullDesc": "Selected as a National Finalist in Festival Inovasi dan Kewirausahaan Siswa Indonesia (FIKSI) for building a technology-driven entrepreneurial solution during SMKN 2 Tabanan.",
+        "achievements": [
+          "Reached the National Finalist stage representing Bali in the technology & entrepreneurship track.",
+          "Designed and pitched a practical digital product prototype addressing real community needs."
+        ],
+        "tags": ["Entrepreneurship", "Tech Innovation", "Product Pitch"]
       },
       {
         "date": "Mar 2019 — May 2019",
+        "year": "2019",
+        "category": "Teaching",
+        "icon": "users",
+        "org": "Student Organization · Leadership",
         "title": "Workshop Seminar Committee Lead",
-        "desc": "Led a student organization organizing committee, coordinating 20+ members to deliver a structured, high-impact technical seminar."
+        "desc": "Led a 20+ member organizing committee to plan and deliver a structured technical seminar.",
+        "fullDesc": "Led a student organization organizing committee, coordinating cross-functional teams to deliver a structured, high-impact technical workshop seminar.",
+        "achievements": [
+          "Managed and coordinated 20+ committee members across logistics, speakers, and participant operations.",
+          "Successfully executed a full-day technical seminar on schedule with high student attendance."
+        ],
+        "tags": ["Leadership", "Team Coordination", "Event Ops", "20+ Members"]
       }
     ]
   },

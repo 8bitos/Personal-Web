@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title id="html-title">8BitDoc — Smart Document Scanner & Image to PDF</title>
+
+  <!-- PWA & Mobile Meta Tags -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#0ea5e9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Immediate Theme Detection (Auto-detect OS: Dark / Light) -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"DM Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Space Grotesk, DM Sans, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Google Material Symbols Outlined -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- jsPDF for Client-Side PDF Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- JSZip for Bulk Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <!-- heic2any for iPhone HEIC images -->
+  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+
+    /* High-Contrast Liquid Glass Aesthetics (Exact match to Image Converter) */
+    :root {
+      color-scheme: light;
+      --bg-canvas: #e8ebf0;
+      --glass-surface: rgba(255, 255, 255, 0.94);
+      --glass-border: rgba(15, 23, 42, 0.13);
+      --glass-specular: rgba(255, 255, 255, 1);
+      --glass-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.09), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+      --card-highlight: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+      --input-bg: #ffffff;
+      --input-border: rgba(15, 23, 42, 0.18);
+      --text-main: #090d16;
+      --text-muted: #475569;
+      --accent: #0284c7;
+      --accent-glow: rgba(2, 132, 199, 0.15);
+    }
+
+    html.dark {
+      color-scheme: dark;
+      --bg-canvas: #090a0d;
+      --glass-surface: rgba(17, 20, 28, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-specular: rgba(255, 255, 255, 0.14);
+      --glass-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.65);
+      --card-highlight: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+      --input-bg: rgba(9, 11, 16, 0.75);
+      --input-border: rgba(255, 255, 255, 0.09);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.2);
+    }
+
+    select.glass-input option,
+    select.glass-input optgroup {
+      background-color: #ffffff;
+      color: #090d16;
+    }
+
+    html.dark select.glass-input option,
+    html.dark select.glass-input optgroup {
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      background-image: 
+        radial-gradient(circle 600px at 50% -15%, rgba(2, 132, 199, 0.08), transparent 70%),
+        radial-gradient(circle 500px at 100% 50%, rgba(14, 165, 233, 0.06), transparent 70%),
+        radial-gradient(circle 500px at 0% 80%, rgba(56, 189, 248, 0.06), transparent 70%);
+      background-attachment: fixed;
+    }
+
+    html.dark body {
+      background-image: 
+        radial-gradient(circle 600px at 50% -15%, rgba(56, 189, 248, 0.08), transparent 70%),
+        radial-gradient(circle 500px at 100% 50%, rgba(14, 165, 233, 0.05), transparent 70%),
+        radial-gradient(circle 500px at 0% 80%, rgba(56, 189, 248, 0.05), transparent 70%);
+    }
+
+    .liquid-glass {
+      background: var(--glass-surface);
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
+      border: 1px solid var(--glass-border);
+      box-shadow: 
+        inset 0 1px 1.5px 0 var(--glass-specular),
+        var(--glass-shadow);
+      position: relative;
+    }
+
+    .liquid-glass::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 12%;
+      right: 12%;
+      height: 1px;
+      background: var(--card-highlight);
+      pointer-events: none;
+    }
+
+    .btn-liquid-primary {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.9) 0%, rgba(14, 165, 233, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.4),
+        0 6px 18px -4px rgba(2, 132, 199, 0.35);
+      color: #ffffff;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html.dark .btn-liquid-primary {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(14, 165, 233, 0.28) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.25),
+        0 6px 20px -4px rgba(56, 189, 248, 0.25);
+      color: #e0f2fe;
+    }
+
+    .btn-liquid-primary:hover:not(:disabled) {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .btn-liquid-success {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.9) 0%, rgba(5, 150, 105, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 18px -4px rgba(16, 185, 129, 0.35);
+      color: #ffffff;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html.dark .btn-liquid-success {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(5, 150, 105, 0.28) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      box-shadow: 
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.25),
+        0 6px 20px -4px rgba(16, 185, 129, 0.25);
+      color: #ecfdf5;
+    }
+
+    .btn-liquid-success:hover:not(:disabled) {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .btn-liquid-ghost {
+      background: rgba(125, 135, 150, 0.1);
+      border: 1px solid var(--glass-border);
+      transition: all 0.2s ease;
+    }
+
+    .btn-liquid-ghost:hover {
+      background: rgba(125, 135, 150, 0.18);
+    }
+
+    .glass-input {
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: var(--text-main);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+    }
+
+    .glass-input:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .liquid-dropzone {
+      background: var(--glass-surface);
+      border: 1.5px dashed var(--glass-border);
+      backdrop-filter: blur(20px);
+      transition: all 0.25s ease;
+    }
+
+    .liquid-dropzone:hover, .liquid-dropzone.drag-active {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    /* Loupe Magnifier Bubble */
+    .loupe-container {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 124px;
+      height: 124px;
+      border-radius: 9999px;
+      overflow: hidden;
+      border: 2.5px solid var(--accent);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      pointer-events: none;
+      z-index: 50;
+      background: #000;
+    }
+
+    input[type=range] {
+      accent-color: #0284c7;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(125, 135, 150, 0.28); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(125, 135, 150, 0.45); }
+
+    /* Mobile Performance Boost & Anti-Lag */
+    @media (max-width: 768px) {
+      body {
+        background-attachment: scroll !important;
+        background-image: none !important;
+      }
+      html.dark body {
+        background-attachment: scroll !important;
+        background-image: none !important;
+      }
+
+      .liquid-glass,
+      .liquid-dropzone,
+      header,
+      #mobile-action-bar,
+      #lang-menu {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      :root {
+        --glass-surface: #ffffff;
+      }
+      html.dark {
+        --glass-surface: #0f172a;
+      }
+
+      header {
+        background-color: #ffffff !important;
+      }
+      html.dark header {
+        background-color: #0b0f19 !important;
+      }
+      #mobile-action-bar {
+        background-color: #ffffff !important;
+      }
+      html.dark #mobile-action-bar {
+        background-color: #0b0f19 !important;
+      }
+
+      #queue-list {
+        contain: content;
+      }
+
+      .liquid-glass::before {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="selection:bg-sky-500/25 selection:text-sky-900 dark:selection:text-sky-200">
+
+  <!-- Header (Exact match to Image Converter) -->
+  <header class="sticky top-0 z-40 border-b border-black/[0.08] dark:border-white/[0.06] backdrop-blur-xl bg-white/85 dark:bg-black/40 transition-colors">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-15 py-3 flex items-center justify-between">
+      
+      <!-- Brand Name & 8BiTools Hub Return Link -->
+      <div class="flex items-center gap-3">
+        <a href="../../../index.html" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-black/[0.04] dark:hover:bg-white/[0.05] border border-black/10 dark:border-white/10 transition-all" title="Kembali ke Menu 8BiTools">
+          <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+          <span class="font-display font-extrabold tracking-tight">8BiTools</span>
+        </a>
+        <div class="h-4 w-[1px] bg-black/10 dark:bg-white/10 hidden sm:block"></div>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl liquid-glass flex items-center justify-center text-sky-600 dark:text-sky-400">
+            <span class="material-symbols-outlined text-[20px]">document_scanner</span>
+          </div>
+          <h1 id="app-title" class="font-display font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white">
+            8BitDoc — Image to PDF
+          </h1>
+        </div>
+      </div>
+
+      <!-- Actions: Install PWA, Language Selector & Theme Toggle -->
+      <div class="flex items-center gap-2">
+        
+        <!-- PWA Install Button (Appears when browser triggers beforeinstallprompt) -->
+        <button id="pwa-install-btn" class="hidden btn-liquid-ghost px-2.5 py-1.5 rounded-xl text-xs font-semibold text-sky-600 dark:text-sky-400 flex items-center gap-1.5 transition-colors" title="Install App">
+          <span class="material-symbols-outlined text-[16px]">install_mobile</span>
+          <span id="pwa-install-text" class="hidden sm:inline">Install</span>
+        </button>
+
+        <!-- Language Selector Dropdown -->
+        <div class="relative" id="lang-dropdown-wrapper">
+          <button id="lang-toggle-btn" class="btn-liquid-ghost px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 transition-colors" title="Ganti Bahasa">
+            <span id="current-flag" class="text-base leading-none">🇮🇩</span>
+            <span id="current-lang-code" class="font-mono text-[11px] uppercase font-bold text-slate-700 dark:text-slate-300">ID</span>
+            <span class="material-symbols-outlined text-[16px] text-slate-500 dark:text-slate-400">expand_more</span>
+          </button>
+
+          <!-- Language Menu (All 8 Languages) -->
+          <div id="lang-menu" class="hidden absolute right-0 mt-2 w-48 liquid-glass rounded-xl shadow-2xl py-1.5 z-50 border border-black/15 dark:border-white/10 text-xs font-medium text-slate-800 dark:text-slate-200 max-h-72 overflow-y-auto">
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="id">
+              <span class="text-base">🇮🇩</span> Bahasa Indonesia
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="en">
+              <span class="text-base">🇬🇧</span> English
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="zh">
+              <span class="text-base">🇨🇳</span> 简体中文
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="es">
+              <span class="text-base">🇪🇸</span> Español
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="ar">
+              <span class="text-base">🇸🇦</span> العربية
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="fr">
+              <span class="text-base">🇫🇷</span> Français
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="ja">
+              <span class="text-base">🇯🇵</span> 日本語
+            </button>
+            <button class="w-full px-3 py-2 text-left flex items-center gap-2.5 hover:bg-black/[0.06] dark:hover:bg-white/[0.06] transition-colors" data-lang="pt">
+              <span class="text-base">🇧🇷</span> Português
+            </button>
+          </div>
+        </div>
+
+        <!-- Dark/Light Mode Switcher -->
+        <button id="theme-toggle" class="btn-liquid-ghost p-2 rounded-xl text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition-colors flex items-center justify-center" title="Ganti Tema (Dark / Light)">
+          <span class="material-symbols-outlined text-[18px] hidden dark:block">light_mode</span>
+          <span class="material-symbols-outlined text-[18px] block dark:hidden">dark_mode</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container: Desktop Responsive Two-Column Grid (Exact layout from Image Converter) -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start min-h-[calc(100vh-140px)]">
+      
+      <!-- Left Column: Core Workbench (8 cols on desktop) -->
+      <div class="lg:col-span-8 space-y-5">
+        
+        <!-- Global PDF Settings Console (Collapsible Accordion on Mobile) -->
+        <section id="pdf-settings-section" class="liquid-glass rounded-2xl p-3.5 sm:p-5 transition-all">
+          <!-- Console Header (Clickable Accordion on Mobile) -->
+          <div id="settings-accordion-header" class="flex items-center justify-between gap-2 cursor-pointer select-none py-0.5">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-xl bg-sky-500/10 dark:bg-sky-400/10 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0">
+                <span class="material-symbols-outlined text-[19px]">tune</span>
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <span id="paper-settings-title" class="text-xs font-bold tracking-wider uppercase text-slate-800 dark:text-slate-200">
+                    Pengaturan Dokumen PDF
+                  </span>
+                  <span id="paper-ready-badge" class="text-[10px] font-mono text-sky-600 dark:text-sky-400 font-semibold hidden sm:inline px-1.5 py-0.5 rounded-full bg-sky-500/10">
+                    Standar Siap Cetak
+                  </span>
+                </div>
+                <!-- Dynamic Quick Summary on Mobile (e.g. A4 • Otomatis • Tanpa Margin) -->
+                <p id="settings-summary-badge" class="text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate sm:hidden mt-0.5">
+                  A4 • Otomatis • Tanpa Margin
+                </p>
+                <p id="paper-settings-sub" class="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
+                  (Standar kertas, orientasi & jarak tepi)
+                </p>
+              </div>
+            </div>
+
+            <!-- Mobile Toggle Chevron + Label -->
+            <div class="flex items-center gap-1.5 shrink-0 px-2 py-1 rounded-lg bg-black/[0.04] dark:bg-white/[0.05] sm:bg-transparent">
+              <span id="settings-toggle-label" class="text-[11px] text-sky-600 dark:text-sky-400 font-semibold sm:hidden">Ubah</span>
+              <span id="settings-chevron" class="material-symbols-outlined text-[18px] text-slate-500 dark:text-slate-400 transition-transform duration-200">
+                expand_more
+              </span>
+            </div>
+          </div>
+
+          <!-- Collapsible Content Wrapper (Hidden by default on mobile, always visible on sm:) -->
+          <div id="settings-collapse-body" class="hidden sm:block mt-3 pt-3 border-t border-black/[0.08] dark:border-white/[0.06]">
+            <!-- Document Controls Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label for="pdf-page-size" id="label-page-size" class="text-xs font-semibold tracking-wider uppercase text-slate-600 dark:text-slate-400 block mb-1">
+                  Ukuran Kertas:
+                </label>
+                <select id="pdf-page-size" class="glass-input text-xs sm:text-sm rounded-xl px-3 py-2 font-medium cursor-pointer w-full">
+                  <optgroup id="og-iso" label="Standar ISO Seri A">
+                    <option value="a4" selected>A4 (210 × 297 mm)</option>
+                    <option value="a3">A3 (297 × 420 mm)</option>
+                    <option value="a5">A5 (148 × 210 mm)</option>
+                    <option value="a6">A6 (105 × 148 mm)</option>
+                    <option value="a2">A2 (420 × 594 mm)</option>
+                  </optgroup>
+                  <optgroup id="og-asia" label="Standar Indonesia & Asia">
+                    <option value="f4">F4 / Folio (215 × 330 mm)</option>
+                    <option value="b5">B5 (176 × 250 mm)</option>
+                    <option value="b4">B4 (250 × 353 mm)</option>
+                  </optgroup>
+                  <optgroup id="og-us" label="Standar Amerika Utara (US / ANSI)">
+                    <option value="letter">US Letter (216 × 279 mm)</option>
+                    <option value="legal">US Legal (216 × 356 mm)</option>
+                    <option value="executive">US Executive (184 × 267 mm)</option>
+                    <option value="tabloid">US Tabloid (279 × 432 mm)</option>
+                  </optgroup>
+                  <optgroup id="og-card" label="Kartu Identitas & Kasir">
+                    <option value="idcard">ID Card / KTP / SIM (85.6 × 54 mm)</option>
+                    <option value="business_card">Business Card (90 × 55 mm)</option>
+                    <option value="receipt">Receipt / Struk (80 × 200 mm)</option>
+                  </optgroup>
+                  <optgroup id="og-custom" label="Ukuran Khusus">
+                    <option id="opt-fit" value="fit">Pas Ukuran Gambar Asli (Fit Exact 1:1)</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              <div>
+                <label for="pdf-orientation" id="label-orientation" class="text-xs font-semibold tracking-wider uppercase text-slate-600 dark:text-slate-400 block mb-1">
+                  Orientasi Halaman:
+                </label>
+                <select id="pdf-orientation" class="glass-input text-xs sm:text-sm rounded-xl px-3 py-2 font-medium cursor-pointer w-full">
+                  <option value="auto" selected>Otomatis (Tiap Gambar)</option>
+                  <option value="portrait">Semua Portrait (Tegak)</option>
+                  <option value="landscape">Semua Landscape (Mendatar)</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="pdf-margin" id="label-margin" class="text-xs font-semibold tracking-wider uppercase text-slate-600 dark:text-slate-400 block mb-1">
+                  Jarak Tepi (Margin):
+                </label>
+                <select id="pdf-margin" class="glass-input text-xs sm:text-sm rounded-xl px-3 py-2 font-medium cursor-pointer w-full">
+                  <option value="none" selected>Tanpa Margin (0 mm — Penuh)</option>
+                  <option value="small">Tipis (5 mm)</option>
+                  <option value="normal">Standar (10 mm)</option>
+                  <option value="large">Lebar (20 mm)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Extra Compact Options (Collapsible or Inline) -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 pt-3 border-t border-black/[0.06] dark:border-white/[0.06]">
+              <div>
+                <label for="pdf-quality" id="label-quality" class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">
+                  Kualitas Kompresi:
+                </label>
+                <select id="pdf-quality" class="glass-input text-xs rounded-xl px-2.5 py-1.5 font-medium cursor-pointer w-full">
+                  <option value="high" selected>Maksimal (Crisp 1:1)</option>
+                  <option value="balanced">Seimbang (Email/WA)</option>
+                  <option value="compact">Kompak (&lt; 1 MB)</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="pdf-page-numbers" id="label-page-numbers" class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">
+                  Nomor Halaman:
+                </label>
+                <select id="pdf-page-numbers" class="glass-input text-xs rounded-xl px-2.5 py-1.5 font-medium cursor-pointer w-full">
+                  <option value="none" selected>Tanpa Nomor</option>
+                  <option value="bottom-center">Bawah Tengah</option>
+                  <option value="bottom-right">Bawah Kanan</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="pdf-filename" id="label-filename" class="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">
+                  Nama File PDF:
+                </label>
+                <input type="text" id="pdf-filename" value="Dokumen-Pindai" class="glass-input text-xs rounded-xl px-2.5 py-1.5 font-mono w-full" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Liquid Drop Zone (Exact match to Image Converter) -->
+        <section id="drop-zone" class="liquid-dropzone rounded-2xl p-7 sm:p-11 text-center cursor-pointer group">
+          <input type="file" id="file-input" multiple accept="image/*,.heic,.heif,.tif,.tiff,.bmp,.webp,.jpg,.jpeg,.png,.avif" class="hidden">
+          <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden">
+          
+          <div class="flex flex-col items-center justify-center gap-3 pointer-events-none">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.1] dark:border-white/10 flex items-center justify-center text-sky-600 dark:text-sky-400 group-hover:scale-105 transition-all duration-300 shadow-sm">
+              <span class="material-symbols-outlined text-[28px]">upload_file</span>
+            </div>
+
+            <div class="space-y-1">
+              <p class="font-display font-semibold text-sm sm:text-base text-slate-900 dark:text-slate-100">
+                <span id="drop-title-text">Tarik & jatuhkan foto dokumen ke sini, atau</span> <span id="drop-browse-text" class="text-sky-600 dark:text-sky-400 group-hover:underline underline-offset-4">pilih file</span>
+              </p>
+              <p id="drop-supported-text" class="text-xs text-slate-600 dark:text-slate-400 max-w-sm sm:max-w-md mx-auto">
+                Mendukung JPG, PNG, WEBP, AVIF, iPhone HEIC, TIFF, BMP, atau foto langsung
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-2 pointer-events-auto mt-1">
+              <button type="button" id="browse-btn" class="btn-liquid-ghost px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">folder_open</span>
+                <span id="btn-browse-text">Pilih Berkas</span>
+              </button>
+              <button type="button" id="camera-btn" class="btn-liquid-ghost px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">photo_camera</span>
+                <span id="btn-camera-text">Ambil Foto</span>
+              </button>
+            </div>
+
+            <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/[0.04] dark:bg-white/[0.03] border border-black/[0.08] dark:border-white/[0.06] text-[11px] text-slate-600 dark:text-slate-400 mt-1">
+              <kbd class="px-1.5 py-0.5 rounded bg-black/[0.08] dark:bg-white/[0.08] text-slate-800 dark:text-slate-300 font-mono text-[10px]">Ctrl</kbd>+<kbd class="px-1.5 py-0.5 rounded bg-black/[0.08] dark:bg-white/[0.08] text-slate-800 dark:text-slate-300 font-mono text-[10px]">V</kbd>
+              <span id="drop-paste-hint">bisa langsung paste dari clipboard</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Queue Section (Exact Toolbar & Card Style as Image Converter) -->
+        <section id="queue-section" class="hidden space-y-3">
+          
+          <!-- Toolbar Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
+            <div class="flex items-center gap-2">
+              <h2 id="queue-title" class="font-display font-bold text-sm text-slate-900 dark:text-slate-200">
+                Halaman Dokumen
+              </h2>
+              <span id="queue-count-badge" class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-700 dark:text-sky-400 border border-sky-500/25">
+                0 Halaman
+              </span>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+              <button id="add-more-btn" class="btn-liquid-ghost px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1 text-slate-700 dark:text-slate-300">
+                <span class="material-symbols-outlined text-[16px]">add</span>
+                <span id="btn-add-more-text">Tambah</span>
+              </button>
+              <button id="preview-pdf-btn" class="btn-liquid-ghost px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1 text-slate-700 dark:text-slate-300">
+                <span class="material-symbols-outlined text-[16px]">visibility</span>
+                <span id="btn-preview-text">Pratinjau</span>
+              </button>
+              <button id="download-zip-btn" class="btn-liquid-ghost px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1 text-slate-700 dark:text-slate-300" title="Unduh gambar sebagai ZIP">
+                <span class="material-symbols-outlined text-[16px]">folder_zip</span>
+                <span id="btn-download-zip-text">ZIP</span>
+              </button>
+              <button id="download-pdf-btn" class="btn-liquid-primary px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">download</span>
+                <span id="btn-download-pdf-text">Unduh PDF</span>
+              </button>
+              <button id="clear-all-btn" class="btn-liquid-ghost text-slate-700 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 px-2.5 py-2 rounded-xl text-xs font-medium flex items-center justify-center" title="Hapus Semua">
+                <span class="material-symbols-outlined text-[16px]">delete</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Queue Cards Container -->
+          <div id="queue-list" class="space-y-2.5">
+            <!-- Rendered dynamically by app.js matching Image Converter rows -->
+          </div>
+
+        </section>
+
+        <!-- Empty State -->
+        <div id="empty-placeholder" class="py-8 text-center text-slate-500 dark:text-slate-500 text-xs">
+          <div class="w-10 h-10 rounded-xl bg-black/[0.04] dark:bg-white/[0.02] border border-black/[0.08] dark:border-white/[0.05] mx-auto flex items-center justify-center text-slate-500 dark:text-slate-500 mb-2">
+            <span class="material-symbols-outlined text-[20px]">description</span>
+          </div>
+          <span id="empty-placeholder-text">Belum ada halaman dokumen yang dimasukkan.</span>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Clean Sidebar Cards (Exact match to Image Converter) -->
+      <aside class="lg:col-span-4 space-y-4">
+        
+        <!-- Panduan Merapihkan Card -->
+        <div class="liquid-glass rounded-2xl p-5 transition-all">
+          <div class="flex items-center gap-2 pb-2.5 mb-2.5 border-b border-black/[0.08] dark:border-white/[0.06]">
+            <span class="material-symbols-outlined text-sky-600 dark:text-sky-400 text-[19px]">auto_awesome</span>
+            <span id="guide-title" class="font-display font-bold text-xs tracking-wider uppercase text-slate-800 dark:text-slate-200">
+              Panduan Perapih Dokumen
+            </span>
+          </div>
+          <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="font-mono font-bold text-sky-600 dark:text-sky-400 shrink-0">1.</span>
+              <span id="guide-step-1"><strong>Luruskan Sudut:</strong> Klik tombol <em>Rapihkan</em> pada halaman untuk menggeser 4 pin sudut kertas dengan bantuan kaca pembesar loupe 3x.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="font-mono font-bold text-sky-600 dark:text-sky-400 shrink-0">2.</span>
+              <span id="guide-step-2"><strong>Kemiringan (Deskew):</strong> Gunakan slider kemiringan 0.1° dan garis kisi bantu untuk memastikan baris tulisan sejajar horizontal.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="font-mono font-bold text-sky-600 dark:text-sky-400 shrink-0">3.</span>
+              <span id="guide-step-3"><strong>Filter Magic Color:</strong> Otomatis memutihkan kertas, menghilangkan bayangan kamera, dan menajamkan teks.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Privacy & Local Processing Card (Identical to Image Converter) -->
+        <div id="privacy-card" class="liquid-glass rounded-2xl p-5 transition-all">
+          <div class="flex items-center gap-2 pb-2.5 mb-2.5 border-b border-black/[0.08] dark:border-white/[0.06]">
+            <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-[19px]">verified_user</span>
+            <span id="privacy-card-title" class="font-display font-bold text-xs tracking-wider uppercase text-slate-800 dark:text-slate-200">
+              Privasi &amp; Pemrosesan Lokal
+            </span>
+          </div>
+          <p id="privacy-card-desc" class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Seluruh proses pelurusan perspektif, filter dokumen, dan perakitan PDF berjalan langsung di browser dan RAM perangkat Anda. Berkas dokumen sensitif, ijazah, atau surat pribadi tidak pernah diunggah ke server manapun.
+          </p>
+        </div>
+
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Studio Enhancer Modal (Clean, responsive full-screen on mobile, faithful glass on desktop) -->
+  <div id="studio-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-0 sm:p-4 hidden">
+    <div class="liquid-glass w-full h-[100dvh] sm:h-auto sm:max-h-[90vh] sm:max-w-4xl sm:rounded-2xl rounded-none flex flex-col overflow-hidden shadow-2xl border-0 sm:border border-black/[0.08] dark:border-white/[0.08]">
+      
+      <!-- Modal Header -->
+      <div class="px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between shrink-0 bg-white/80 dark:bg-slate-900/80">
+        <h3 id="studio-modal-title" class="font-display font-bold text-xs uppercase tracking-wider text-slate-900 dark:text-slate-200 flex items-center gap-2">
+          <span class="material-symbols-outlined text-sky-600 dark:text-sky-400 text-[18px]">tune</span>
+          Studio Perapih Dokumen
+        </h3>
+        <button id="studio-modal-close" class="text-slate-500 hover:text-slate-950 dark:hover:text-white p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Segmented Mode Tabs -->
+      <div class="px-3 sm:px-4 py-1.5 sm:py-2 border-b border-black/[0.08] dark:border-white/[0.06] bg-black/[0.02] dark:bg-white/[0.02] flex items-center justify-center sm:justify-start shrink-0">
+        <div class="inline-flex w-full sm:w-auto p-1 rounded-xl bg-black/[0.06] dark:bg-white/[0.05] border border-black/[0.08] dark:border-white/[0.08] text-xs">
+          <button id="tab-perspective-btn" type="button" class="flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-lg font-semibold transition-all shadow-sm bg-white dark:bg-sky-500/20 text-sky-700 dark:text-sky-300 border border-black/[0.08] dark:border-sky-400/30 flex items-center justify-center gap-1.5 text-center">
+            <span class="material-symbols-outlined text-[15px]">crop</span>
+            <span id="tab-perspective-text">Luruskan Sudut</span>
+          </button>
+          <button id="tab-filter-btn" type="button" class="flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-lg font-medium text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 text-center">
+            <span class="material-symbols-outlined text-[15px]">palette</span>
+            <span id="tab-filter-text">Filter &amp; Warna</span>
+          </button>
+          <button id="tab-rotate-btn" type="button" class="flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 rounded-lg font-medium text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 text-center">
+            <span class="material-symbols-outlined text-[15px]">rotate_right</span>
+            <span id="tab-rotate-text">Kemiringan</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body (Canvas Workspace + Control Sidebar) -->
+      <div class="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0">
+        
+        <!-- Interactive Canvas Viewport (Takes flex-1 to maximize visual space for precision dragging) -->
+        <div class="flex-1 bg-black/90 flex items-center justify-center relative p-2 sm:p-3 overflow-hidden select-none min-h-[220px]">
+          <canvas id="editor-canvas" class="max-w-full max-h-full object-contain shadow-2xl cursor-crosshair rounded touch-none"></canvas>
+          
+          <!-- Loupe Magnifier Bubble -->
+          <div id="loupe-box" class="loupe-container hidden">
+            <canvas id="loupe-canvas" width="124" height="124"></canvas>
+          </div>
+        </div>
+
+        <!-- Controls Sidebar / Mobile Bottom Sheet -->
+        <div class="w-full md:w-80 shrink-0 bg-white/95 dark:bg-slate-900/95 border-t md:border-t-0 md:border-l border-black/[0.08] dark:border-white/[0.08] p-3 sm:p-4 flex flex-col gap-2.5 sm:gap-3.5 overflow-y-auto max-h-[38vh] md:max-h-[58vh]">
+          
+          <!-- Tab 1: Perspective Panel -->
+          <div id="panel-perspective" class="flex flex-col gap-2.5">
+            <p id="perspective-desc-text" class="text-xs text-slate-600 dark:text-slate-400 hidden sm:block">
+              Geser 4 titik sudut (TL, TR, BR, BL) untuk meluruskan dokumen yang miring atau terdistorsi.
+            </p>
+
+            <!-- Responsive 3-button toolbar: 3 columns on mobile, stacked column on desktop -->
+            <div class="grid grid-cols-3 sm:flex sm:flex-col gap-1.5 sm:gap-2">
+              <button id="btn-auto-detect" class="btn-liquid-primary py-2 px-1.5 sm:px-3 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 text-center">
+                <span class="material-symbols-outlined text-[16px] shrink-0">auto_fix_normal</span>
+                <span id="btn-auto-detect-text" class="truncate">Otomatis</span>
+              </button>
+
+              <button id="btn-snap-a4" class="btn-liquid-ghost py-2 px-1.5 sm:px-3 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 text-slate-800 dark:text-slate-200 text-center">
+                <span class="material-symbols-outlined text-[16px] shrink-0">aspect_ratio</span>
+                <span id="btn-snap-a4-text" class="truncate">Rasio A4</span>
+              </button>
+
+              <button id="btn-reset-corners" class="btn-liquid-ghost py-2 px-1.5 sm:px-3 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 text-slate-800 dark:text-slate-200 text-center">
+                <span class="material-symbols-outlined text-[16px] shrink-0">fullscreen</span>
+                <span id="btn-reset-corners-text" class="truncate">Reset</span>
+              </button>
+            </div>
+
+            <div class="hidden sm:flex p-2 rounded-xl bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.06] text-[11px] text-slate-600 dark:text-slate-400 items-center gap-2">
+              <span class="material-symbols-outlined text-[16px] text-sky-600 dark:text-sky-400">zoom_in</span>
+              <span id="loupe-hint-text">Kaca pembesar aktif otomatis saat menggeser pin</span>
+            </div>
+          </div>
+
+          <!-- Tab 2: Filters Panel -->
+          <div id="panel-filter" class="hidden flex flex-col gap-2.5">
+            <label id="filter-presets-title" class="text-xs font-semibold tracking-wider uppercase text-slate-600 dark:text-slate-400">
+              Preset Filter Dokumen:
+            </label>
+
+            <!-- 3 columns on mobile, 2 columns on desktop for ultra-compact layout -->
+            <div class="grid grid-cols-3 sm:grid-cols-2 gap-1.5 sm:gap-2">
+              <button class="filter-preset-btn p-1.5 sm:p-2 rounded-xl text-left border border-black/[0.08] dark:border-white/10 hover:border-sky-500 transition-all text-xs font-semibold text-slate-800 dark:text-slate-200" data-filter="magic">
+                <span id="filter-lbl-magic" class="block truncate">✨ Magic Color</span>
+              </button>
+              <button class="filter-preset-btn p-1.5 sm:p-2 rounded-xl text-left border border-black/[0.08] dark:border-white/10 hover:border-sky-500 transition-all text-xs font-semibold text-slate-800 dark:text-slate-200" data-filter="bw">
+                <span id="filter-lbl-bw" class="block truncate">📄 Scanner B&amp;W</span>
+              </button>
+              <button class="filter-preset-btn p-1.5 sm:p-2 rounded-xl text-left border border-black/[0.08] dark:border-white/10 hover:border-sky-500 transition-all text-xs font-semibold text-slate-800 dark:text-slate-200" data-filter="gray">
+                <span id="filter-lbl-gray" class="block truncate">🌫️ Grayscale</span>
+              </button>
+              <button class="filter-preset-btn p-1.5 sm:p-2 rounded-xl text-left border border-black/[0.08] dark:border-white/10 hover:border-sky-500 transition-all text-xs font-semibold text-slate-800 dark:text-slate-200" data-filter="soft">
+                <span id="filter-lbl-soft" class="block truncate">☁️ Soft White</span>
+              </button>
+              <button class="filter-preset-btn p-1.5 sm:p-2 rounded-xl text-left border border-black/[0.08] dark:border-white/10 hover:border-sky-500 transition-all text-xs font-semibold text-slate-800 dark:text-slate-200" data-filter="vivid">
+                <span id="filter-lbl-vivid" class="block truncate">🌟 Vivid</span>
+              </button>
+              <button class="filter-preset-btn p-1.5 sm:p-2 rounded-xl text-left border border-black/[0.08] dark:border-white/10 hover:border-sky-500 transition-all text-xs font-semibold text-slate-800 dark:text-slate-200" data-filter="original">
+                <span id="filter-lbl-original" class="block truncate">🖼️ Original</span>
+              </button>
+            </div>
+
+            <!-- Fine Tuning Sliders (Compact Grid on Mobile) -->
+            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-black/[0.08] dark:border-white/[0.06] text-xs">
+              <div>
+                <div class="flex justify-between text-[10px] sm:text-[11px] font-semibold mb-0.5 text-slate-600 dark:text-slate-400">
+                  <span id="label-brightness-text">Kecerahan:</span>
+                  <span id="val-brightness">0</span>
+                </div>
+                <input type="range" id="slider-brightness" min="-100" max="100" value="0" class="w-full" />
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[10px] sm:text-[11px] font-semibold mb-0.5 text-slate-600 dark:text-slate-400">
+                  <span id="label-contrast-text">Kontras:</span>
+                  <span id="val-contrast">0</span>
+                </div>
+                <input type="range" id="slider-contrast" min="-100" max="100" value="0" class="w-full" />
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[10px] sm:text-[11px] font-semibold mb-0.5 text-slate-600 dark:text-slate-400">
+                  <span id="label-sharpen-text">Ketajaman:</span>
+                  <span id="val-sharpen">25</span>
+                </div>
+                <input type="range" id="slider-sharpen" min="0" max="100" value="25" class="w-full" />
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[10px] sm:text-[11px] font-semibold mb-0.5 text-slate-600 dark:text-slate-400">
+                  <span id="label-threshold-text">Pemutih:</span>
+                  <span id="val-threshold">50</span>
+                </div>
+                <input type="range" id="slider-threshold" min="0" max="100" value="50" class="w-full" />
+              </div>
+            </div>
+
+            <button id="btn-reset-adjustments" class="btn-liquid-ghost py-1 px-2 rounded-lg text-[11px] text-slate-600 dark:text-slate-400 self-end">
+              Reset Penyesuaian
+            </button>
+          </div>
+
+          <!-- Tab 3: Rotation & Deskew Panel -->
+          <div id="panel-rotate" class="hidden flex flex-col gap-2.5">
+            <div class="flex flex-col gap-1.5">
+              <div class="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <span id="deskew-label-text">Kemiringan Halus (Deskew):</span>
+                <span id="deskew-value" class="font-mono text-sky-600 dark:text-sky-400 font-bold">0.0°</span>
+              </div>
+              <input type="range" id="deskew-slider" min="-45" max="45" step="0.1" value="0" class="w-full" />
+              <button id="btn-reset-angle" class="btn-liquid-ghost py-1 px-2 rounded-lg text-[11px] text-slate-600 dark:text-slate-400 self-end">
+                Reset 0.0°
+              </button>
+            </div>
+
+            <label class="flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer pt-1.5 border-t border-black/[0.08] dark:border-white/[0.06]">
+              <input type="checkbox" id="grid-toggle" checked class="rounded text-sky-500 focus:ring-sky-500" />
+              <span id="grid-toggle-text">Tampilkan Garis Kisi Lurus (Grid)</span>
+            </label>
+
+            <!-- 4 buttons in 1 single row -->
+            <div class="grid grid-cols-4 gap-1.5 pt-1.5 border-t border-black/[0.08] dark:border-white/[0.06]">
+              <button id="btn-rotate-left" class="btn-liquid-ghost py-2 px-1 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 text-slate-800 dark:text-slate-200" title="-90°">
+                <span class="material-symbols-outlined text-[16px]">rotate_left</span>
+                <span class="text-[11px] hidden sm:inline">-90°</span>
+              </button>
+              <button id="btn-rotate-right" class="btn-liquid-ghost py-2 px-1 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 text-slate-800 dark:text-slate-200" title="+90°">
+                <span class="material-symbols-outlined text-[16px]">rotate_right</span>
+                <span class="text-[11px] hidden sm:inline">+90°</span>
+              </button>
+              <button id="btn-flip-h" class="btn-liquid-ghost py-2 px-1 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 text-slate-800 dark:text-slate-200" title="Flip H">
+                <span class="material-symbols-outlined text-[16px]">flip</span>
+                <span id="btn-flip-h-text" class="text-[11px] hidden sm:inline">Flip H</span>
+              </button>
+              <button id="btn-flip-v" class="btn-liquid-ghost py-2 px-1 rounded-xl text-xs font-semibold flex items-center justify-center gap-1 text-slate-800 dark:text-slate-200" title="Flip V">
+                <span class="material-symbols-outlined text-[16px]">flip</span>
+                <span id="btn-flip-v-text" class="text-[11px] hidden sm:inline">Flip V</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Modal Footer (Sticky at bottom, always fully visible on mobile) -->
+      <div class="px-3 sm:px-4 py-2.5 sm:py-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between gap-2 shrink-0 bg-white/95 dark:bg-slate-900/95 sticky bottom-0 z-20">
+        <button id="btn-cancel-modal" class="btn-liquid-ghost py-2 px-3 sm:px-4 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300">
+          Batal
+        </button>
+
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <button id="btn-apply-all-pages" class="btn-liquid-ghost py-2 px-2.5 sm:px-3.5 rounded-xl text-xs font-semibold text-sky-600 dark:text-sky-400">
+            <span class="hidden sm:inline">Terapkan ke </span>Semua
+          </button>
+          <button id="btn-apply-single" class="btn-liquid-primary py-2 px-3.5 sm:px-4 rounded-xl text-xs font-semibold shadow-sm">
+            Terapkan
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PDF Preview Modal -->
+  <div id="preview-modal" class="fixed inset-0 bg-black/75 dark:bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="liquid-glass rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden">
+      
+      <div class="px-4 py-3 border-b border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between">
+        <h3 class="font-display font-bold text-xs uppercase tracking-wider text-slate-900 dark:text-slate-200 flex items-center gap-2">
+          <span class="material-symbols-outlined text-sky-600 dark:text-sky-400 text-[18px]">visibility</span>
+          <span id="preview-modal-title-text">Pratinjau Dokumen PDF</span>
+        </h3>
+        <button id="preview-modal-close" class="text-slate-500 hover:text-slate-950 dark:hover:text-white p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="flex-1 bg-black/80 flex items-center justify-center p-4 overflow-hidden">
+        <canvas id="preview-canvas" class="max-w-full max-h-[62vh] object-contain shadow-2xl rounded border border-white/10"></canvas>
+      </div>
+
+      <div class="px-4 py-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between bg-black/[0.02] dark:bg-white/[0.02]">
+        <button id="preview-prev-btn" class="btn-liquid-ghost py-1.5 px-3 rounded-xl text-xs font-semibold flex items-center gap-1 text-slate-800 dark:text-slate-200">
+          <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+          <span id="preview-prev-text">Sebelumnya</span>
+        </button>
+
+        <span id="preview-page-info" class="text-xs font-mono text-slate-600 dark:text-slate-300">
+          Halaman 1 dari 1
+        </span>
+
+        <button id="preview-next-btn" class="btn-liquid-ghost py-1.5 px-3 rounded-xl text-xs font-semibold flex items-center gap-1 text-slate-800 dark:text-slate-200">
+          <span id="preview-next-text">Selanjutnya</span>
+          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-4 opacity-0 pointer-events-none transition-all duration-300 ease-out flex items-center gap-2.5 px-4 py-3 rounded-2xl liquid-glass border border-sky-500/30 text-xs font-semibold shadow-2xl text-slate-900 dark:text-white">
+    <span class="material-symbols-outlined text-sky-500 text-[18px]">info</span>
+    <span id="toast-message">Notifikasi</span>
+  </div>
+
+  <!-- Sticky Mobile Action Bar (Fast mobile-first conversion without scrolling) -->
+  <div id="mobile-action-bar" class="md:hidden fixed bottom-0 left-0 right-0 z-40 p-3 bg-white/95 dark:bg-slate-900/95 border-t border-black/10 dark:border-white/10 shadow-[0_-8px_20px_rgba(0,0,0,0.15)] flex items-center gap-2 transition-transform duration-300 translate-y-full">
+    <button id="mobile-preview-btn" class="btn-liquid-ghost flex-1 py-2.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 text-slate-800 dark:text-slate-200">
+      <span class="material-symbols-outlined text-[18px]">visibility</span>
+      <span id="mobile-preview-label">Pratinjau</span>
+    </button>
+    <button id="mobile-download-btn" class="btn-liquid-success flex-[2] py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg">
+      <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+      <span id="mobile-download-label">Unduh PDF</span>
+    </button>
+  </div>
+
+  <!-- Application Logic -->
+  <script type="module" src="./app.js"></script>
+
+</body>
+</html>

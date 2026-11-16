@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>8BitCompress — Precision File & Media Compressor</title>
+
+  <!-- PWA Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#18181b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="description" content="Client-Side Precision Compression Engine for Images, Video, Audio, and PDF documents.">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+
+  <!-- Immediate Theme Detection -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Core Compression Engines -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+  <script src="./lib/mp4-muxer.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    input[type=range] {
+      accent-color: #2563eb;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(150, 150, 150, 0.3);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-zinc-50 text-zinc-900 dark:bg-[#0a0b0e] dark:text-zinc-100 min-h-screen flex flex-col transition-colors duration-200">
+
+  <!-- Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-white/85 dark:bg-[#0a0b0e]/85 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+      
+      <!-- Brand & Hub Return Link -->
+      <div class="flex items-center gap-3">
+        <a href="../../../index.html" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 transition-colors">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          <span class="font-semibold tracking-tight">8BiTools</span>
+        </a>
+
+        <div class="h-4 w-px bg-zinc-200 dark:bg-zinc-800"></div>
+
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 flex items-center justify-center font-bold text-xs">
+            8C
+          </div>
+          <span class="font-semibold text-sm tracking-tight text-zinc-900 dark:text-white">
+            8BitCompress
+          </span>
+          <span class="hidden sm:inline text-[11px] text-zinc-400 font-mono">v2.1</span>
+        </div>
+      </div>
+
+      <!-- Header Controls: Lang Dropdown & Theme -->
+      <div class="flex items-center gap-2">
+        <div class="relative" id="lang-dropdown-wrapper">
+          <button type="button" id="lang-toggle-btn" class="px-2.5 py-1 rounded-md text-xs font-mono font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 transition-colors inline-flex items-center gap-1.5">
+            <span id="current-flag" class="text-sm leading-none">🇮🇩</span>
+            <span id="current-lang-code">ID</span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-zinc-400"></i>
+          </button>
+
+          <div id="lang-menu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-900 rounded-xl shadow-xl py-1.5 z-50 border border-zinc-200 dark:border-zinc-800 text-xs font-medium">
+            <button type="button" class="lang-option-btn w-full px-3 py-2 text-left flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors" data-lang="id">
+              <span class="text-sm">🇮🇩</span> Bahasa Indonesia
+            </button>
+            <button type="button" class="lang-option-btn w-full px-3 py-2 text-left flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors" data-lang="en">
+              <span class="text-sm">🇬🇧</span> English
+            </button>
+            <button type="button" class="lang-option-btn w-full px-3 py-2 text-left flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors" data-lang="zh">
+              <span class="text-sm">🇨🇳</span> 简体中文 (Chinese)
+            </button>
+            <button type="button" class="lang-option-btn w-full px-3 py-2 text-left flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors" data-lang="es">
+              <span class="text-sm">🇪🇸</span> Español (Spanish)
+            </button>
+            <button type="button" class="lang-option-btn w-full px-3 py-2 text-left flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors" data-lang="ar">
+              <span class="text-sm">🇸🇦</span> العربية (Arabic)
+            </button>
+            <button type="button" class="lang-option-btn w-full px-3 py-2 text-left flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors" data-lang="fr">
+              <span class="text-sm">🇫🇷</span> Français (French)
+            </button>
+            <button type="button" class="lang-option-btn w-full px-3 py-2 text-left flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors" data-lang="ja">
+              <span class="text-sm">🇯🇵</span> 日本語 (Japanese)
+            </button>
+            <button type="button" class="lang-option-btn w-full px-3 py-2 text-left flex items-center gap-2.5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors" data-lang="pt">
+              <span class="text-sm">🇧🇷</span> Português (Portuguese)
+            </button>
+          </div>
+        </div>
+
+        <button id="theme-toggle" class="p-1.5 rounded-md text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 transition-colors">
+          <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+          <i data-lucide="sun" class="w-4 h-4 hidden dark:inline"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8 flex flex-col gap-6">
+
+    <!-- Hero Title -->
+    <section class="text-center max-w-2xl mx-auto flex flex-col items-center gap-2">
+      <div class="flex items-center gap-2">
+        <span class="px-2.5 py-0.5 rounded text-[11px] font-mono font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700" data-i18n="badgeClientSide">
+          100% RAM Lokal
+        </span>
+        <span class="px-2.5 py-0.5 rounded text-[11px] font-mono font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700" data-i18n="badgeNoUpload">
+          Tanpa Kirim ke Server
+        </span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white" data-i18n="heroTitle">
+        Kompresi Berkas Presisi
+      </h1>
+
+      <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed" data-i18n="heroDesc">
+        Kompresi gambar, video, audio, dan dokumen PDF langsung di peramban. Tentukan format output, target ukuran file, persentase penghematan, dan resolusi dari 16p hingga 4K secara independen per file.
+      </p>
+    </section>
+
+    <!-- Upload Dropzone -->
+    <section class="flex flex-col gap-2">
+      <div class="flex items-center justify-between px-1">
+        <div class="flex items-center gap-2 text-xs">
+          <span class="text-zinc-500 dark:text-zinc-400" data-i18n="activeTypePrefix">Tipe Aktif:</span>
+          <span id="active-type-badge" class="px-2.5 py-0.5 rounded-md font-mono font-medium bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+            Semua Tipe
+          </span>
+        </div>
+        <button type="button" id="btn-change-type" class="px-2.5 py-1 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-500/40 transition-colors inline-flex items-center gap-1.5">
+          <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+          <span data-i18n="btnChangeType">Ubah Tipe</span>
+        </button>
+      </div>
+
+      <div id="dropzone" class="bg-white dark:bg-zinc-900/60 border-2 border-dashed border-zinc-300 dark:border-zinc-700/80 hover:border-blue-500 dark:hover:border-blue-400 rounded-2xl p-7 sm:p-9 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-3">
+        <input type="file" id="file-input" class="hidden" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.json,.zip">
+        
+        <div class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300">
+          <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+        </div>
+
+        <div class="flex flex-col gap-0.5">
+          <h3 id="dropzone-title" class="font-semibold text-sm sm:text-base text-zinc-900 dark:text-white" data-i18n="dropzoneTitle">
+            Pilih atau seret berkas ke sini
+          </h3>
+          <p id="dropzone-subtitle" class="text-xs text-zinc-500 dark:text-zinc-400" data-i18n="dropzoneSubtitle">
+            Mendukung Gambar, Video, Audio, Dokumen PDF, dan Arsip
+          </p>
+        </div>
+
+        <button type="button" id="btn-browse" class="mt-1 px-4 py-2 rounded-lg bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 text-xs font-medium inline-flex items-center gap-1.5 shadow-sm hover:opacity-90 transition-opacity">
+          <i data-lucide="folder" class="w-3.5 h-3.5"></i>
+          <span data-i18n="btnBrowse">Pilih Berkas</span>
+        </button>
+
+        <p class="text-[11px] text-zinc-400 font-mono mt-1" data-i18n="clipboardNotice">
+          Atau tekan Ctrl + V untuk menempelkan gambar dari papan klip
+        </p>
+      </div>
+    </section>
+
+    <!-- Global Defaults Config Card (Apply-To-All Strip) -->
+    <section class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 sm:p-5 flex flex-col gap-4">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center gap-2">
+          <i data-lucide="sliders" class="w-4 h-4 text-blue-500"></i>
+          <span class="text-xs font-semibold text-zinc-900 dark:text-white" data-i18n="globalSettingsTitle">
+            Pengaturan Bawaan Antrean (Bisa diubah per file)
+          </span>
+        </div>
+        <button id="btn-apply-all" class="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors inline-flex items-center gap-1.5">
+          <i data-lucide="copy-check" class="w-3.5 h-3.5"></i>
+          <span data-i18n="btnApplyAll">Terapkan ke Semua Berkas</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-2 border-t border-zinc-100 dark:border-zinc-800 text-xs">
+        
+        <!-- Global Mode Switcher -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-zinc-500 font-medium" data-i18n="modeLabel">Mode Kompresi:</span>
+          <div class="grid grid-cols-3 gap-1 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-xs font-medium">
+            <button class="global-mode-btn py-1.5 px-2 rounded-md text-center transition-all" data-mode="target_size" data-i18n="modeTargetShort">
+              Target Size
+            </button>
+            <button class="global-mode-btn py-1.5 px-2 rounded-md text-center transition-all bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-sm" data-mode="percentage" data-i18n="modePctShort">
+              Persentase
+            </button>
+            <button class="global-mode-btn py-1.5 px-2 rounded-md text-center transition-all" data-mode="balanced" data-i18n="modeAutoShort">
+              Otomatis
+            </button>
+          </div>
+        </div>
+
+        <!-- Target Size or Percentage Dynamic Input -->
+        <div class="flex flex-col gap-1.5">
+          <!-- When Target Size is active -->
+          <div id="global-target-box" class="flex flex-col gap-1.5 hidden">
+            <span class="text-zinc-500 font-medium" data-i18n="targetLabel">Target Ukuran:</span>
+            <div class="flex items-center gap-2">
+              <input type="number" id="global-target-val" min="0.1" step="0.5" value="2" class="w-24 px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 font-mono text-xs focus:outline-none focus:border-blue-500">
+              <select id="global-target-unit" class="px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 font-mono text-xs focus:outline-none focus:border-blue-500">
+                <option value="MB" selected>MB</option>
+                <option value="KB">KB</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- When Percentage is active -->
+          <div id="global-pct-box" class="flex flex-col gap-1.5">
+            <div class="flex justify-between items-center">
+              <span class="text-zinc-500 font-medium" data-i18n="pctLabel">Kecilkan sebesar:</span>
+              <span id="global-pct-display" class="font-mono font-semibold text-blue-600 dark:text-blue-400">60%</span>
+            </div>
+            <input type="range" id="global-pct-slider" min="15" max="92" value="60" class="w-full">
+          </div>
+        </div>
+
+        <!-- Global Resolution (16p to 4K + Original) -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-zinc-500 font-medium" data-i18n="globalResLabel">Resolusi Bawaan:</span>
+          <select id="global-resolution" class="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-xs font-mono focus:outline-none focus:border-blue-500">
+            <!-- Populated dynamically: 16p to 4K + Original -->
+          </select>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- File Queue Section -->
+    <section id="queue-section" class="flex flex-col gap-3 hidden">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center gap-2">
+          <h2 class="font-semibold text-sm text-zinc-900 dark:text-white" data-i18n="queueTitle">
+            Antrean Berkas
+          </h2>
+          <span id="queue-count" class="px-2 py-0.5 rounded text-xs font-mono font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+            0
+          </span>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <button id="btn-add-more" class="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-900 hover:border-blue-500 border border-zinc-200 dark:border-zinc-700 transition-colors inline-flex items-center gap-1.5">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            <span data-i18n="btnAddMoreFiles">Tambah Berkas</span>
+          </button>
+          <button id="btn-clear-queue" class="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-500 hover:text-red-500 hover:bg-red-500/10 border border-zinc-200 dark:border-zinc-800 transition-colors inline-flex items-center gap-1.5">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span data-i18n="btnClearAll">Hapus Semua</span>
+          </button>
+          <button id="btn-compress-all" class="px-4 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-500 text-xs font-semibold inline-flex items-center gap-1.5 shadow-sm transition-colors">
+            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+            <span data-i18n="btnCompressAll">Mulai Kompresi Semua</span>
+          </button>
+          <button id="btn-download-all" class="px-4 py-1.5 rounded-lg bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 text-xs font-semibold inline-flex items-center gap-1.5 shadow-sm hover:opacity-90 transition-opacity hidden">
+            <i data-lucide="archive" class="w-3.5 h-3.5"></i>
+            <span data-i18n="btnDownloadAllZip">Unduh Semua (.ZIP)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Queue List with Individual Per-File Controls -->
+      <div id="queue-list" class="flex flex-col gap-2.5">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section id="stat-section" class="hidden">
+      <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+        <div>
+          <div class="text-[11px] text-zinc-400 font-mono" data-i18n="statFilesProcessed">Berkas Selesai</div>
+          <div id="stat-count" class="text-base font-semibold text-zinc-900 dark:text-white mt-0.5">0 / 0</div>
+        </div>
+        <div>
+          <div class="text-[11px] text-zinc-400 font-mono" data-i18n="statTotalOriginal">Ukuran Awal</div>
+          <div id="stat-orig" class="text-base font-mono font-semibold text-zinc-900 dark:text-white mt-0.5">0 B</div>
+        </div>
+        <div>
+          <div class="text-[11px] text-zinc-400 font-mono" data-i18n="statTotalCompressed">Ukuran Akhir</div>
+          <div id="stat-comp" class="text-base font-mono font-semibold text-zinc-900 dark:text-white mt-0.5">0 B</div>
+        </div>
+        <div>
+          <div class="text-[11px] text-zinc-400 font-mono" data-i18n="statTotalSaved">Total Penghematan</div>
+          <div id="stat-saved" class="text-base font-mono font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5">0 B (-0%)</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- File Type Selector Pop-up Modal -->
+  <div id="modal-type-select" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-xl w-full p-5 sm:p-6 flex flex-col gap-4 shadow-2xl">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold tracking-tight text-zinc-900 dark:text-white" data-i18n="typeModalTitle">
+            Mau Kompresi File Tipe Apa?
+          </h2>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1" data-i18n="typeModalSubtitle">
+            Pilih kategori file agar filter unggah dan pengaturan kompresi langsung disesuaikan.
+          </p>
+        </div>
+        <button type="button" id="btn-close-type-modal" class="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <button type="button" class="type-choice-btn text-left p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-800/40 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-500/[0.04] transition-all flex items-center gap-3 group" data-type="video">
+          <div class="w-10 h-10 rounded-lg bg-zinc-900 dark:bg-zinc-800 text-white dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <i data-lucide="video" class="w-5 h-5"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-sm font-semibold text-zinc-900 dark:text-white" data-i18n="typeVideoTitle">Video</div>
+            <div class="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono truncate" data-i18n="typeVideoDesc">MP4, MOV, WebM, MKV, AVI</div>
+          </div>
+        </button>
+
+        <button type="button" class="type-choice-btn text-left p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-800/40 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-500/[0.04] transition-all flex items-center gap-3 group" data-type="audio">
+          <div class="w-10 h-10 rounded-lg bg-zinc-900 dark:bg-zinc-800 text-white dark:text-emerald-400 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <i data-lucide="music" class="w-5 h-5"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-sm font-semibold text-zinc-900 dark:text-white" data-i18n="typeAudioTitle">Audio</div>
+            <div class="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono truncate" data-i18n="typeAudioDesc">MP3, WAV, OGG, M4A, FLAC</div>
+          </div>
+        </button>
+
+        <button type="button" class="type-choice-btn text-left p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-800/40 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-500/[0.04] transition-all flex items-center gap-3 group" data-type="image">
+          <div class="w-10 h-10 rounded-lg bg-zinc-900 dark:bg-zinc-800 text-white dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <i data-lucide="image" class="w-5 h-5"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-sm font-semibold text-zinc-900 dark:text-white" data-i18n="typeImageTitle">Gambar / Foto</div>
+            <div class="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono truncate" data-i18n="typeImageDesc">JPG, PNG, WebP, AVIF, HEIC</div>
+          </div>
+        </button>
+
+        <button type="button" class="type-choice-btn text-left p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-800/40 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-500/[0.04] transition-all flex items-center gap-3 group" data-type="pdf">
+          <div class="w-10 h-10 rounded-lg bg-zinc-900 dark:bg-zinc-800 text-white dark:text-rose-400 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-sm font-semibold text-zinc-900 dark:text-white" data-i18n="typePdfTitle">Dokumen PDF &amp; Arsip</div>
+            <div class="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono truncate" data-i18n="typePdfDesc">PDF, DOCX, XLSX, ZIP</div>
+          </div>
+        </button>
+
+        <button type="button" class="type-choice-btn sm:col-span-2 text-left p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-800/40 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-500/[0.04] transition-all flex items-center gap-3 group" data-type="all">
+          <div class="w-10 h-10 rounded-lg bg-zinc-900 dark:bg-zinc-800 text-white dark:text-zinc-300 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <i data-lucide="layers" class="w-5 h-5"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-sm font-semibold text-zinc-900 dark:text-white" data-i18n="typeAllTitle">Semua Tipe (Deteksi Otomatis)</div>
+            <div class="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono truncate" data-i18n="typeAllDesc">Gabung berbagai jenis file sekaligus dalam satu antrean</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clean Modal Preview -->
+  <div id="modal-preview" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-3xl w-full p-5 flex flex-col gap-3 max-h-[90vh] shadow-xl">
+      <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-3">
+        <h3 id="modal-preview-title" class="font-semibold text-sm text-zinc-900 dark:text-white truncate">
+          Pratinjau Hasil
+        </h3>
+        <button id="btn-close-preview" class="p-1 rounded-md text-zinc-400 hover:text-zinc-900 dark:hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div id="modal-preview-body" class="overflow-y-auto max-h-[75vh] flex items-center justify-center custom-scroll">
+        <!-- Content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Professional Minimal Footer -->
+  <footer class="mt-auto border-t border-zinc-200 dark:border-zinc-800/80 bg-white/50 dark:bg-zinc-900/40 py-6">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-500 dark:text-zinc-400 font-mono">
+      <div class="flex items-center gap-2">
+        <span class="font-semibold text-zinc-900 dark:text-white" data-i18n="footerBrand">8BitCompress</span>
+        <span>•</span>
+        <span data-i18n="footerTagline">Client-Side High-Precision Compression Utility</span>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span data-i18n="footerPrivacy">100% In-memory processing • Zero server upload</span>
+        <span>•</span>
+        <a href="../../../index.html" class="text-zinc-700 dark:text-zinc-300 hover:text-blue-500 transition-colors" data-i18n="footerHub">
+          ← 8BiTools Hub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

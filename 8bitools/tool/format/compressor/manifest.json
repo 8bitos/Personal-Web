@@ -1,0 +1,16 @@
+{
+  "name": "8BitCompress — Universal File & Media Compressor",
+  "short_name": "8BitCompress",
+  "description": "100% Client-Side Universal Compressor for Images, Video, Audio, and Files with Auto-Detection",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#090a0d",
+  "theme_color": "#0ea5e9",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

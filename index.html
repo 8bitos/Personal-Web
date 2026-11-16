@@ -18,23 +18,24 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Lucide Icons Local -->
     <script src="assets/lucide.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="liquid-glass.css?v=35">
 </head>
 <body>
     <!-- ========== LAYERED PARALLAX BACKGROUND ========== -->
     <div class="layered-bg">
         <div class="bg-layer bg-layer-sky" style="background-image: url('assets/Background/Background.png');"></div>
-        <div class="bg-layer bg-layer-cloud1" style="background-image: url('assets/Background/cloud1.png');"></div>
-        <div class="bg-layer bg-layer-cloud2" style="background-image: url('assets/Background/cloud2.png');"></div>
-        <img class="bg-bird" src="assets/Background/bird.png?v=2" alt="Flying Bird">
+        <div class="bg-layer bg-layer-cloud1" data-liquid-ignore style="background-image: url('assets/Background/cloud1.png');"></div>
+        <div class="bg-layer bg-layer-cloud2" data-liquid-ignore style="background-image: url('assets/Background/cloud2.png');"></div>
+        <img class="bg-bird" data-liquid-ignore src="assets/Background/bird.png?v=2" alt="Flying Bird">
         <div class="bg-layer bg-layer-front" style="background-image: url('assets/Background/Front.png');"></div>
         <div class="bg-layer bg-layer-front2" style="background-image: url('assets/Background/Front2.png');"></div>
-        <div class="bg-overlay-dim"></div>
+        <div class="bg-overlay-dim" data-liquid-ignore></div>
     </div>
 
     <!-- ========== LOADER ========== -->
@@ -66,77 +67,81 @@
     <!-- ========== VORTEX CANVAS ========== -->
     <canvas id="vortex-canvas"></canvas>
 
-    <!-- ========== P3R TOP BAR ========== -->
-    <nav id="navbar" class="p3r-topbar">
-        <a href="#hero" class="nav-logo">
-            <span class="logo-bracket">&lt;</span>Sapta<span class="logo-bracket"> /&gt;</span>
-        </a>
-        <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </nav>
-    <div id="mobile-menu-backdrop" class="mobile-menu-backdrop" aria-hidden="true"></div>
+    <!-- ========== TABLET LIQUID GLASS SHELL ========== -->
+    <main class="tablet-shell" id="tablet-shell" data-liquid-ignore>
+        <!-- ========== LIQUID GLASS TOP BAR ========== -->
+        <nav id="navbar" class="p3r-topbar">
+            <a href="#hero" class="nav-logo" data-tab-target="hero">
+                <span class="logo-bracket">&lt;</span>Sapta<span class="logo-bracket"> /&gt;</span>
+            </a>
 
-    <!-- ========== HERO SECTION — P3R Title Screen ========== -->
-    <section id="hero" class="hero">
-        <!-- LEFT: P3R Navigation Menu (always visible) -->
-        <div class="p3r-hero-nav">
-            <ul class="p3r-menu-list" id="p3r-menu-list" role="menu">
-                <li class="p3r-menu-item active" data-section="hero" role="menuitem" tabindex="0">
-                    <span class="p3r-item-index">01</span>
-                    <span class="p3r-item-text">Home</span>
-                    <span class="p3r-item-stripe"></span>
-                </li>
-                <li class="p3r-menu-item" data-section="about" role="menuitem" tabindex="-1">
-                    <span class="p3r-item-index">02</span>
-                    <span class="p3r-item-text">About</span>
-                    <span class="p3r-item-stripe"></span>
-                </li>
-                <li class="p3r-menu-item" data-section="skills" role="menuitem" tabindex="-1">
-                    <span class="p3r-item-index">03</span>
-                    <span class="p3r-item-text">Skills</span>
-                    <span class="p3r-item-stripe"></span>
-                </li>
-                <li class="p3r-menu-item" data-section="projects" role="menuitem" tabindex="-1">
-                    <span class="p3r-item-index">04</span>
-                    <span class="p3r-item-text">Projects</span>
-                    <span class="p3r-item-stripe"></span>
-                </li>
-                <li class="p3r-menu-item" data-section="experience" role="menuitem" tabindex="-1">
-                    <span class="p3r-item-index">05</span>
-                    <span class="p3r-item-text">Experience</span>
-                    <span class="p3r-item-stripe"></span>
-                </li>
-                <li class="p3r-menu-item" data-section="contact" role="menuitem" tabindex="-1">
-                    <span class="p3r-item-index">06</span>
-                    <span class="p3r-item-text">Contact</span>
-                    <span class="p3r-item-stripe"></span>
-                </li>
-            </ul>
-            <div class="p3r-menu-footer">
-                <span class="p3r-key-hint"><kbd>↑↓</kbd> Navigate</span>
-                <span class="p3r-key-hint"><kbd>Enter</kbd> Select</span>
+            <!-- Top Horizontal Navigation Menu -->
+            <div class="p3r-hero-nav liquidGL-nav">
+                <ul class="p3r-menu-list" id="p3r-menu-list" role="menu">
+                    <li class="p3r-menu-item active" data-section="hero" role="menuitem" tabindex="0">
+                        <span class="p3r-item-index">01</span>
+                        <span class="p3r-item-text">Home</span>
+                        <span class="p3r-item-stripe"></span>
+                    </li>
+                    <li class="p3r-menu-item" data-section="about" role="menuitem" tabindex="-1">
+                        <span class="p3r-item-index">02</span>
+                        <span class="p3r-item-text">About</span>
+                        <span class="p3r-item-stripe"></span>
+                    </li>
+                    <li class="p3r-menu-item" data-section="skills" role="menuitem" tabindex="-1">
+                        <span class="p3r-item-index">03</span>
+                        <span class="p3r-item-text">Skills</span>
+                        <span class="p3r-item-stripe"></span>
+                    </li>
+                    <li class="p3r-menu-item" data-section="projects" role="menuitem" tabindex="-1">
+                        <span class="p3r-item-index">04</span>
+                        <span class="p3r-item-text">Projects</span>
+                        <span class="p3r-item-stripe"></span>
+                    </li>
+                    <li class="p3r-menu-item" data-section="experience" role="menuitem" tabindex="-1">
+                        <span class="p3r-item-index">05</span>
+                        <span class="p3r-item-text">Experience</span>
+                        <span class="p3r-item-stripe"></span>
+                    </li>
+                    <li class="p3r-menu-item" data-section="contact" role="menuitem" tabindex="-1">
+                        <span class="p3r-item-index">06</span>
+                        <span class="p3r-item-text">Contact</span>
+                        <span class="p3r-item-stripe"></span>
+                    </li>
+                </ul>
+                <div class="p3r-menu-footer">
+                    <span class="p3r-key-hint"><kbd>←→</kbd> Navigate</span>
+                    <span class="p3r-key-hint"><kbd>Enter</kbd> Select</span>
+                </div>
             </div>
-        </div>
 
-        <!-- RIGHT: Hero Text Content -->
-        <div class="hero-content" id="hero-content"></div>
-
-        <a href="#about" class="scroll-indicator" aria-label="Scroll down">
-            <div class="scroll-mouse">
-                <div class="scroll-wheel"></div>
+            <div class="nav-actions">
+                <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
-            <span>Scroll Down</span>
-        </a>
-    </section>
+        </nav>
+        <div id="mobile-menu-backdrop" class="mobile-menu-backdrop" aria-hidden="true"></div>
+
+        <!-- ========== TABLET VIEWPORT (TABBED SECTIONS) ========== -->
+        <div class="tablet-viewport" id="tablet-viewport">
+
+            <!-- ========== HERO / HOME BENTO DASHBOARD ========== -->
+            <section id="hero" class="hero active-tab">
+                <div class="home-header">
+                    <h1 class="home-headline">Who’s Sapta?</h1>
+                    <div class="hero-content" id="hero-content"></div>
+                </div>
+                <div class="home-bento-grid" id="home-bento-grid"></div>
+            </section>
 
     <!-- ========== ABOUT SECTION ========== -->
     <section id="about" class="section about">
         <div class="container">
             <h2 class="section-title reveal-up">
-                <span class="section-number">01.</span> About Me
+                About Me
             </h2>
             <div class="about-grid">
                 <div class="about-text reveal-up">
@@ -158,7 +163,7 @@
     <section id="skills" class="section skills">
         <div class="container">
             <h2 class="section-title reveal-up">
-                <span class="section-number">02.</span> Skills & Tech Stack
+                Skills & Tech Stack
             </h2>
             <div class="skills-grid" id="skills-grid"></div>
         </div>
@@ -168,7 +173,7 @@
     <section id="projects" class="section projects">
         <div class="container">
             <h2 class="section-title reveal-up">
-                <span class="section-number">03.</span> Featured Projects
+                Featured Projects
             </h2>
             <div class="projects-grid">
                 <!-- Project 1 -->
@@ -260,7 +265,7 @@
     <section id="experience" class="section experience">
         <div class="container">
             <h2 class="section-title reveal-up">
-                <span class="section-number">04.</span> Experience
+                Experience
             </h2>
             <div class="timeline">
                 <div class="timeline-item reveal-left">
@@ -295,7 +300,7 @@
     <section id="contact" class="section contact">
         <div class="container">
             <h2 class="section-title reveal-up">
-                <span class="section-number">05.</span> Get In Touch
+                Get In Touch
             </h2>
             <div class="contact-rpg-arena reveal-up">
                 <!-- Arena subtitle -->
@@ -356,6 +361,8 @@
             </div>
         </div>
     </footer>
+        </div><!-- end .tablet-viewport -->
+    </main><!-- end .tablet-shell -->
 
     <!-- ========== PHONE UI ========== -->
     <div id="phone-backdrop" class="phone-backdrop"></div>
@@ -550,7 +557,19 @@
         </div><!-- end #phone-frame -->
     </div><!-- end #phone-panel -->
 
-    <script src="script.js" defer></script>
+    <script src="assets/html2canvas.min.js" defer></script>
+    <script src="assets/liquidGL.js?v=3" defer></script>
+    <script src="script.js?v=36" defer></script>
+    <script>
+    // Liquid Glass specular cursor sheen
+    document.addEventListener('pointermove', function(e) {
+        const card = e.target.closest('.glass-card, .about-text, .skill-category, .project-card, .timeline-content, .contact-strip');
+        if (!card) return;
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+        card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
+    }, { passive: true });
+    </script>
     <script>
     // Lazy-load interactive.js — only downloads on first phone click
     (function() {

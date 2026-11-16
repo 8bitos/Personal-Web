@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181b"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Clean Minimalist Canvas -->
+  <rect width="512" height="512" rx="120" fill="url(#bg)"/>
+  <rect x="2" y="2" width="508" height="508" rx="118" fill="none" stroke="#27272a" stroke-width="4"/>
+
+  <!-- Centered Precision Compression Glyph -->
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <!-- Top Down Arrow -->
+    <path d="M256 120 L256 220" stroke="url(#accent)" stroke-width="24"/>
+    <path d="M206 176 L256 226 L306 176" fill="none" stroke="url(#accent)" stroke-width="24"/>
+
+    <!-- Bottom Up Arrow -->
+    <path d="M256 392 L256 292" stroke="url(#accent)" stroke-width="24"/>
+    <path d="M206 336 L256 286 L306 336" fill="none" stroke="url(#accent)" stroke-width="24"/>
+
+    <!-- Center Line / Target Indicator -->
+    <line x1="160" y1="256" x2="352" y2="256" stroke="#f4f4f5" stroke-width="20"/>
+    <circle cx="160" cy="256" r="10" fill="#f4f4f5"/>
+    <circle cx="352" cy="256" r="10" fill="#f4f4f5"/>
+  </g>
+</svg>
