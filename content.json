@@ -480,7 +480,7 @@
         "liveUrl": "https://sage.sssevendayz.my.id/",
         "liveDisabled": true,
         "liveDisabledReason": "Mohon maaf, live demo sudah tidak berfungsi karena Sapta memutuskan untuk tidak lanjut membayar sewa VPS-nya.",
-        "liveFallbackUrl": "https://github.com/8bitos",
+        "liveFallbackUrl": "https://github.com/8bitos/AUTOMATED-ESSAY-SCORING",
         "liveFallbackLabel": "Lihat di GitHub",
         "codeUrl": "https://www.researchgate.net/scientific-contributions/I-Gusti-Nyoman-Sapta-Wiguna-2350738390",
         "codeLabel": "View Article",
