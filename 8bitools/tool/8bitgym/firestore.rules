@@ -1,0 +1,115 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// This security rules file assumes the following data structure:
+//
+// Collection: users
+// Document ID: {userId} (must match authenticated request.auth.uid)
+// Fields:
+//   - updatedAt: string (required, 1..64 chars) - ISO 8601 / timestamp string of last backup
+//   - settings: map (optional, max 100 keys) - user preferences and app settings
+//   - exercises: list (optional, max 2000 items) - custom and configured exercises
+//   - folders: list (optional, max 500 items) - routine folder definitions
+//   - routines: list (optional, max 500 items) - saved workout routines
+//   - workouts: list (optional, max 5000 items) - logged workout history
+//   - pinnedNotes: map (optional, max 2000 keys) - exercise-keyed pinned notes
+//   - exerciseRestTimers: map (optional, max 2000 keys) - exercise-keyed rest timer overrides
+//   - measurements: list (optional, max 5000 items) - body measurement logs
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the authenticated user owns the document path
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Validate that the document contains only the allowed fields
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // Validate that required fields exist
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // Validate string length bounds
+    function validStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+             request.resource.data[field].size() >= minLen &&
+             request.resource.data[field].size() <= maxLen;
+    }
+
+    // Validate that a value is a list within size limits
+    function isValidList(listVal, maxSize) {
+      return listVal is list && listVal.size() <= maxSize;
+    }
+
+    // Validate that a value is a map within key count limits
+    function isValidMapSize(mapVal, maxKeys) {
+      return mapVal is map && mapVal.keys().size() <= maxKeys;
+    }
+
+    // ===============================================================
+    // Domain Validators (Called in BOTH create and update)
+    // ===============================================================
+
+    function isValidUserBackup(data) {
+      let allowedFields = [
+        'updatedAt',
+        'settings',
+        'exercises',
+        'folders',
+        'routines',
+        'workouts',
+        'pinnedNotes',
+        'exerciseRestTimers',
+        'measurements'
+      ];
+
+      return hasOnlyAllowedFields(allowedFields) &&
+             hasRequiredFields(['updatedAt']) &&
+             validStringLength('updatedAt', 1, 64) &&
+             (!('settings' in data) || isValidMapSize(data.settings, 100)) &&
+             (!('exercises' in data) || isValidList(data.exercises, 2000)) &&
+             (!('folders' in data) || isValidList(data.folders, 500)) &&
+             (!('routines' in data) || isValidList(data.routines, 500)) &&
+             (!('workouts' in data) || isValidList(data.workouts, 5000)) &&
+             (!('pinnedNotes' in data) || isValidMapSize(data.pinnedNotes, 2000)) &&
+             (!('exerciseRestTimers' in data) || isValidMapSize(data.exerciseRestTimers, 2000)) &&
+             (!('measurements' in data) || isValidList(data.measurements, 5000));
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // Single backup document per authenticated user
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserBackup(request.resource.data);
+      allow update: if isOwner(userId) && isValidUserBackup(request.resource.data);
+      allow delete: if isOwner(userId);
+    }
+
+    // Default deny all other paths and subcollections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

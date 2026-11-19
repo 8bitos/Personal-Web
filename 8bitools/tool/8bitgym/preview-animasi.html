@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>8BitGym — Preview Semua 105 Animasi 1:1</title>
+  <style>
+    :root { --bg: #0b1120; --surface: #131c31; --border: #263554; --text: #f1f5f9; --muted: #94a3b8; --accent: #38bdf8; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 20px; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    h1 { margin: 0 0 6px; font-size: 1.3rem; }
+    p { margin: 0 0 14px; color: var(--muted); font-size: 0.9rem; }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; max-width: 600px; }
+    input, select { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px; font-size: 0.9rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; max-width: 1240px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .stage { width: 100%; aspect-ratio: 1 / 1; background: #070d1a; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .title { font-weight: 700; font-size: 0.9rem; }
+    .sub { font-size: 0.75rem; color: var(--accent); }
+  </style>
+</head>
+<body>
+  <h1 id="heading">8BitGym — Preview Semua 105 Animasi Gerakan 1:1</h1>
+  <p>Semua gerakan memiliki rig biomekanik terhubung (nested IK), menapak di lantai/bangku, dan 60fps.</p>
+  <div class="controls">
+    <input type="search" id="search" placeholder="Cari gerakan..." style="flex:1" />
+    <select id="muscle"><option value="all">Semua Otot</option></select>
+  </div>
+  <div id="grid" class="grid"></div>
+
+  <script src="./exercises-data.js"></script>
+  <script src="./exercise-animator.js"></script>
+  <script>
+    const catalog = window.IRONLOG_CATALOG;
+    const mSel = document.getElementById('muscle');
+    catalog.MUSCLE_GROUPS.forEach((m) => {
+      const o = document.createElement('option');
+      o.value = m; o.textContent = m;
+      mSel.appendChild(o);
+    });
+
+    function render() {
+      const q = document.getElementById('search').value.trim().toLowerCase();
+      const m = mSel.value;
+      const list = catalog.EXERCISES.filter((ex) => {
+        const okQ = !q || ex.name.toLowerCase().includes(q) || ex.equipment.toLowerCase().includes(q);
+        const okM = m === 'all' || ex.muscle === m;
+        return okQ && okM;
+      });
+      document.getElementById('heading').textContent = `8BitGym — Preview ${list.length} Animasi Gerakan 1:1`;
+      document.getElementById('grid').innerHTML = list.map((ex) => `
+        <div class="card">
+          <div class="stage">${window.IRONLOG_ANIMATOR.renderSvg(ex)}</div>
+          <div class="title">${ex.name}</div>
+          <div class="sub">${ex.muscle} • ${ex.equipment} • (${window.IRONLOG_ANIMATOR.getPattern(ex)})</div>
+        </div>
+      `).join('');
+    }
+    document.getElementById('search').addEventListener('input', render);
+    mSel.addEventListener('change', render);
+    render();
+  </script>
+</body>
+</html>

@@ -908,22 +908,31 @@ textarea,
         left: 16px !important;
         right: 16px !important;
         width: auto !important;
+        height: auto !important;
+        max-height: calc(100vh - 96px) !important;
+        overflow-y: auto !important;
         padding: 14px !important;
         border-radius: 22px !important;
-        background: rgba(12, 20, 44, 0.86) !important;
+        background: rgba(12, 20, 44, 0.92) !important;
         backdrop-filter: blur(24px) saturate(180%) !important;
         border: 1px solid rgba(255, 255, 255, 0.28) !important;
-        opacity: 0;
-        pointer-events: none;
-        transform: translateY(-10px) scale(0.98);
-        transition: all 0.25s ease !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        transform: translateY(-10px) scale(0.98) !important;
+        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease !important;
         z-index: 100 !important;
     }
 
     .p3r-topbar .p3r-hero-nav.open {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateY(0) scale(1);
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        transform: translateY(0) scale(1) !important;
+    }
+
+    .nav-glider-pill {
+        display: none !important;
     }
 
     .p3r-topbar .p3r-menu-list {
@@ -2970,5 +2979,309 @@ textarea,
 @media (max-width: 560px) {
     .contact-form-row {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   MOBILE-ONLY RESPONSIVE POLISH (<= 768px — DOES NOT AFFECT DESKTOP)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .tablet-viewport {
+        padding: 12px 14px 76px !important;
+    }
+
+    .section-title {
+        font-size: 1.38rem !important;
+        margin-bottom: 14px !important;
+    }
+
+    /* Home */
+    .hero-title {
+        font-size: clamp(1.85rem, 8vw, 2.4rem) !important;
+    }
+
+    .bento-card {
+        padding: 16px !important;
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    .bento-proj-media {
+        height: 142px !important;
+    }
+
+    /* About */
+    .about-deck {
+        grid-template-columns: 1fr !important;
+        border-radius: 20px !important;
+    }
+
+    .about-deck-sidebar {
+        padding: 14px !important;
+        gap: 10px !important;
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+    }
+
+    .about-chapter-list {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+    }
+
+    .about-chapter-btn {
+        padding: 11px 14px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .about-deck-stage {
+        padding: 18px 16px !important;
+        gap: 14px !important;
+    }
+
+    .about-milestone-rail {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+    }
+
+    .about-milestone-connector {
+        display: none !important;
+    }
+
+    /* Skills */
+    .skills-tree-shell {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+
+    .skills-constellation {
+        padding: 14px !important;
+        border-radius: 20px !important;
+    }
+
+    .skills-constellation-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .skills-branch-filters {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        max-width: 100%;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .skills-branch-filters::-webkit-scrollbar {
+        display: none;
+    }
+
+    .skill-branch-pill {
+        flex-shrink: 0;
+    }
+
+    .skills-unlocked-badge {
+        align-self: flex-start;
+    }
+
+    .skills-graph-canvas {
+        height: auto !important;
+        padding: 14px !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+    }
+
+    .skill-constellation-svg,
+    .skill-branch-label {
+        display: none !important;
+    }
+
+    .skill-core-node {
+        position: static !important;
+        transform: none !important;
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: 68px;
+        height: 68px;
+        margin-bottom: 4px;
+    }
+
+    .skill-node {
+        position: static !important;
+        transform: none !important;
+        width: 100%;
+        padding: 10px 8px !important;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .skill-node-name {
+        white-space: normal !important;
+        text-align: center;
+        line-height: 1.25;
+        font-size: 0.72rem !important;
+    }
+
+    .skills-inspector {
+        padding: 18px 16px !important;
+        border-radius: 20px !important;
+    }
+
+    /* Projects */
+    .proj-header-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .proj-filter-bar {
+        max-width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .proj-filter-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .proj-filter-pill {
+        flex-shrink: 0;
+    }
+
+    .proj-hybrid-stage {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+
+    .proj-spotlight-card {
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        padding: 16px !important;
+        border-radius: 20px !important;
+    }
+
+    .proj-spotlight-hero {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .proj-spotlight-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .proj-bento-selector {
+        height: auto !important;
+        max-height: 440px;
+        grid-template-columns: 1fr !important;
+        padding-right: 0 !important;
+    }
+
+    .proj-bento-item.featured-wide {
+        grid-column: span 1 !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .proj-bento-item.featured-wide .proj-bento-media {
+        width: 100% !important;
+    }
+
+    /* Experience */
+    .exp-header-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .exp-filter-bar {
+        max-width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap !important;
+        scrollbar-width: none;
+    }
+
+    .exp-filter-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .exp-year-stepper {
+        max-width: 100%;
+        overflow-x: auto !important;
+        justify-content: flex-start !important;
+        padding: 8px 12px !important;
+        gap: 10px !important;
+        scrollbar-width: none;
+    }
+
+    .exp-year-stepper::-webkit-scrollbar {
+        display: none;
+    }
+
+    .exp-bento-grid {
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+
+    .exp-bento-card.featured-wide {
+        grid-column: span 1 !important;
+    }
+
+    .exp-modal-card {
+        padding: 20px 16px !important;
+        border-radius: 20px !important;
+        max-height: 86vh !important;
+        overflow-y: auto !important;
+    }
+
+    .exp-modal-footer {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    .exp-modal-nav {
+        margin-left: 0 !important;
+        justify-content: flex-end;
+    }
+
+    /* Contact */
+    .contact-deck {
+        grid-template-columns: 1fr !important;
+        border-radius: 20px !important;
+        max-width: 100% !important;
+    }
+
+    .contact-deck-info {
+        padding: 20px 16px !important;
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+        min-width: 0 !important;
+    }
+
+    .contact-deck-form {
+        padding: 20px 16px !important;
+        min-width: 0 !important;
+    }
+
+    .contact-form-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    .contact-channel-card {
+        padding: 10px 12px !important;
+    }
+
+    .contact-channel-value {
+        font-size: 0.82rem !important;
     }
 }

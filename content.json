@@ -562,6 +562,21 @@
         "thumbnail": "assets/Project/tool-compress.svg"
       },
       {
+        "title": "8BitGym — Gym Progress Tracker",
+        "category": "Fitness & Productivity PWA",
+        "desc": "A local-first Progressive Web App for logging workouts, custom routines, weight progression, and body measurements with interactive 3D exercise guides and optional Google Drive sync.",
+        "icon": "dumbbell",
+        "tech": [
+          "HTML5",
+          "Three.js",
+          "PWA",
+          "Google Drive API"
+        ],
+        "liveUrl": "8bitools/tool/8bitgym/index.html",
+        "codeUrl": "",
+        "thumbnail": "8bitools/tool/8bitgym/icon.svg"
+      },
+      {
         "title": "Next-Gen Hydroponics Mobile App",
         "category": "IoT & Mobile Application",
         "desc": "A smart hydroponics system integrated with IoT, Web, AI, and Solar Energy created during an MBKM internship with DAGO Engineering. Engineered the mobile application for real-time sensor monitoring and automation control.",

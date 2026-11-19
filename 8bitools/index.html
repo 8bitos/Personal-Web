@@ -235,11 +235,12 @@
             <button class="filter-pill shrink-0 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-xs" data-filter="image" id="f-img">Gambar</button>
             <button class="filter-pill shrink-0 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-xs" data-filter="video" id="f-vid">Video</button>
             <button class="filter-pill shrink-0 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-xs" data-filter="document" id="f-doc">Dokumen &amp; Kompresi</button>
+            <button class="filter-pill shrink-0 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-xs" data-filter="fitness" id="f-fit">Fitness</button>
           </div>
         </div>
 
-        <!-- 2x2 Square Grid on Mobile, 4-Column Grid on Desktop -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6" id="tools-grid">
+        <!-- 2x2 Square Grid on Mobile, 3-Column Grid on Desktop -->
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6" id="tools-grid">
 
           <!-- 1. Image Converter -->
           <a href="tool/format/image/index.html" class="tool-card rounded-2xl sm:rounded-[26px] p-4 sm:p-6 flex flex-col justify-between group" data-category="image" data-keywords="image gambar foto converter raw heic dng webp avif png jpg tiff">
@@ -333,6 +334,29 @@
             </div>
           </a>
 
+          <!-- 5. 8BitGym -->
+          <a href="tool/8bitgym/index.html" class="tool-card rounded-2xl sm:rounded-[26px] p-4 sm:p-6 flex flex-col justify-between group" data-category="fitness" data-keywords="gym workout fitness tracker 8bitgym routine beban exercise 3d pwa google drive">
+            <div>
+              <div class="h-16 sm:h-28 flex items-center justify-center icon-pedestal mb-3 sm:mb-4">
+                <div class="w-12 h-12 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-400/25 to-teal-600/25 border border-emerald-300/30 flex items-center justify-center text-emerald-300 shadow-lg sm:shadow-xl group-hover:scale-110 transition-transform duration-300">
+                  <span class="material-symbols-rounded text-[26px] sm:text-[40px]">fitness_center</span>
+                </div>
+              </div>
+
+              <h2 class="font-display font-bold text-sm sm:text-lg text-white leading-tight">8BitGym</h2>
+              <p class="text-[11px] sm:text-xs text-white/60 mt-1 leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none" data-i18n="card-gym-desc">
+                Catat workout, routine, beban &amp; panduan 3D.
+              </p>
+            </div>
+
+            <div class="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-white/10 flex items-center justify-between">
+              <span class="text-[11px] sm:text-xs font-semibold text-emerald-300/90">PWA · 3D Guide</span>
+              <div class="card-action-box w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center text-white">
+                <span class="material-symbols-rounded text-[15px] sm:text-[18px]">arrow_outward</span>
+              </div>
+            </div>
+          </a>
+
         </div>
 
         <!-- Empty Search State -->
@@ -351,6 +375,7 @@
         <a href="tool/format/video to live foto/index.html" class="hover:text-sky-300 transition-colors">LiveBit</a>
         <a href="tool/format/compressor/index.html" class="hover:text-sky-300 transition-colors">Compress</a>
         <a href="tool/format/pdf/index.html" class="hover:text-sky-300 transition-colors">8BitDoc</a>
+        <a href="tool/8bitgym/index.html" class="hover:text-sky-300 transition-colors">8BitGym</a>
       </div>
     </footer>
 
@@ -369,10 +394,12 @@
         fImg: "Gambar",
         fVid: "Video",
         fDoc: "Dokumen & Kompresi",
+        fFit: "Fitness",
         cardImgDesc: "Konversi RAW, HEIC, & 15+ format gambar.",
         cardVidDesc: "Ubah video jadi Motion & Live Photo.",
         cardCompDesc: "Kompresi presisi video, audio, gambar & PDF.",
         cardPdfDesc: "Smart scanner dokumen & Image ke PDF.",
+        cardGymDesc: "Catat workout, routine, beban & panduan 3D.",
         searchPlaceholder: "Cari...",
         noResults: "Alat tidak ditemukan",
         navPortfolio: "Portofolio"
@@ -383,10 +410,12 @@
         fImg: "Image",
         fVid: "Video",
         fDoc: "Docs & Compress",
+        fFit: "Fitness",
         cardImgDesc: "Convert RAW, HEIC, & 15+ image formats.",
         cardVidDesc: "Turn videos into Motion & Live Photos.",
         cardCompDesc: "Precision compression for video, audio, & PDF.",
         cardPdfDesc: "Smart document scanner & Image to PDF.",
+        cardGymDesc: "Track workouts, routines, weights & 3D guides.",
         searchPlaceholder: "Search...",
         noResults: "No tools found",
         navPortfolio: "Portfolio"
@@ -397,10 +426,12 @@
         fImg: "图片",
         fVid: "视频",
         fDoc: "文档与压缩",
+        fFit: "健身",
         cardImgDesc: "转换 RAW、HEIC 及 15+ 种图片格式。",
         cardVidDesc: "将视频转换为动态照片和实况照片。",
         cardCompDesc: "高精度压缩视频、音频、图片和 PDF。",
         cardPdfDesc: "智能文档扫描仪与图片转 PDF。",
+        cardGymDesc: "记录训练、计划、重量与 3D 动作指导。",
         searchPlaceholder: "搜索...",
         noResults: "未找到相关工具",
         navPortfolio: "作品集"
@@ -411,10 +442,12 @@
         fImg: "Imagen",
         fVid: "Video",
         fDoc: "Docs y Compresión",
+        fFit: "Fitness",
         cardImgDesc: "Convierte RAW, HEIC y más de 15 formatos.",
         cardVidDesc: "Convierte videos en Motion y Live Photo.",
         cardCompDesc: "Compresión precisa de video, audio y PDF.",
         cardPdfDesc: "Escáner inteligente e Imagen a PDF.",
+        cardGymDesc: "Registra entrenos, rutinas, pesos y guías 3D.",
         searchPlaceholder: "Buscar...",
         noResults: "No se encontraron herramientas",
         navPortfolio: "Portafolio"
@@ -425,10 +458,12 @@
         fImg: "الصور",
         fVid: "الفيديو",
         fDoc: "المستندات والضغط",
+        fFit: "اللياقة",
         cardImgDesc: "تحويل RAW و HEIC وأكثر من 15 صيغة.",
         cardVidDesc: "تحويل الفيديو إلى صور متحركة و Live Photo.",
         cardCompDesc: "ضغط دقيق للفيديو والصوت والصور و PDF.",
         cardPdfDesc: "ماسح مستندات ذكي وتحويل الصور إلى PDF.",
+        cardGymDesc: "تتبع التمارين والأوزان مع دليل ثلاثي الأبعاد.",
         searchPlaceholder: "بحث...",
         noResults: "لم يتم العثور على أدوات",
         navPortfolio: "معرض الأعمال"
@@ -439,10 +474,12 @@
         fImg: "Image",
         fVid: "Vidéo",
         fDoc: "Docs & Compression",
+        fFit: "Fitness",
         cardImgDesc: "Convertissez RAW, HEIC et 15+ formats.",
         cardVidDesc: "Transformez vos vidéos en Motion & Live Photo.",
         cardCompDesc: "Compression précise vidéo, audio, image & PDF.",
         cardPdfDesc: "Scanner intelligent et Image vers PDF.",
+        cardGymDesc: "Suivez séances, routines, charges et guides 3D.",
         searchPlaceholder: "Rechercher...",
         noResults: "Aucun outil trouvé",
         navPortfolio: "Portfolio"
@@ -453,10 +490,12 @@
         fImg: "画像",
         fVid: "動画",
         fDoc: "文書・圧縮",
+        fFit: "フィットネス",
         cardImgDesc: "RAW、HEIC、15種類以上の画像形式を変換。",
         cardVidDesc: "動画をモーション＆ライブフォトに変換。",
         cardCompDesc: "動画・音声・画像・PDFを高精度に圧縮。",
         cardPdfDesc: "スマート文書スキャン＆画像をPDF化。",
+        cardGymDesc: "筋トレ・メニュー・重量＆3Dガイドを記録。",
         searchPlaceholder: "検索...",
         noResults: "ツールが見つかりません",
         navPortfolio: "ポートフォリオ"
@@ -467,10 +506,12 @@
         fImg: "Imagem",
         fVid: "Vídeo",
         fDoc: "Docs e Compressão",
+        fFit: "Fitness",
         cardImgDesc: "Converta RAW, HEIC e mais de 15 formatos.",
         cardVidDesc: "Transforme vídeos em Motion e Live Photo.",
         cardCompDesc: "Compressão precisa de vídeo, áudio e PDF.",
         cardPdfDesc: "Scanner inteligente e Imagem para PDF.",
+        cardGymDesc: "Registre treinos, rotinas, cargas e guias 3D.",
         searchPlaceholder: "Buscar...",
         noResults: "Nenhuma ferramenta encontrada",
         navPortfolio: "Portfólio"
@@ -494,6 +535,7 @@
       document.getElementById('f-img').textContent = t.fImg;
       document.getElementById('f-vid').textContent = t.fVid;
       document.getElementById('f-doc').textContent = t.fDoc;
+      document.getElementById('f-fit').textContent = t.fFit;
       document.getElementById('search-input').placeholder = t.searchPlaceholder;
       document.getElementById('no-result-text').textContent = t.noResults;
       document.getElementById('nav-portfolio').textContent = t.navPortfolio;
@@ -504,6 +546,7 @@
         if (k === 'card-vid-desc') el.textContent = t.cardVidDesc;
         if (k === 'card-comp-desc') el.textContent = t.cardCompDesc;
         if (k === 'card-pdf-desc') el.textContent = t.cardPdfDesc;
+        if (k === 'card-gym-desc') el.textContent = t.cardGymDesc;
       });
     }
 
