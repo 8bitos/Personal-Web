@@ -3285,3 +3285,2433 @@ textarea,
         font-size: 0.82rem !important;
     }
 }
+
+/* ==========================================================================
+   14. MOBILE APP MODE ONLY — NINTENDO SWITCH eSHOP THEME + ANIMATIONS
+   Desktop (> 768px) remains 100% untouched.
+   ========================================================================== */
+.mobile-bottom-nav,
+.mobile-app-link,
+.mobile-theme-toggle,
+.proj-filter-toggle,
+.proj-filter-drawer-title,
+.proj-filter-backdrop {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    @keyframes eshopTabEnter {
+        0% {
+            opacity: 0;
+            transform: translateY(14px) scale(0.98);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes eshopTilePop {
+        0% {
+            opacity: 0;
+            transform: translateY(16px) scale(0.94);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes eshopShine {
+        0% { transform: translateX(-140%) skewX(-20deg); }
+        45%, 100% { transform: translateX(240%) skewX(-20deg); }
+    }
+
+    @keyframes eshopPulseDot {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.35); opacity: 0.7; }
+    }
+
+    /* Clean Minimalist Nintendo Store Light Canvas */
+    body {
+        background: #f7f8fa !important;
+        color: #111827 !important;
+    }
+
+    .tablet-shell {
+        width: 100vw !important;
+        height: 100dvh !important;
+        border-radius: 0 !important;
+        border: none !important;
+        background: #f7f8fa !important;
+        box-shadow: none !important;
+    }
+
+    /* Clean Top Bar matching Reference */
+    .p3r-topbar {
+        padding: 12px 18px !important;
+        background: rgba(247, 248, 250, 0.92) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.06) !important;
+        box-shadow: none !important;
+    }
+
+    .p3r-topbar .nav-logo {
+        background: #e60012 !important;
+        color: #ffffff !important;
+        padding: 6px 13px !important;
+        border-radius: 999px !important;
+        font-size: 0.92rem !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.2px;
+        box-shadow: 0 4px 12px rgba(230, 0, 18, 0.28);
+    }
+
+    .p3r-topbar .nav-logo .logo-bracket {
+        color: rgba(255, 255, 255, 0.85) !important;
+    }
+
+    .mobile-menu-btn,
+    .p3r-topbar .p3r-hero-nav {
+        display: none !important;
+    }
+
+    .p3r-topbar .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .mobile-app-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        height: 34px;
+        padding: 0 11px;
+        border-radius: 999px;
+        border: 1.5px solid rgba(15, 23, 42, 0.12);
+        background: #ffffff;
+        color: #0f172a;
+        text-decoration: none;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.74rem;
+        font-weight: 700;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+        transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .mobile-app-link svg {
+        width: 14px;
+        height: 14px;
+        color: #e60012;
+        stroke-width: 2.3;
+    }
+
+    .mobile-app-link:active {
+        transform: scale(0.92);
+    }
+
+    .mobile-theme-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        border: 1.5px solid rgba(15, 23, 42, 0.12);
+        background: #ffffff;
+        color: #0f172a;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+        transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, color 0.2s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .mobile-theme-toggle svg {
+        width: 16px;
+        height: 16px;
+        stroke-width: 2.2;
+    }
+
+    .mobile-theme-toggle:active {
+        transform: scale(0.9);
+    }
+
+    /* Nintendo Red Featured Hero Card */
+    .tablet-viewport > section#hero.active-tab {
+        gap: 14px !important;
+        padding: 4px 0 0 !important;
+    }
+
+    .home-header {
+        position: relative;
+        overflow: hidden;
+        padding: 20px 18px !important;
+        border-radius: 24px !important;
+        background: linear-gradient(135deg, #e60012 0%, #c80010 100%) !important;
+        border: none !important;
+        box-shadow:
+            0 14px 28px -8px rgba(230, 0, 18, 0.42),
+            inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+        text-align: left !important;
+        align-items: flex-start !important;
+    }
+
+    .home-header::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 45%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+        animation: eshopShine 5.5s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    .home-headline {
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 0.72rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase;
+        letter-spacing: 1.4px;
+        color: rgba(255, 255, 255, 0.88) !important;
+        margin-bottom: 4px !important;
+    }
+
+    .hero-content {
+        align-items: flex-start !important;
+        text-align: left !important;
+        width: 100%;
+    }
+
+    .hero-greeting {
+        font-size: 0.78rem !important;
+        color: rgba(255, 255, 255, 0.85) !important;
+        margin-bottom: 2px !important;
+    }
+
+    .hero-name,
+    .hero-name .gradient-text {
+        font-size: clamp(28px, 8vw, 34px) !important;
+        line-height: 1.1 !important;
+        margin-bottom: 4px !important;
+        color: #ffffff !important;
+        background: none !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+
+    .hero-title-wrapper {
+        justify-content: flex-start !important;
+        font-size: 0.9rem !important;
+        color: rgba(255, 255, 255, 0.95) !important;
+        margin-bottom: 8px !important;
+    }
+
+    .rotator-text {
+        color: #fde047 !important;
+        font-weight: 700 !important;
+    }
+
+    .hero-description {
+        font-size: 0.82rem !important;
+        line-height: 1.45 !important;
+        color: rgba(255, 255, 255, 0.9) !important;
+        margin-bottom: 14px !important;
+        text-align: left !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .hero-cta {
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px !important;
+        justify-content: stretch !important;
+    }
+
+    .hero-cta .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 11px 8px !important;
+        font-size: 0.74rem !important;
+        font-weight: 700 !important;
+        white-space: nowrap;
+        border-radius: 999px !important;
+        transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    }
+
+    .hero-cta .btn-primary,
+    .hero-cta .btn-primary * {
+        background: #ffffff !important;
+        color: #e60012 !important;
+        stroke: #e60012 !important;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16) !important;
+    }
+
+    .hero-cta .btn-primary svg,
+    .hero-cta .btn-primary span {
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .hero-cta .btn-outline {
+        background: rgba(255, 255, 255, 0.16) !important;
+        color: #ffffff !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.55) !important;
+    }
+
+    .hero-cta .btn:active {
+        transform: scale(0.94) !important;
+    }
+
+    .hero-socials {
+        justify-content: flex-start !important;
+        margin-top: 12px !important;
+        gap: 8px !important;
+    }
+
+    .hero-socials .social-link {
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 12px !important;
+        background: rgba(255, 255, 255, 0.18) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        color: #ffffff !important;
+    }
+
+    /* eShop Tactile 2x2 Bento Tiles (fix desktop fixed-height overlaps) */
+    .home-bento-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        height: auto !important;
+        min-height: 0 !important;
+        flex: none !important;
+    }
+
+    .bento-projects-col,
+    .bento-bottom-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+        height: auto !important;
+        min-height: 0 !important;
+        flex: none !important;
+    }
+
+    .bento-right-col {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        height: auto !important;
+        min-height: 0 !important;
+        flex: none !important;
+    }
+
+    .bento-card {
+        border-radius: 18px !important;
+        padding: 12px !important;
+        background: #ffffff !important;
+        border: 1px solid rgba(15, 23, 42, 0.06) !important;
+        box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.07) !important;
+        color: #111827 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+        overflow: hidden !important;
+        animation: eshopTilePop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease !important;
+    }
+
+    .home-bento-grid .bento-projects-col .bento-card:nth-child(1),
+    .home-bento-grid .bento-projects-col .bento-card:nth-child(2),
+    .home-bento-grid .bento-exp-card,
+    .home-bento-grid .bento-skills-card,
+    .home-bento-grid .bento-about-card {
+        border-top: 1px solid rgba(15, 23, 42, 0.06) !important;
+    }
+
+    .home-bento-grid .bento-projects-col .bento-card:nth-child(1) { animation-delay: 0.04s; }
+    .home-bento-grid .bento-projects-col .bento-card:nth-child(2) { animation-delay: 0.09s; }
+    .home-bento-grid .bento-exp-card { animation-delay: 0.14s; }
+    .home-bento-grid .bento-skills-card { animation-delay: 0.18s; }
+    .home-bento-grid .bento-about-card { animation-delay: 0.22s; }
+
+    .bento-card:active {
+        transform: scale(0.95) !important;
+        box-shadow: 0 0 0 3px rgba(230, 0, 18, 0.35), 0 8px 20px rgba(15, 23, 42, 0.12) !important;
+    }
+
+    .bento-card-head {
+        margin-bottom: 8px !important;
+    }
+
+    .bento-about-card .bento-card-title,
+    .bento-card .bento-card-title {
+        font-size: 0.78rem !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        text-shadow: none !important;
+    }
+
+    .bento-arrow {
+        color: #e60012 !important;
+        background: rgba(230, 0, 18, 0.08) !important;
+    }
+
+    .bento-proj-media {
+        flex: none !important;
+        width: 100% !important;
+        height: 82px !important;
+        min-height: 82px !important;
+        max-height: 82px !important;
+        border-radius: 12px !important;
+        margin-bottom: 4px !important;
+        border: none !important;
+        background: #eef2f6 !important;
+    }
+
+    .bento-proj-index {
+        font-size: 0.65rem !important;
+        color: #0284c7 !important;
+        font-weight: 700 !important;
+    }
+
+    .bento-proj-name {
+        font-size: 0.85rem !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        line-height: 1.25 !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .bento-chips {
+        gap: 4px !important;
+        margin-top: 6px !important;
+    }
+
+    .bento-chip {
+        font-size: 0.64rem !important;
+        padding: 3px 7px !important;
+        background: #f1f5f9 !important;
+        color: #334155 !important;
+        border: 1px solid #e2e8f0 !important;
+        font-weight: 600 !important;
+    }
+
+    .bento-exp-title {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+    }
+
+    .bento-exp-date,
+    .bento-card-sub {
+        color: #64748b !important;
+        font-size: 0.72rem !important;
+    }
+
+    .bento-about-badge {
+        font-size: 0.65rem !important;
+        padding: 3px 8px !important;
+        margin-bottom: 6px !important;
+        background: rgba(230, 0, 18, 0.1) !important;
+        color: #e60012 !important;
+        border: none !important;
+        font-weight: 700 !important;
+    }
+
+    .bento-about-card .bento-about-snippet,
+    .bento-about-snippet {
+        font-size: 0.74rem !important;
+        line-height: 1.4 !important;
+        color: #334155 !important;
+        opacity: 1 !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Secondary Sections Light eShop Readability & Layout on Mobile */
+    .section {
+        padding: 8px 0 16px !important;
+    }
+
+    .section-title {
+        display: flex !important;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 1.35rem !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.02em !important;
+        color: #0f172a !important;
+        margin-bottom: 14px !important;
+    }
+
+    .section-title::before {
+        content: '';
+        display: inline-block;
+        width: 5px;
+        height: 22px;
+        border-radius: 999px;
+        background: #e60012;
+        flex-shrink: 0;
+    }
+
+    .about-text {
+        display: flex !important;
+        flex-direction: column;
+        gap: 12px;
+        padding: 18px 16px !important;
+        border-radius: 22px !important;
+        background: #ffffff !important;
+        border: 1.5px solid rgba(15, 23, 42, 0.08) !important;
+        box-shadow: 0 8px 24px -8px rgba(15, 23, 42, 0.1) !important;
+        font-size: 0.88rem !important;
+        line-height: 1.62 !important;
+        color: #334155 !important;
+    }
+
+    .about-text p {
+        margin: 0 !important;
+        color: #334155 !important;
+    }
+
+    .contact-deck-form input,
+    .contact-deck-form textarea {
+        background: #f8fafc !important;
+        color: #0f172a !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 14px !important;
+        font-size: 0.88rem !important;
+    }
+
+    .contact-deck-form .btn,
+    .contact-deck-form button[type="submit"] {
+        background: #e60012 !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 999px !important;
+        font-weight: 700 !important;
+    }
+
+    .footer {
+        padding: 18px 0 8px !important;
+        border-top: 1px solid rgba(15, 23, 42, 0.08) !important;
+    }
+
+    .footer-logo {
+        color: #0f172a !important;
+    }
+
+    .footer-logo .logo-bracket {
+        color: #e60012 !important;
+    }
+
+    .footer .social-link {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    .glass-card,
+    .stat-card,
+    .skill-category,
+    .proj-spotlight-card,
+    .proj-mini-card,
+    .exp-bento-card,
+    .contact-deck,
+    .about-card {
+        background: #ffffff !important;
+        color: #111827 !important;
+        border: 1.5px solid rgba(15, 23, 42, 0.08) !important;
+        box-shadow: 0 8px 24px -8px rgba(15, 23, 42, 0.1) !important;
+    }
+
+    .glass-card p,
+    .about-text,
+    .proj-spotlight-desc,
+    .exp-bento-desc,
+    .contact-channel-label,
+    .footer-copy {
+        color: #475569 !important;
+    }
+
+    .stat-number,
+    .proj-spotlight-title,
+    .proj-spotlight-title *,
+    .proj-spotlight-counter,
+    .proj-counter,
+    .exp-bento-title,
+    .contact-channel-value,
+    .skill-category-title {
+        color: #0f172a !important;
+    }
+
+    .proj-spotlight-category,
+    .proj-spotlight-subtitle {
+        color: #0284c7 !important;
+        font-weight: 700 !important;
+    }
+
+    .proj-spotlight-nav button,
+    .proj-nav-btn {
+        background: #f1f5f9 !important;
+        color: #0f172a !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    .proj-spotlight-footer .btn,
+    .proj-spotlight-actions .btn {
+        background: #e60012 !important;
+        color: #ffffff !important;
+        border: none !important;
+    }
+
+    .proj-filter-btn,
+    .proj-filter-pill,
+    .skills-tab,
+    .skill-tab-btn,
+    .skills-filter-btn {
+        color: #334155 !important;
+        font-weight: 700 !important;
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+    }
+
+    .proj-filter-btn.active,
+    .proj-filter-pill.active,
+    .skills-tab.active,
+    .skill-tab-btn.active,
+    .skills-filter-btn.active {
+        background: #e60012 !important;
+        color: #ffffff !important;
+    }
+
+    .skills-tabs,
+    .skills-tab-bar {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        max-width: 100% !important;
+    }
+    .skills-tabs::-webkit-scrollbar,
+    .skills-tab-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .skill-tag,
+    .skill-chip,
+    .skill-pill,
+    .tech-tag,
+    .proj-tech-chip,
+    .exp-bento-tag {
+        background: #f1f5f9 !important;
+        color: #1e293b !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    /* Prevent horizontal clipping on mobile sections */
+    .tablet-viewport > section[id] {
+        max-width: 100% !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        overflow-x: hidden !important;
+        box-sizing: border-box !important;
+    }
+
+    .tablet-viewport .container,
+    .proj-header-bar,
+    .proj-filter-dock,
+    .proj-spotlight-card,
+    .bento-card {
+        max-width: 100% !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .proj-filter-dock {
+        background: #e2e8f0 !important;
+        border: none !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .proj-filter-dock::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Dark Charcoal Floating Bottom Dock (matching reference images) */
+    .mobile-bottom-nav {
+        position: fixed;
+        left: 14px;
+        right: 14px;
+        bottom: calc(12px + env(safe-area-inset-bottom));
+        z-index: 10020;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        align-items: center;
+        gap: 2px;
+        padding: 6px 8px;
+        border-radius: 22px;
+        background: #141519;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.24);
+    }
+
+    .mobile-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        min-height: 46px;
+        padding: 5px 2px;
+        border: none;
+        border-radius: 16px;
+        background: transparent;
+        color: #8e929b;
+        font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.6rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .mobile-nav-item svg {
+        width: 18px;
+        height: 18px;
+        stroke-width: 2.1;
+        transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .mobile-nav-item:active {
+        transform: scale(0.9);
+    }
+
+    .mobile-nav-item.active {
+        background: rgba(230, 0, 18, 0.14);
+        color: #ff3b47;
+        box-shadow: none;
+    }
+
+    .mobile-nav-item.active svg {
+        color: #ff3b47;
+        transform: translateY(-1px) scale(1.08);
+    }
+
+    /* ======================================================================
+       STRUCTURAL MOBILE LAYOUTS: ABOUT, SKILLS, PROJECTS (eShop App Style)
+       ====================================================================== */
+
+    /* 1. ABOUT — Segmented Chapter Pills + Story Card + 2-Col Snapshot + Swipeable Milestones */
+    #about .about-deck {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    #about .about-deck-sidebar {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        width: 100% !important;
+        border-right: none !important;
+        padding: 0 !important;
+    }
+
+    #about .about-chapter-list {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 8px !important;
+        overflow-x: auto !important;
+        padding: 2px 0 4px !important;
+        scrollbar-width: none;
+    }
+    #about .about-chapter-list::-webkit-scrollbar { display: none; }
+
+    #about .about-chapter-btn {
+        width: auto !important;
+        flex: 0 0 auto !important;
+        flex-shrink: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        padding: 9px 14px !important;
+        border-radius: 999px !important;
+        font-size: 0.76rem !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+    }
+
+    #about .about-chapter-btn:not(.active) .about-chapter-num {
+        color: #e60012 !important;
+    }
+
+    #about .about-snapshot {
+        order: 2;
+        padding: 14px !important;
+        border-radius: 20px !important;
+        background: #ffffff !important;
+        border: 1.5px solid rgba(15, 23, 42, 0.08) !important;
+        box-shadow: 0 6px 18px -6px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    #about .about-snapshot-title {
+        font-size: 0.72rem !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #e60012 !important;
+        margin-bottom: 8px !important;
+    }
+
+    #about .about-snapshot-pills {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+    }
+
+    #about .about-snapshot-pill {
+        background: #f1f5f9 !important;
+        color: #0f172a !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        padding: 7px 10px !important;
+        font-size: 0.72rem !important;
+        font-weight: 600 !important;
+        text-align: center;
+    }
+
+    #about .about-deck-stage {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        padding: 0 !important;
+    }
+
+    #about .about-stage-body {
+        padding: 18px 16px !important;
+        border-radius: 22px !important;
+        background: #ffffff !important;
+        border: 1.5px solid rgba(15, 23, 42, 0.08) !important;
+        border-top: 4px solid #e60012 !important;
+        box-shadow: 0 8px 24px -8px rgba(15, 23, 42, 0.1) !important;
+    }
+
+    #about .about-stage-eyebrow {
+        display: inline-block;
+        padding: 3px 9px;
+        border-radius: 999px;
+        background: rgba(230, 0, 18, 0.1);
+        color: #e60012 !important;
+        font-size: 0.68rem !important;
+        font-weight: 800 !important;
+        margin-bottom: 8px !important;
+    }
+
+    #about .about-stage-headline {
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 1.15rem !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        margin-bottom: 8px !important;
+    }
+
+    #about .about-stage-lead,
+    #about .about-stage-detail {
+        font-size: 0.84rem !important;
+        line-height: 1.58 !important;
+        color: #334155 !important;
+    }
+
+    /* Education / Milestones as Clean Vertical Nintendo Metadata Table */
+    #about .about-milestone-rail {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+        overflow: visible !important;
+        padding: 4px 16px !important;
+        border-radius: 20px !important;
+        background: #ffffff !important;
+        border: 1px solid rgba(15, 23, 42, 0.06) !important;
+        box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.06) !important;
+    }
+
+    #about .about-milestone-connector { display: none !important; }
+
+    #about .about-milestone-step {
+        flex: none !important;
+        width: 100% !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+    }
+
+    #about .about-milestone-step:last-child {
+        border-bottom: none !important;
+    }
+
+    #about .about-milestone-node {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 10px !important;
+        padding: 12px 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    #about .about-milestone-stage {
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 0.68rem !important;
+        font-weight: 800 !important;
+        color: #e60012 !important;
+        background: rgba(230, 0, 18, 0.08) !important;
+        padding: 3px 9px !important;
+        border-radius: 999px !important;
+        flex-shrink: 0 !important;
+    }
+
+    #about .about-milestone-title {
+        font-size: 0.82rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        text-align: right !important;
+    }
+
+    /* 2. SKILLS — Clean Nintendo Tech Stack Inspector + 2-Column Pill Grid (no vibecoding nodes badge) */
+    #skills .skills-inspector {
+        order: -1 !important;
+        width: 100% !important;
+        border-radius: 20px !important;
+        padding: 16px !important;
+        border: 1px solid rgba(15, 23, 42, 0.06) !important;
+        background: #ffffff !important;
+        box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.07) !important;
+    }
+
+    #skills .skills-unlocked-badge,
+    #skills .skill-core-node,
+    #skills .skill-constellation-svg,
+    #skills .skills-graph-canvas::before,
+    #skills .skills-graph-canvas::after,
+    #skills .skills-graph-svg {
+        display: none !important;
+    }
+
+    #skills .skills-inspector-kicker,
+    #skills .skills-inspector-sub,
+    #skills .skills-inspector-branch,
+    #skills .skills-node-counter {
+        color: #475569 !important;
+    }
+
+    #skills .skills-constellation {
+        width: 100% !important;
+        padding: 14px 12px !important;
+        border-radius: 22px !important;
+    }
+
+    #skills .skills-constellation-bar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        margin-bottom: 10px !important;
+    }
+
+    #skills .skills-branch-filters {
+        display: flex !important;
+        gap: 6px !important;
+        overflow-x: auto !important;
+        padding-bottom: 4px !important;
+        scrollbar-width: none;
+    }
+    #skills .skills-branch-filters::-webkit-scrollbar { display: none; }
+
+    #skills .skill-branch-pill {
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+        padding: 7px 12px !important;
+        border-radius: 999px !important;
+        font-size: 0.74rem !important;
+        font-weight: 700 !important;
+    }
+
+    #skills .skills-unlocked-badge {
+        align-self: flex-start;
+        font-size: 0.7rem !important;
+        font-weight: 700 !important;
+        color: #16a34a !important;
+        background: rgba(34, 197, 94, 0.12) !important;
+        padding: 4px 10px !important;
+        border-radius: 999px !important;
+    }
+
+    #skills .skills-tree-shell {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    #skills .skills-graph-canvas {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        height: auto !important;
+        min-height: 0 !important;
+        padding: 4px 0 0 !important;
+    }
+
+    #skills .skill-node {
+        position: static !important;
+        transform: none !important;
+        width: 100% !important;
+        min-height: 46px !important;
+        padding: 10px 12px !important;
+        border-radius: 14px !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        color: #0f172a !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+        box-sizing: border-box !important;
+        font-size: 0.78rem !important;
+        font-weight: 700 !important;
+        transition: transform 0.15s ease, border-color 0.2s ease !important;
+    }
+
+    #skills .skill-node.active {
+        background: #e60012 !important;
+        border-color: #e60012 !important;
+        color: #ffffff !important;
+    }
+
+    #skills .skill-node.active * {
+        color: #ffffff !important;
+    }
+
+    /* 3. PROJECTS — Nintendo Switch eShop Storefront (Spotlight + 2-Col Catalog) */
+    #projects .proj-header-bar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+        margin-bottom: 12px !important;
+    }
+
+    #projects .proj-filter-dock {
+        display: flex !important;
+        gap: 6px !important;
+        padding: 6px !important;
+        border-radius: 16px !important;
+        overflow-x: auto !important;
+    }
+
+    #projects .proj-hybrid-stage {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 14px !important;
+    }
+
+    #projects .proj-spotlight-card,
+    #projects .proj-spotlight-hero,
+    #projects .proj-spotlight-meta,
+    #projects .proj-spotlight-body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+    }
+
+    #projects .proj-spotlight-title {
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+        text-shadow: none !important;
+    }
+
+    #projects .proj-spotlight-card {
+        padding: 14px !important;
+        border-radius: 20px !important;
+        border: 1px solid rgba(15, 23, 42, 0.06) !important;
+        box-shadow: 0 6px 20px -6px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    #projects .proj-spotlight-hero {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    #projects .proj-spotlight-media {
+        width: 100% !important;
+        height: 170px !important;
+        border-radius: 16px !important;
+        overflow: hidden !important;
+    }
+
+    #projects .proj-spotlight-top {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+    }
+
+    #projects .project-category {
+        background: rgba(2, 132, 199, 0.12) !important;
+        color: #0284c7 !important;
+        padding: 4px 10px !important;
+        border-radius: 999px !important;
+        font-size: 0.7rem !important;
+        font-weight: 800 !important;
+    }
+
+    #projects .proj-spotlight-actions {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    #projects .proj-spotlight-actions .btn,
+    #projects .proj-action-btn {
+        width: 100% !important;
+        justify-content: center !important;
+        border-radius: 999px !important;
+        padding: 10px 10px !important;
+        font-size: 0.74rem !important;
+        white-space: nowrap !important;
+    }
+
+    #projects .proj-action-btn--disabled {
+        background: #e2e8f0 !important;
+        color: #64748b !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+    }
+
+    /* eShop Vertical Game List (#proj-bento-selector) */
+    #projects .proj-bento-selector {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    #projects .proj-bento-item,
+    #projects .proj-bento-item.featured-wide {
+        grid-column: span 1 !important;
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: 76px 1fr !important;
+        align-items: center !important;
+        padding: 10px 12px !important;
+        border-radius: 18px !important;
+        background: #ffffff !important;
+        border: 1px solid rgba(15, 23, 42, 0.06) !important;
+        box-shadow: 0 4px 14px -4px rgba(15, 23, 42, 0.06) !important;
+        text-align: left !important;
+        gap: 12px !important;
+        position: relative !important;
+        transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease !important;
+    }
+
+    #projects .proj-bento-item:active {
+        transform: scale(0.97) !important;
+    }
+
+    #projects .proj-bento-item.active {
+        border: 2px solid #e60012 !important;
+        box-shadow: 0 6px 18px -6px rgba(230, 0, 18, 0.2) !important;
+    }
+
+    #projects .proj-bento-item.active::after {
+        display: none !important;
+    }
+
+    #projects .proj-bento-media {
+        width: 76px !important;
+        height: 68px !important;
+        border-radius: 14px !important;
+        overflow: hidden !important;
+        flex-shrink: 0 !important;
+        background: #eef2f6 !important;
+    }
+
+    #projects .proj-bento-info {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+        min-width: 0 !important;
+        padding-right: 4px !important;
+    }
+
+    #projects .proj-bento-title {
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 0.84rem !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        line-height: 1.25 !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    #projects .proj-bento-cat {
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 0.62rem !important;
+        color: #e60012 !important;
+        font-weight: 700 !important;
+        text-transform: uppercase;
+    }
+
+    /* Dark Mode Overrides for Restructured About, Skills, Projects */
+    body.mobile-eshop-dark #about .about-snapshot,
+    body.mobile-eshop-dark #about .about-stage-body,
+    body.mobile-eshop-dark #about .about-milestone-rail,
+    body.mobile-eshop-dark #skills .skills-inspector,
+    body.mobile-eshop-dark #skills .skills-constellation,
+    body.mobile-eshop-dark #projects .proj-bento-item,
+    body.mobile-eshop-dark #projects .proj-spotlight-hero {
+        background: #1a2133 !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        color: #f8fafc !important;
+    }
+
+    body.mobile-eshop-dark #about .about-milestone-step {
+        border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    body.mobile-eshop-dark #projects .proj-spotlight-title {
+        color: #f8fafc !important;
+        -webkit-text-fill-color: #f8fafc !important;
+    }
+
+    body.mobile-eshop-dark #about .about-snapshot-pill,
+    body.mobile-eshop-dark #skills .skill-node:not(.active) {
+        background: #252f47 !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+        color: #f8fafc !important;
+    }
+
+    body.mobile-eshop-dark #about .about-stage-headline,
+    body.mobile-eshop-dark #about .about-milestone-title,
+    body.mobile-eshop-dark #projects .proj-bento-title {
+        color: #f8fafc !important;
+    }
+
+    body.mobile-eshop-dark #about .about-stage-lead,
+    body.mobile-eshop-dark #about .about-stage-detail {
+        color: #cbd5e1 !important;
+    }
+
+    /* Global Light-Mode Contrast Polish Across All Mobile Sections */
+    .loader.hidden,
+    #page-loader.hidden {
+        pointer-events: none !important;
+    }
+
+    #about h2, #about h3, #about h4,
+    #skills h2, #skills h3, #skills h4,
+    #projects h2, #projects h3, #projects h4,
+    #experience h2, #experience h3, #experience h4,
+    #contact h2, #contact h3, #contact h4,
+    #contact label {
+        color: #0f172a !important;
+        text-shadow: none !important;
+    }
+
+    #about button:not(.active),
+    #skills button:not(.active),
+    #projects .proj-filter-dock button:not(.active),
+    #experience button:not(.active) {
+        color: #334155 !important;
+        background: #f1f5f9 !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    #about button.active,
+    #skills button.active,
+    #projects .proj-filter-dock button.active,
+    #experience button.active {
+        background: #e60012 !important;
+        color: #ffffff !important;
+        border-color: #e60012 !important;
+    }
+
+    #projects .proj-spotlight-card,
+    #projects .proj-spotlight-body,
+    #experience .exp-bento-card,
+    #experience .timeline-content,
+    #contact .contact-deck,
+    #contact .contact-deck-info,
+    #contact .contact-deck-form,
+    #contact .contact-channel-card {
+        background: #ffffff !important;
+        color: #0f172a !important;
+    }
+
+    #experience .exp-bento-org,
+    #experience .exp-bento-date,
+    #experience .timeline-date,
+    #contact .contact-deck-info p,
+    #contact .contact-deck-form p {
+        color: #475569 !important;
+    }
+
+    #contact input::placeholder,
+    #contact textarea::placeholder {
+        color: #64748b !important;
+        opacity: 1 !important;
+    }
+
+    /* Restore Dark Mode text colors for those elements when toggled */
+    body.mobile-eshop-dark #about h2, body.mobile-eshop-dark #about h3, body.mobile-eshop-dark #about h4,
+    body.mobile-eshop-dark #skills h2, body.mobile-eshop-dark #skills h3, body.mobile-eshop-dark #skills h4,
+    body.mobile-eshop-dark #projects h2, body.mobile-eshop-dark #projects h3, body.mobile-eshop-dark #projects h4,
+    body.mobile-eshop-dark #experience h2, body.mobile-eshop-dark #experience h3, body.mobile-eshop-dark #experience h4,
+    body.mobile-eshop-dark #contact h2, body.mobile-eshop-dark #contact h3, body.mobile-eshop-dark #contact h4,
+    body.mobile-eshop-dark #contact label {
+        color: #f8fafc !important;
+    }
+
+    body.mobile-eshop-dark #about button:not(.active),
+    body.mobile-eshop-dark #skills button:not(.active),
+    body.mobile-eshop-dark #projects .proj-filter-dock button:not(.active),
+    body.mobile-eshop-dark #experience button:not(.active) {
+        color: #cbd5e1 !important;
+        background: #1e2638 !important;
+        border-color: rgba(255, 255, 255, 0.14) !important;
+    }
+
+    body.mobile-eshop-dark #projects .proj-spotlight-card,
+    body.mobile-eshop-dark #projects .proj-spotlight-body,
+    body.mobile-eshop-dark #experience .exp-bento-card,
+    body.mobile-eshop-dark #experience .timeline-content,
+    body.mobile-eshop-dark #contact .contact-deck,
+    body.mobile-eshop-dark #contact .contact-deck-info,
+    body.mobile-eshop-dark #contact .contact-deck-form,
+    body.mobile-eshop-dark #contact .contact-channel-card {
+        background: #1a2133 !important;
+        color: #f8fafc !important;
+    }
+
+    body.mobile-eshop-dark #experience .exp-bento-org,
+    body.mobile-eshop-dark #experience .exp-bento-date,
+    body.mobile-eshop-dark #experience .timeline-date,
+    body.mobile-eshop-dark #contact .contact-deck-info p,
+    body.mobile-eshop-dark #contact .contact-deck-form p {
+        color: #cbd5e1 !important;
+    }
+
+    /* Hide desktop floating PC/Phone widget on mobile so it never overlaps cards */
+    .phone-panel {
+        display: none !important;
+    }
+
+    /* ======================================================================
+       Nintendo Switch Dark Mode (Mobile Only when body.mobile-eshop-dark)
+       ====================================================================== */
+    body.mobile-eshop-dark,
+    body.mobile-eshop-dark .tablet-shell {
+        background: #111622 !important;
+        color: #f8fafc !important;
+    }
+
+    body.mobile-eshop-dark .p3r-topbar {
+        background: rgba(20, 26, 40, 0.92) !important;
+        border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    body.mobile-eshop-dark .mobile-app-link,
+    body.mobile-eshop-dark .mobile-theme-toggle {
+        background: #1e2638 !important;
+        border-color: rgba(255, 255, 255, 0.16) !important;
+        color: #f8fafc !important;
+    }
+
+    body.mobile-eshop-dark .bento-card,
+    body.mobile-eshop-dark .glass-card,
+    body.mobile-eshop-dark .stat-card,
+    body.mobile-eshop-dark .skill-category,
+    body.mobile-eshop-dark .proj-spotlight-card,
+    body.mobile-eshop-dark .proj-mini-card,
+    body.mobile-eshop-dark .exp-bento-card,
+    body.mobile-eshop-dark .contact-deck,
+    body.mobile-eshop-dark .about-card,
+    body.mobile-eshop-dark .about-text {
+        background: #1a2133 !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        color: #f8fafc !important;
+        box-shadow: 0 10px 26px -8px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    body.mobile-eshop-dark .about-text p {
+        color: #cbd5e1 !important;
+    }
+
+    body.mobile-eshop-dark .contact-deck-form input,
+    body.mobile-eshop-dark .contact-deck-form textarea {
+        background: #111622 !important;
+        color: #f8fafc !important;
+        border-color: rgba(255, 255, 255, 0.16) !important;
+    }
+
+    body.mobile-eshop-dark .footer {
+        border-top-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    body.mobile-eshop-dark .footer-logo {
+        color: #f8fafc !important;
+    }
+
+    body.mobile-eshop-dark .footer .social-link {
+        background: #1e2638 !important;
+        color: #f8fafc !important;
+        border-color: rgba(255, 255, 255, 0.16) !important;
+    }
+
+    body.mobile-eshop-dark .section-title,
+    body.mobile-eshop-dark .bento-card .bento-card-title,
+    body.mobile-eshop-dark .bento-proj-name,
+    body.mobile-eshop-dark .bento-exp-title,
+    body.mobile-eshop-dark .stat-number,
+    body.mobile-eshop-dark .proj-spotlight-title,
+    body.mobile-eshop-dark .proj-spotlight-title *,
+    body.mobile-eshop-dark .proj-spotlight-counter,
+    body.mobile-eshop-dark .proj-counter,
+    body.mobile-eshop-dark .exp-bento-title,
+    body.mobile-eshop-dark .contact-channel-value,
+    body.mobile-eshop-dark .skill-category-title {
+        color: #f8fafc !important;
+    }
+
+    body.mobile-eshop-dark .bento-about-snippet,
+    body.mobile-eshop-dark .bento-exp-date,
+    body.mobile-eshop-dark .bento-card-sub,
+    body.mobile-eshop-dark .glass-card p,
+    body.mobile-eshop-dark .about-text,
+    body.mobile-eshop-dark .proj-spotlight-desc,
+    body.mobile-eshop-dark .exp-bento-desc,
+    body.mobile-eshop-dark .contact-channel-label,
+    body.mobile-eshop-dark .footer-copy {
+        color: #cbd5e1 !important;
+    }
+
+    body.mobile-eshop-dark .bento-proj-media {
+        background: #0f1523 !important;
+    }
+
+    body.mobile-eshop-dark .bento-chip,
+    body.mobile-eshop-dark .skill-tag,
+    body.mobile-eshop-dark .skill-chip,
+    body.mobile-eshop-dark .skill-pill,
+    body.mobile-eshop-dark .tech-tag,
+    body.mobile-eshop-dark .proj-tech-chip,
+    body.mobile-eshop-dark .exp-bento-tag,
+    body.mobile-eshop-dark .proj-spotlight-nav button,
+    body.mobile-eshop-dark .proj-nav-btn {
+        background: #252f47 !important;
+        color: #e2e8f0 !important;
+        border-color: rgba(255, 255, 255, 0.14) !important;
+    }
+
+    body.mobile-eshop-dark .proj-filter-dock {
+        background: #1e2638 !important;
+    }
+
+    body.mobile-eshop-dark .proj-filter-btn,
+    body.mobile-eshop-dark .proj-filter-pill,
+    body.mobile-eshop-dark .skills-tab,
+    body.mobile-eshop-dark .skill-tab-btn,
+    body.mobile-eshop-dark .skills-filter-btn {
+        color: #cbd5e1 !important;
+    }
+
+    body.mobile-eshop-dark .mobile-bottom-nav {
+        background: rgba(20, 26, 40, 0.94) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    body.mobile-eshop-dark .mobile-nav-item:not(.active) {
+        color: #94a3b8 !important;
+    }
+
+    body.mobile-eshop-dark .phone-panel .phone-trigger,
+    body.mobile-eshop-dark .phone-panel .pc-trigger {
+        background: #1e2638 !important;
+        color: #ff4554 !important;
+        border-color: rgba(255, 69, 84, 0.3) !important;
+    }
+}
+
+
+/* ==========================================================================
+   15. MOBILE FINAL — FLAT NINTENDO eSHOP SYSTEM (overrides everything above)
+   One source of truth: color variables drive Light + Dark. Desktop untouched.
+   ========================================================================== */
+@media (max-width: 768px) {
+    body {
+        --es-bg: #f2f3f5;
+        --es-card: #ffffff;
+        --es-text: #111827;
+        --es-muted: #4b5563;
+        --es-border: #e3e5ea;
+        --es-chip: #f1f3f6;
+        --es-red: #e60012;
+        --es-red-text: #c4000f;
+        --es-red-tint: #fdecee;
+        --es-shadow: 0 1px 2px rgba(17, 24, 39, 0.06), 0 6px 16px -8px rgba(17, 24, 39, 0.14);
+    }
+
+    body.mobile-eshop-dark {
+        --es-bg: #101319;
+        --es-card: #1b1f27;
+        --es-text: #f3f4f6;
+        --es-muted: #b4bcc9;
+        --es-border: #2c323d;
+        --es-chip: #262c37;
+        --es-red-text: #ff6670;
+        --es-red-tint: #2a171a;
+        --es-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 18px -8px rgba(0, 0, 0, 0.6);
+    }
+
+    body,
+    .tablet-shell,
+    #tablet-viewport {
+        background-color: var(--es-bg) !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%230f172a' stroke-opacity='0.055' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 14v10M13 19h10'/%3E%3Ccircle cx='72' cy='22' r='6'/%3E%3Cpath d='M46 42l3 6 6 1-4.5 4 1 6-5.5-3-5.5 3 1-6-4.5-4 6-1z'/%3E%3Crect x='14' y='66' width='14' height='14' rx='4'/%3E%3Ccircle cx='74' cy='72' r='2.5'/%3E%3Ccircle cx='82' cy='72' r='2.5'/%3E%3Cpath d='M48 12l4 7h-8z'/%3E%3C/g%3E%3C/svg%3E") !important;
+        background-size: 96px 96px !important;
+        background-repeat: repeat !important;
+    }
+
+    body.mobile-eshop-dark,
+    body.mobile-eshop-dark .tablet-shell,
+    body.mobile-eshop-dark #tablet-viewport {
+        background-color: var(--es-bg) !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.045' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 14v10M13 19h10'/%3E%3Ccircle cx='72' cy='22' r='6'/%3E%3Cpath d='M46 42l3 6 6 1-4.5 4 1 6-5.5-3-5.5 3 1-6-4.5-4 6-1z'/%3E%3Crect x='14' y='66' width='14' height='14' rx='4'/%3E%3Ccircle cx='74' cy='72' r='2.5'/%3E%3Ccircle cx='82' cy='72' r='2.5'/%3E%3Cpath d='M48 12l4 7h-8z'/%3E%3C/g%3E%3C/svg%3E") !important;
+        background-size: 96px 96px !important;
+        background-repeat: repeat !important;
+    }
+
+    #tablet-viewport {
+        padding: 14px 16px calc(112px + env(safe-area-inset-bottom)) !important;
+    }
+
+    /* ---- 1. No glass: flatten every card, drop scrims / blur / shadows ---- */
+    #tablet-viewport *,
+    #tablet-viewport *::before,
+    #tablet-viewport *::after {
+        text-shadow: none !important;
+    }
+
+    #tablet-viewport :is(.bento-card, .glass-card, .about-text, .skill-category, .project-card,
+        .timeline-content, .contact-strip, .proj-spotlight-card, .proj-bento-item, .skills-inspector,
+        .skills-constellation, .about-stage-body, .about-snapshot, .about-milestone-rail,
+        .exp-bento-card, .contact-deck, .contact-channel-card, .stat-card)::before,
+    #tablet-viewport :is(.bento-card, .glass-card, .about-text, .skill-category, .project-card,
+        .timeline-content, .contact-strip, .proj-spotlight-card, .proj-bento-item, .skills-inspector,
+        .skills-constellation, .about-stage-body, .about-snapshot, .about-milestone-rail,
+        .exp-bento-card, .contact-deck, .contact-channel-card, .stat-card)::after {
+        content: none !important;
+        display: none !important;
+    }
+
+    #tablet-viewport :is(.bento-card, .glass-card, .about-text, .skill-category, .project-card,
+        .timeline-content, .contact-strip, .proj-spotlight-card, .proj-bento-item, .skills-inspector,
+        .skills-constellation, .about-stage-body, .about-snapshot, .about-milestone-rail,
+        .exp-bento-card, .contact-deck, .contact-channel-card, .stat-card) {
+        background: var(--es-card) !important;
+        border: 1px solid var(--es-border) !important;
+        border-radius: 16px !important;
+        box-shadow: var(--es-shadow) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        transform: none;
+    }
+
+    /* Wrappers that must NOT look like cards (kills the double frame) */
+    #tablet-viewport :is(.about-deck, .about-deck-sidebar, .about-deck-stage, .about-chapter-list,
+        .proj-spotlight-hero, .proj-spotlight-meta, .proj-spotlight-body, .proj-hybrid-stage,
+        .proj-filter-dock, .skills-branch-filters, .skills-constellation-bar, .skills-graph-canvas,
+        .bento-exp-list, .bento-about-body, .proj-bento-info, .proj-bento-selector, .skills-tree-shell,
+        .exp-year-stepper) {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border-radius: 0 !important;
+    }
+
+    #tablet-viewport [class*="glider"] {
+        display: none !important;
+    }
+
+    /* ---- 2. Text contrast: dark on light (or light on dark), muted tier, red accent ---- */
+    #tablet-viewport :is(h1, h2, h3, h4, p, span, div, li, label, button, a, strong, small, em) {
+        color: var(--es-text) !important;
+    }
+
+    #tablet-viewport :is([class*="date"], [class*="-sub"], [class*="org"], [class*="desc"], [class*="lead"],
+        [class*="detail"], [class*="snippet"], [class*="counter"], [class*="kicker"], [class*="label"],
+        [class*="meta"], [class*="hint"], [class*="location"], [class*="subtitle"]) {
+        color: var(--es-muted) !important;
+    }
+
+    #tablet-viewport :is([class*="eyebrow"], [class*="-cat"], .project-category, .bento-proj-index,
+        .about-milestone-stage, .about-snapshot-title, .skills-inspector-tier, [class*="tier"]) {
+        color: var(--es-red-text) !important;
+        font-weight: 800 !important;
+    }
+
+    #tablet-viewport svg,
+    #tablet-viewport i[data-lucide] {
+        color: currentColor;
+    }
+
+    #tablet-viewport :is(.bento-arrow, .bento-arrow *, .contact-channel-card svg, .proj-step-btn svg) {
+        color: var(--es-red-text) !important;
+    }
+
+    #tablet-viewport .contact-channel-card svg {
+        color: var(--es-muted) !important;
+    }
+
+    #tablet-viewport .section-title,
+    #tablet-viewport .section-title * {
+        color: var(--es-text) !important;
+    }
+
+    /* ---- 3. Chips / pills / tiles: one consistent style ---- */
+    #tablet-viewport :is(.bento-chip, .tech-tag, .about-snapshot-pill, .skill-tag, .proj-tech-chip,
+        .exp-bento-tag, .skill-node, .about-chapter-btn, .proj-filter-pill, .skill-branch-pill) {
+        background: var(--es-chip) !important;
+        border: 1px solid var(--es-border) !important;
+        color: var(--es-text) !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+    }
+
+    #tablet-viewport :is(.bento-chip, .tech-tag, .about-snapshot-pill, .skill-tag, .proj-tech-chip,
+        .exp-bento-tag) {
+        border-radius: 999px !important;
+        font-weight: 600 !important;
+    }
+
+    #tablet-viewport :is(.about-chapter-btn, .proj-filter-pill, .skill-branch-pill, .exp-year-node) {
+        border-radius: 999px !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
+        white-space: nowrap !important;
+        font-weight: 700 !important;
+        background: var(--es-chip) !important;
+        border: 1px solid var(--es-border) !important;
+        color: var(--es-text) !important;
+    }
+
+    #tablet-viewport :is(.about-chapter-btn, .proj-filter-pill, .skill-branch-pill, .skill-node, .exp-year-node).active,
+    #tablet-viewport :is(.about-chapter-btn, .proj-filter-pill, .skill-branch-pill, .skill-node, .exp-year-node).active * {
+        background: var(--es-red) !important;
+        border-color: var(--es-red) !important;
+        color: #ffffff !important;
+    }
+
+    #tablet-viewport :is(.about-chapter-btn, .proj-filter-pill, .skill-branch-pill, .exp-year-node).active * {
+        background: transparent !important;
+    }
+
+    #tablet-viewport :is(.proj-filter-dock, .skills-branch-filters, .about-chapter-list, .exp-year-stepper) {
+        display: flex !important;
+        gap: 8px !important;
+        overflow-x: auto !important;
+        padding: 0 0 6px !important;
+        scrollbar-width: none;
+    }
+
+    #tablet-viewport :is(.proj-filter-dock, .skills-branch-filters, .about-chapter-list, .exp-year-stepper)::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* ---- 4. HOME: bring the hero back (fix flex:1 collapsing height to 0) ---- */
+    #tablet-viewport .home-header {
+        flex: none !important;
+        width: 100% !important;
+        height: auto !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+        gap: 4px !important;
+        padding: 18px 16px !important;
+        border-radius: 20px !important;
+        background: linear-gradient(140deg, #e60012 0%, #b8000f 100%) !important;
+        border: 0 !important;
+        box-shadow: 0 10px 24px -10px rgba(230, 0, 18, 0.55) !important;
+        overflow: hidden;
+    }
+
+    #tablet-viewport .home-header::after {
+        display: none !important;
+    }
+
+    #tablet-viewport .home-headline {
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 0.68rem !important;
+        letter-spacing: 1.6px !important;
+        text-transform: uppercase;
+        margin: 0 !important;
+    }
+
+    #tablet-viewport #hero-content.hero-content {
+        flex: none !important;
+        width: 100% !important;
+        height: auto !important;
+        max-width: none !important;
+        margin: 0 !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+        gap: 4px !important;
+    }
+
+    #tablet-viewport #hero-content .hero-greeting,
+    #tablet-viewport #hero-content .hero-name,
+    #tablet-viewport #hero-content .hero-description {
+        display: block !important;
+    }
+
+    #tablet-viewport #hero-content .hero-socials {
+        display: flex !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+        margin-top: 10px !important;
+    }
+
+    #tablet-viewport #hero-content .hero-greeting {
+        font-size: 0.8rem !important;
+        margin: 0 !important;
+    }
+
+    #tablet-viewport #hero-content .hero-name {
+        font-size: 1.9rem !important;
+        line-height: 1.1 !important;
+        margin: 0 !important;
+    }
+
+    #tablet-viewport #hero-content .hero-name .gradient-text {
+        background: none !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+
+    #tablet-viewport #hero-content .hero-title-wrapper {
+        justify-content: flex-start !important;
+        font-size: 0.92rem !important;
+    }
+
+    #tablet-viewport #hero-content .hero-description {
+        font-size: 0.82rem !important;
+        line-height: 1.5 !important;
+        margin: 4px 0 8px !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    #tablet-viewport #hero-content .hero-cta {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px !important;
+        width: 100%;
+        margin: 4px 0 0 !important;
+    }
+
+    #tablet-viewport .home-header :is(h1, h2, p, span, div, a, i, svg) {
+        color: #ffffff !important;
+    }
+
+    #tablet-viewport .home-header .rotator-text {
+        color: #ffe14d !important;
+    }
+
+    #tablet-viewport .home-header .btn {
+        justify-content: center;
+        border-radius: 999px !important;
+        padding: 11px 8px !important;
+        font-size: 0.76rem !important;
+        font-weight: 800 !important;
+        white-space: nowrap;
+    }
+
+    #tablet-viewport .home-header .btn-primary,
+    #tablet-viewport .home-header .btn-primary * {
+        background: #ffffff !important;
+        color: var(--es-red) !important;
+        stroke: var(--es-red) !important;
+    }
+
+    #tablet-viewport .home-header .btn-primary * {
+        background: transparent !important;
+    }
+
+    #tablet-viewport .home-header .btn-outline {
+        background: transparent !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+    }
+
+    #tablet-viewport .home-header .social-link {
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 12px !important;
+        background: rgba(255, 255, 255, 0.18) !important;
+        border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    }
+
+    /* Home bento tiles: flat, even, no overlap */
+    #tablet-viewport .home-bento-grid,
+    #tablet-viewport .bento-right-col {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        height: auto !important;
+    }
+
+    #tablet-viewport :is(.bento-projects-col, .bento-bottom-row) {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+        height: auto !important;
+    }
+
+    #tablet-viewport .bento-card {
+        padding: 12px !important;
+        gap: 8px !important;
+        height: auto !important;
+        min-height: 0 !important;
+        justify-content: flex-start !important;
+        border-top: 1px solid var(--es-border) !important;
+    }
+
+    #tablet-viewport .bento-card-title {
+        font-weight: 800 !important;
+        font-size: 0.8rem !important;
+    }
+
+    #tablet-viewport .bento-arrow {
+        background: var(--es-red-tint) !important;
+        border-radius: 8px !important;
+    }
+
+    #tablet-viewport .bento-proj-media {
+        flex: none !important;
+        height: 84px !important;
+        min-height: 84px !important;
+        max-height: 84px !important;
+        border: 0 !important;
+        border-radius: 12px !important;
+        background: var(--es-chip) !important;
+    }
+
+    #tablet-viewport .bento-proj-name {
+        font-size: 0.84rem !important;
+        font-weight: 800 !important;
+        line-height: 1.25 !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    #tablet-viewport .bento-exp-dot {
+        background: var(--es-red) !important;
+        box-shadow: none !important;
+    }
+
+    #tablet-viewport .bento-about-badge {
+        white-space: nowrap !important;
+        font-size: 0.62rem !important;
+        padding: 3px 8px !important;
+    }
+
+    /* ---- 5. ABOUT ---- */
+    #tablet-viewport .about-deck,
+    #tablet-viewport .about-deck-stage {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        padding: 0 !important;
+    }
+
+    #tablet-viewport .about-stage-body {
+        padding: 16px !important;
+        border-top: 1px solid var(--es-border) !important;
+    }
+
+    #tablet-viewport .about-stage-eyebrow {
+        display: inline-block;
+        background: var(--es-red-tint) !important;
+        padding: 3px 10px !important;
+        border-radius: 999px !important;
+        font-size: 0.68rem !important;
+    }
+
+    #tablet-viewport .about-stage-headline {
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 1.2rem !important;
+        font-weight: 800 !important;
+    }
+
+    #tablet-viewport :is(.about-stage-lead, .about-stage-detail) {
+        font-size: 0.86rem !important;
+        line-height: 1.6 !important;
+    }
+
+    #tablet-viewport .about-milestone-rail {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+        padding: 4px 14px !important;
+        overflow: visible !important;
+    }
+
+    #tablet-viewport .about-milestone-step {
+        flex: none !important;
+        width: 100% !important;
+        border-bottom: 1px solid var(--es-border) !important;
+    }
+
+    #tablet-viewport .about-milestone-step:last-child {
+        border-bottom: 0 !important;
+    }
+
+    #tablet-viewport .about-milestone-node {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 12px !important;
+        padding: 12px 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+    }
+
+    #tablet-viewport .about-milestone-stage {
+        background: var(--es-red-tint) !important;
+        padding: 3px 10px !important;
+        border-radius: 999px !important;
+        font-size: 0.68rem !important;
+        flex-shrink: 0 !important;
+    }
+
+    #tablet-viewport .about-milestone-title {
+        text-align: right !important;
+        font-size: 0.82rem !important;
+        font-weight: 700 !important;
+    }
+
+    #tablet-viewport .about-milestone-connector {
+        display: none !important;
+    }
+
+    /* ---- 6. SKILLS ---- */
+    #tablet-viewport .skills-tree-shell {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    #tablet-viewport .skills-inspector {
+        order: -1 !important;
+        padding: 16px !important;
+    }
+
+    #tablet-viewport .skill-mastery-block {
+        background: var(--es-chip) !important;
+        border: 1px solid var(--es-border) !important;
+        border-radius: 12px !important;
+        padding: 10px 12px !important;
+    }
+
+    #tablet-viewport .skill-mastery-track {
+        background: var(--es-border) !important;
+    }
+
+    #tablet-viewport .skill-mastery-fill {
+        background: var(--es-red) !important;
+    }
+
+    #tablet-viewport :is(.skills-unlocked-badge, .skill-core-node, .skill-constellation-svg, .skills-graph-svg) {
+        display: none !important;
+    }
+
+    #tablet-viewport .skills-constellation {
+        padding: 12px !important;
+    }
+
+    #tablet-viewport .skills-graph-canvas {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+        height: auto !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+    }
+
+    #tablet-viewport .skill-node {
+        position: static !important;
+        transform: none !important;
+        width: 100% !important;
+        min-height: 48px !important;
+        padding: 8px 10px !important;
+        border-radius: 14px !important;
+        background: var(--es-card) !important;
+        border: 1px solid var(--es-border) !important;
+        box-shadow: var(--es-shadow) !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+        font-size: 0.76rem !important;
+        font-weight: 700 !important;
+        text-align: left !important;
+        box-sizing: border-box !important;
+    }
+
+    #tablet-viewport .skill-node-orb {
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
+        border-radius: 9px !important;
+        background: var(--es-red-tint) !important;
+        color: var(--es-red-text) !important;
+        border: none !important;
+        box-shadow: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    #tablet-viewport .skill-node-orb svg {
+        width: 15px !important;
+        height: 15px !important;
+        color: var(--es-red-text) !important;
+    }
+
+    #tablet-viewport .skill-node.active .skill-node-orb {
+        background: rgba(255, 255, 255, 0.22) !important;
+        color: #ffffff !important;
+    }
+
+    #tablet-viewport .skill-node.active .skill-node-orb svg {
+        color: #ffffff !important;
+    }
+
+    #tablet-viewport .skill-node-name {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        font-size: 0.76rem !important;
+        line-height: 1.2 !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #tablet-viewport .skills-inspector-nav .exp-nav-btn {
+        background: var(--es-chip) !important;
+        border: 1px solid var(--es-border) !important;
+        color: var(--es-text) !important;
+    }
+
+    /* ---- 7. PROJECTS: Full-Width Spotlight + Slide-In Side Category Drawer + Game Strip ---- */
+    #tablet-viewport #projects .container {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    #tablet-viewport .proj-header-bar {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 10px !important;
+        margin-bottom: 0 !important;
+    }
+
+    #tablet-viewport #projects .section-title {
+        margin-bottom: 0 !important;
+    }
+
+    #tablet-viewport .proj-filter-toggle {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        padding: 7px 12px !important;
+        border-radius: 999px !important;
+        background: var(--es-card) !important;
+        border: 1px solid var(--es-border) !important;
+        color: var(--es-text) !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 0.74rem !important;
+        font-weight: 700 !important;
+        box-shadow: var(--es-shadow) !important;
+        cursor: pointer;
+        flex-shrink: 0 !important;
+    }
+
+    #tablet-viewport .proj-filter-toggle svg {
+        width: 14px !important;
+        height: 14px !important;
+        color: var(--es-red-text) !important;
+    }
+
+    #tablet-viewport .proj-filter-backdrop {
+        display: block !important;
+        position: fixed !important;
+        inset: 0 !important;
+        background: rgba(15, 23, 42, 0.45) !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        z-index: 10035 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: opacity 0.25s ease !important;
+    }
+
+    #tablet-viewport .proj-filter-backdrop.open {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+
+    #tablet-viewport .proj-filter-dock {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        width: 235px !important;
+        z-index: 10040 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        padding: 24px 14px !important;
+        background: var(--es-card) !important;
+        border-right: 1px solid var(--es-border) !important;
+        border-radius: 0 24px 24px 0 !important;
+        box-shadow: 12px 0 36px rgba(15, 23, 42, 0.22) !important;
+        transform: translateX(-105%) !important;
+        transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        overflow-y: auto !important;
+    }
+
+    #tablet-viewport .proj-filter-dock.open {
+        transform: translateX(0) !important;
+    }
+
+    #tablet-viewport .proj-filter-drawer-title {
+        display: block !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 0.7rem !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--es-red-text) !important;
+        padding: 0 6px 8px !important;
+        border-bottom: 1px solid var(--es-border) !important;
+        margin-bottom: 4px !important;
+    }
+
+    #tablet-viewport .proj-filter-pill {
+        width: 100% !important;
+        text-align: left !important;
+        font-size: 0.84rem !important;
+        padding: 11px 14px !important;
+        border-radius: 14px !important;
+    }
+
+    #tablet-viewport .proj-hybrid-stage {
+        width: 100% !important;
+        min-width: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    #tablet-viewport .proj-spotlight-card {
+        padding: 0 !important;
+        overflow: hidden !important;
+        border-radius: 18px !important;
+    }
+
+    #tablet-viewport .proj-spotlight-hero {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+        padding: 0 !important;
+    }
+
+    #tablet-viewport .proj-spotlight-media {
+        width: 100% !important;
+        height: 112px !important;
+        border-radius: 0 !important;
+        overflow: hidden !important;
+        background: #14171f !important;
+    }
+
+    #tablet-viewport .proj-spotlight-meta {
+        padding: 10px 12px 4px !important;
+        gap: 4px !important;
+    }
+
+    #tablet-viewport .proj-spotlight-title {
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 0.94rem !important;
+        font-weight: 800 !important;
+        line-height: 1.2 !important;
+        -webkit-text-fill-color: currentColor !important;
+    }
+
+    #tablet-viewport .proj-spotlight .project-tech {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        scrollbar-width: none;
+        gap: 4px !important;
+    }
+    #tablet-viewport .proj-spotlight .project-tech::-webkit-scrollbar {
+        display: none;
+    }
+
+    #tablet-viewport .project-category {
+        background: var(--es-red-tint) !important;
+        padding: 3px 8px !important;
+        border-radius: 999px !important;
+        font-size: 0.6rem !important;
+        max-width: 55%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #tablet-viewport .proj-spotlight-body {
+        padding: 2px 12px 10px !important;
+        gap: 8px !important;
+    }
+
+    #tablet-viewport .proj-spotlight-desc {
+        font-size: 0.76rem !important;
+        line-height: 1.4 !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    #tablet-viewport .proj-spotlight-actions {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+        width: 100%;
+    }
+
+    #tablet-viewport .proj-action-btn {
+        width: 100% !important;
+        justify-content: center !important;
+        border-radius: 999px !important;
+        padding: 8px 4px !important;
+        gap: 4px !important;
+        font-size: 0.62rem !important;
+        font-weight: 800 !important;
+        white-space: nowrap !important;
+    }
+
+    #tablet-viewport .proj-action-btn svg {
+        width: 13px !important;
+        height: 13px !important;
+        flex-shrink: 0 !important;
+    }
+
+    #tablet-viewport .proj-action-btn.btn-primary,
+    #tablet-viewport .proj-action-btn.btn-primary * {
+        background: var(--es-red) !important;
+        color: #ffffff !important;
+        border-color: var(--es-red) !important;
+    }
+
+    #tablet-viewport .proj-action-btn.btn-primary * {
+        background: transparent !important;
+    }
+
+    #tablet-viewport .proj-action-btn.btn-outline {
+        background: transparent !important;
+        border: 1.5px solid var(--es-border) !important;
+    }
+
+    #tablet-viewport .proj-action-btn--disabled {
+        background: var(--es-chip) !important;
+        color: var(--es-muted) !important;
+        border: 1px solid var(--es-border) !important;
+        opacity: 0.85;
+    }
+
+    /* Horizontal Switch Game Box-Art Strip */
+    #tablet-viewport .proj-bento-selector {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 10px !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x proximity;
+        padding: 4px 2px 10px !important;
+        scrollbar-width: none;
+    }
+
+    #tablet-viewport .proj-bento-selector::-webkit-scrollbar {
+        display: none;
+    }
+
+    #tablet-viewport .proj-bento-item,
+    #tablet-viewport .proj-bento-item.featured-wide {
+        flex: 0 0 104px !important;
+        width: 104px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 6px !important;
+        padding: 6px !important;
+        border-radius: 16px !important;
+        text-align: left !important;
+        scroll-snap-align: start;
+        grid-column: auto !important;
+    }
+
+    #tablet-viewport .proj-bento-item::after {
+        display: none !important;
+    }
+
+    #tablet-viewport .proj-bento-item.active {
+        border: 2.5px solid var(--es-red) !important;
+        background: var(--es-red-tint) !important;
+        transform: translateY(-2px);
+    }
+
+    #tablet-viewport .proj-bento-media {
+        width: 100% !important;
+        height: 92px !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        background: #14171f !important;
+    }
+
+    #tablet-viewport .proj-bento-info {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2px !important;
+        min-width: 0 !important;
+    }
+
+    #tablet-viewport .proj-bento-cat,
+    #tablet-viewport .proj-bento-item .bento-chips {
+        display: none !important;
+    }
+
+    #tablet-viewport .proj-bento-title {
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 0.72rem !important;
+        font-weight: 700 !important;
+        line-height: 1.2 !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* ---- 8. EXPERIENCE / CONTACT ---- */
+    #tablet-viewport .contact-deck {
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden;
+    }
+
+    #tablet-viewport :is(.contact-deck-info, .contact-deck-form) {
+        background: transparent !important;
+        border: 0 !important;
+        padding: 16px !important;
+    }
+
+    #tablet-viewport .contact-deck-info {
+        border-bottom: 1px solid var(--es-border) !important;
+    }
+
+    #tablet-viewport .contact-channel-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 12px !important;
+    }
+
+    #tablet-viewport .contact-channel-value {
+        font-size: 0.72rem !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        word-break: break-word;
+    }
+
+    #tablet-viewport :is(.contact-deck-form input, .contact-deck-form textarea) {
+        background: var(--es-chip) !important;
+        color: var(--es-text) !important;
+        border: 1px solid var(--es-border) !important;
+        border-radius: 12px !important;
+    }
+
+    #tablet-viewport :is(input, textarea)::placeholder {
+        color: var(--es-muted) !important;
+        opacity: 1 !important;
+    }
+
+    #tablet-viewport .contact-deck-form button[type="submit"],
+    #tablet-viewport .contact-deck-form .btn-primary {
+        background: var(--es-red) !important;
+        color: #ffffff !important;
+        border-radius: 999px !important;
+    }
+
+    /* ---- 9. Chrome: top bar + dock follow the same variables ---- */
+    .p3r-topbar {
+        background: var(--es-card) !important;
+        border-bottom: 1px solid var(--es-border) !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+    }
+
+    .mobile-app-link,
+    .mobile-theme-toggle {
+        background: var(--es-card) !important;
+        color: var(--es-text) !important;
+        border: 1px solid var(--es-border) !important;
+        box-shadow: none !important;
+    }
+
+    .mobile-bottom-nav {
+        background: #15171c !important;
+    }
+}

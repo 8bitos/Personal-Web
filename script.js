@@ -374,6 +374,10 @@ function switchTab(sectionId) {
         updateNavGlider(activeItem, true);
     }
 
+    document.querySelectorAll('.mobile-nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab-target') === sectionId);
+    });
+
     sections.forEach(sec => {
         const isMatch = sec.id === sectionId;
         sec.classList.toggle('active-tab', isMatch);
@@ -1413,15 +1417,45 @@ function renderProjects(projects) {
     container.innerHTML = `
         <div class="proj-header-bar">
             ${renderSectionTitle(projects.number || '03', projects.title || 'Featured Projects')}
-            <div class="proj-filter-dock" role="tablist" aria-label="Filter projects">
+            <button type="button" class="proj-filter-toggle" id="proj-filter-toggle" aria-label="Filter kategori proyek" aria-expanded="false">
+                <i data-lucide="sliders-horizontal"></i>
+                <span id="proj-filter-current">All</span>
+            </button>
+            <div class="proj-filter-dock" id="proj-filter-dock" role="tablist" aria-label="Filter projects">
+                <div class="proj-filter-drawer-title">Kategori</div>
                 ${filterPills}
             </div>
         </div>
+        <div class="proj-filter-backdrop" id="proj-filter-backdrop" aria-hidden="true"></div>
         <div class="proj-hybrid-stage">
             <div class="proj-spotlight-card glass-card" id="proj-spotlight"></div>
             <div class="proj-bento-selector" id="proj-bento-selector"></div>
         </div>
     `;
+
+    const toggleBtn = document.getElementById('proj-filter-toggle');
+    const dock = document.getElementById('proj-filter-dock');
+    const backdrop = document.getElementById('proj-filter-backdrop');
+    const currentLabel = document.getElementById('proj-filter-current');
+
+    const setDrawerOpen = (open) => {
+        if (!dock || !backdrop || !toggleBtn) return;
+        dock.classList.toggle('open', open);
+        backdrop.classList.toggle('open', open);
+        toggleBtn.setAttribute('aria-expanded', String(open));
+    };
+
+    if (toggleBtn && dock && backdrop) {
+        toggleBtn.addEventListener('click', () => setDrawerOpen(!dock.classList.contains('open')));
+        backdrop.addEventListener('click', () => setDrawerOpen(false));
+        dock.addEventListener('click', (e) => {
+            const pill = e.target.closest('.proj-filter-pill');
+            if (pill) {
+                if (currentLabel) currentLabel.textContent = pill.textContent.trim();
+                setDrawerOpen(false);
+            }
+        });
+    }
 
     updateProjectsView();
 }
@@ -2117,3 +2151,39 @@ function initBirdSpawner() {
     // Spawn every 5 seconds (2s flight + 3s pause)
     setInterval(spawnBird, 5000);
 }
+
+/* Mobile-only Nintendo eShop Light / Dark Mode Toggle */
+(function initMobileEshopTheme() {
+    const STORAGE_KEY = 'pw-mobile-theme';
+    function applyTheme(theme) {
+        const isDark = theme === 'dark';
+        document.body.classList.toggle('mobile-eshop-dark', isDark);
+        const btn = document.getElementById('mobile-theme-toggle');
+        if (btn) {
+            btn.setAttribute('aria-pressed', String(isDark));
+            btn.innerHTML = `<i data-lucide="${isDark ? 'sun' : 'moon'}"></i>`;
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons({ nodes: [btn] });
+            }
+        }
+    }
+
+    function bind() {
+        const saved = localStorage.getItem(STORAGE_KEY) || 'light';
+        applyTheme(saved);
+        const btn = document.getElementById('mobile-theme-toggle');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                const next = document.body.classList.contains('mobile-eshop-dark') ? 'light' : 'dark';
+                localStorage.setItem(STORAGE_KEY, next);
+                applyTheme(next);
+            });
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bind);
+    } else {
+        bind();
+    }
+})();

@@ -24,7 +24,7 @@
     <script src="assets/lucide.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="liquid-glass.css?v=36">
+    <link rel="stylesheet" href="liquid-glass.css?v=51">
 </head>
 <body>
     <!-- ========== LAYERED PARALLAX BACKGROUND ========== -->
@@ -116,6 +116,13 @@
             </div>
 
             <div class="nav-actions">
+                <a href="8bitools/index.html" target="_blank" rel="noopener noreferrer" class="mobile-app-link" aria-label="Open 8BiTools" title="8BiTools">
+                    <i data-lucide="grid-2x2"></i>
+                    <span>Tools</span>
+                </a>
+                <button type="button" id="mobile-theme-toggle" class="mobile-theme-toggle" aria-label="Toggle dark or light mode" title="Dark / Light Mode">
+                    <i data-lucide="moon" id="mobile-theme-icon"></i>
+                </button>
                 <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">
                     <span></span>
                     <span></span>
@@ -362,6 +369,34 @@
         </div>
     </footer>
         </div><!-- end .tablet-viewport -->
+
+        <!-- ========== MOBILE FLOATING BOTTOM NAVIGATION (APP DOCK) ========== -->
+        <nav id="mobile-bottom-nav" class="mobile-bottom-nav" aria-label="Mobile Navigation">
+            <button type="button" class="mobile-nav-item active" data-tab-target="hero">
+                <i data-lucide="home"></i>
+                <span>Home</span>
+            </button>
+            <button type="button" class="mobile-nav-item" data-tab-target="about">
+                <i data-lucide="user"></i>
+                <span>About</span>
+            </button>
+            <button type="button" class="mobile-nav-item" data-tab-target="skills">
+                <i data-lucide="cpu"></i>
+                <span>Skills</span>
+            </button>
+            <button type="button" class="mobile-nav-item" data-tab-target="projects">
+                <i data-lucide="layers"></i>
+                <span>Projects</span>
+            </button>
+            <button type="button" class="mobile-nav-item" data-tab-target="experience">
+                <i data-lucide="briefcase"></i>
+                <span>Exp</span>
+            </button>
+            <button type="button" class="mobile-nav-item" data-tab-target="contact">
+                <i data-lucide="mail"></i>
+                <span>Contact</span>
+            </button>
+        </nav>
     </main><!-- end .tablet-shell -->
 
     <!-- ========== PHONE UI ========== -->
@@ -559,7 +594,7 @@
 
     <script src="assets/html2canvas.min.js" defer></script>
     <script src="assets/liquidGL.js?v=3" defer></script>
-    <script src="script.js?v=36" defer></script>
+    <script src="script.js?v=37" defer></script>
     <script>
     // Liquid Glass specular cursor sheen
     document.addEventListener('pointermove', function(e) {
