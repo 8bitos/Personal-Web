@@ -1,4 +1,4 @@
-const CACHE_NAME = '8bitgym-v12';
+const CACHE_NAME = '8bitgym-v30';
 const ASSETS = [
   './',
   './index.html',

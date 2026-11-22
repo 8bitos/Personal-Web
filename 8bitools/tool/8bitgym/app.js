@@ -601,10 +601,10 @@
       state.settings.lastSyncAt = new Date().toISOString();
       saveState();
       refreshSyncStatusUI();
-      if (!silent) alert(t('alertDriveSaved'));
+      if (!silent) await uiAlert(t('alertDriveSaved'));
     } catch (err) {
       refreshSyncStatusUI();
-      if (!silent) alert(t('alertDriveSaveErr', { msg: err.message }));
+      if (!silent) await uiAlert(t('alertDriveSaveErr', { msg: err.message }));
     }
   }
 
@@ -615,7 +615,7 @@
     try {
       const remote = await api.loadBackup();
       if (!remote) {
-        if (!silent) alert(t('alertDriveEmpty'));
+        if (!silent) await uiAlert(t('alertDriveEmpty'));
         refreshSyncStatusUI();
         return;
       }
@@ -640,22 +640,22 @@
         applyStaticTranslations();
         renderAll();
         refreshSyncStatusUI();
-        if (!silent) alert(t('alertDrivePulled'));
+        if (!silent) await uiAlert(t('alertDrivePulled'));
       }
     } catch (err) {
       refreshSyncStatusUI();
-      if (!silent) alert(t('alertDrivePullErr', { msg: err.message }));
+      if (!silent) await uiAlert(t('alertDrivePullErr', { msg: err.message }));
     }
   }
 
   async function connectGoogleAccount(afterConnectAction = 'sync') {
     const api = getCloudApi();
     if (!api) {
-      alert(t('alertGisNotReady'));
+      await uiAlert(t('alertGisNotReady'));
       return;
     }
     if (!api.isConfigured()) {
-      alert(t('alertNeedClientId'));
+      await uiAlert(t('alertNeedClientId'));
       return;
     }
     setSyncUI('syncing', t('syncConnecting'), true);
@@ -670,7 +670,7 @@
     } catch (err) {
       refreshSyncStatusUI();
       if (err && err.code !== 'auth/popup-closed-by-user') {
-        alert(t('alertGoogleLoginErr', { err: err.message || err.code }));
+        await uiAlert(t('alertGoogleLoginErr', { err: err.message || err.code }));
       }
     }
   }
@@ -864,38 +864,218 @@
 
     if (kpiEl) {
       kpiEl.innerHTML = `
-        <div class="bento-kpi-card" data-jump-tab="history">
+        <div class="bento-kpi-card" data-kpi-detail="workouts">
           <div class="af-kpi-top"><span class="bento-kpi-label">${esc(t('kpiWorkouts'))}</span><span class="af-chevron">›</span></div>
           <span class="bento-kpi-val purple tabular">${state.workouts.length}</span>
           <span class="bento-kpi-sub" style="color:var(--muted)">${esc(t('kpiWorkoutsSub', { n: weekWorkouts }))}</span>
           ${buildMiniSpikeSvg(daySets, 'var(--ring-purple)')}
         </div>
-        <div class="bento-kpi-card" data-jump-tab="history">
+        <div class="bento-kpi-card" data-kpi-detail="volume">
           <div class="af-kpi-top"><span class="bento-kpi-label">${esc(t('kpiTotalVol'))}</span><span class="af-chevron">›</span></div>
           <span class="bento-kpi-val stand tabular">${esc(fmtVol(totalVol))}</span>
           <span class="bento-kpi-sub" style="color:var(--muted)">${esc(t('kpiTotalVolSub', { vol: fmtVol(weekVol) }))}</span>
           ${buildMiniSpikeSvg(dayVols, 'var(--ring-stand)')}
         </div>
-        <div class="bento-kpi-card" data-jump-tab="history">
+        <div class="bento-kpi-card" data-kpi-detail="prs">
           <div class="af-kpi-top"><span class="bento-kpi-label">${esc(t('kpiPrs'))}</span><span class="af-chevron">›</span></div>
           <span class="bento-kpi-val move tabular">${totalPrs}</span>
           <span class="bento-kpi-sub" style="color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(latestPrName || t('kpiPrsSubEmpty'))}</span>
           ${buildMiniSpikeSvg(dayPrs, 'var(--ring-move)')}
         </div>
-        <div class="bento-kpi-card" data-jump-tab="history">
+        <div class="bento-kpi-card" data-kpi-detail="duration">
           <div class="af-kpi-top"><span class="bento-kpi-label">${esc(t('kpiAvgDur'))}</span><span class="af-chevron">›</span></div>
           <span class="bento-kpi-val exercise tabular">${avgMin}m</span>
           <span class="bento-kpi-sub" style="color:var(--muted)">${esc(t('kpiAvgDurSub', { sets: totalSets }))}</span>
           ${buildMiniSpikeSvg(dayDurs, 'var(--ring-exercise)')}
         </div>
       `;
-      kpiEl.querySelectorAll('[data-jump-tab]').forEach((card) => {
-        card.addEventListener('click', () => {
-          const btn = document.querySelector(`.nav-item[data-tab="${card.dataset.jumpTab}"]`);
-          if (btn) btn.click();
-        });
+      kpiEl.querySelectorAll('[data-kpi-detail]').forEach((card) => {
+        card.addEventListener('click', () => openKpiDetailModal(card.dataset.kpiDetail));
       });
     }
+
+  function openKpiDetailModal(metric) {
+    const isEn = curLang() === 'en';
+    const unit = state.settings.unit;
+    const workouts = state.workouts || [];
+
+    const buildWeeklyTrend = (valueFn) => {
+      const weeks = [];
+      const curMon = new Date();
+      curMon.setHours(0, 0, 0, 0);
+      curMon.setDate(curMon.getDate() - ((curMon.getDay() + 6) % 7));
+      for (let i = 7; i >= 0; i--) {
+        const ws = new Date(curMon);
+        ws.setDate(curMon.getDate() - i * 7);
+        const key = getWeekKey(ws);
+        const label = `${ws.getDate()}/${ws.getMonth() + 1}`;
+        const list = workouts.filter((w) => getWeekKey(w.date) === key);
+        weeks.push({ label, val: valueFn(list), isCur: i === 0 });
+      }
+      return weeks;
+    };
+
+    const renderBarChartSvg = (weeks, colorVar, fmtVal) => {
+      const W = 320, H = 128, padB = 22, padT = 18;
+      const plotH = H - padB - padT;
+      const maxV = Math.max(...weeks.map((w) => w.val), 1);
+      const colW = W / weeks.length;
+      const bars = weeks.map((w, i) => {
+        const cx = i * colW + colW / 2;
+        const bh = w.val > 0 ? Math.max(8, Math.round((w.val / maxV) * plotH)) : 4;
+        const by = padT + plotH - bh;
+        const fill = w.val > 0 ? colorVar : 'var(--bar-muted)';
+        const op = w.isCur ? 1 : (w.val > 0 ? 0.72 : 0.45);
+        return `
+          <rect x="${(cx - 10).toFixed(1)}" y="${by.toFixed(1)}" width="20" height="${bh}" rx="6" fill="${fill}" opacity="${op}" />
+          ${w.val > 0 ? `<text x="${cx.toFixed(1)}" y="${(by - 4).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--text)">${esc(fmtVal(w.val))}</text>` : ''}
+          <text x="${cx.toFixed(1)}" y="${H - 5}" text-anchor="middle" font-size="9" font-weight="${w.isCur ? '700' : '500'}" fill="${w.isCur ? 'var(--text)' : 'var(--muted)'}">${esc(w.label)}</text>
+        `;
+      }).join('');
+      return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block">${bars}</svg>`;
+    };
+
+    let title = '';
+    let bodyHtml = '';
+
+    if (metric === 'workouts') {
+      title = t('kpiWorkouts');
+      const weeks = buildWeeklyTrend((list) => list.length);
+      const totalSets = workouts.reduce((s, w) => s + (w.totalSets || 0), 0);
+      const streak = calculateWeeklyStreak();
+      const recent = workouts.slice(0, 5).map((w) => `
+        <div class="list-card" style="padding:10px 12px;cursor:pointer" data-kd-wk="${esc(w.id)}">
+          <div class="list-card-top">
+            <strong style="font-size:0.9rem">${esc(w.name)}</strong>
+            <span class="muted" style="font-size:0.78rem">${formatDate(w.date)}</span>
+          </div>
+          <div class="muted" style="font-size:0.78rem">${w.totalSets || 0} set • ${Math.round(w.totalVolume || 0)} ${esc(unit)} • ${formatDuration(w.durationSec || 0)}</div>
+        </div>
+      `).join('');
+      bodyHtml = `
+        <div class="summary-grid">
+          <div class="stat-box"><span class="stat-value tabular" style="color:var(--ring-purple)">${workouts.length}</span><span class="stat-label">${isEn ? 'Total' : 'Total Sesi'}</span></div>
+          <div class="stat-box"><span class="stat-value tabular">${streak}w</span><span class="stat-label">Streak</span></div>
+          <div class="stat-box"><span class="stat-value tabular">${totalSets}</span><span class="stat-label">${isEn ? 'Sets' : 'Total Set'}</span></div>
+        </div>
+        <div class="card" style="padding:12px">
+          <div class="muted" style="font-size:0.76rem;margin-bottom:6px">${isEn ? 'Workouts per Week (Last 8 Weeks)' : 'Sesi per Minggu (8 Minggu Terakhir)'}</div>
+          ${renderBarChartSvg(weeks, 'var(--ring-purple)', (v) => String(v))}
+        </div>
+        <div class="stack-list">${recent || `<div class="empty-state">${esc(t('historyEmptyAll'))}</div>`}</div>
+      `;
+    } else if (metric === 'volume') {
+      title = t('kpiTotalVol');
+      const totalVol = workouts.reduce((s, w) => s + (w.totalVolume || 0), 0);
+      const avgVol = workouts.length ? Math.round(totalVol / workouts.length) : 0;
+      const bestVol = workouts.reduce((m, w) => Math.max(m, w.totalVolume || 0), 0);
+      const weeks = buildWeeklyTrend((list) => Math.round(list.reduce((s, w) => s + (w.totalVolume || 0), 0)));
+      const exVol = new Map();
+      workouts.forEach((w) => w.exercises.forEach((ex) => {
+        const meta = getExerciseById(ex.exerciseId);
+        const v = ex.sets.reduce((s, st) => s + calcSetVolume(meta, st), 0);
+        exVol.set(meta.name, (exVol.get(meta.name) || 0) + v);
+      }));
+      const topEx = [...exVol.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+      const topMax = topEx[0]?.[1] || 1;
+      const topHtml = topEx.map(([name, val]) => `
+        <div style="margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:3px">
+            <strong>${esc(name)}</strong>
+            <span class="muted tabular">${Math.round(val).toLocaleString(localeTag())} ${esc(unit)}</span>
+          </div>
+          <div style="height:6px;border-radius:999px;background:var(--bar-muted);overflow:hidden">
+            <div style="height:100%;width:${Math.max(8, Math.round((val / topMax) * 100))}%;background:var(--ring-stand);border-radius:999px"></div>
+          </div>
+        </div>
+      `).join('');
+      bodyHtml = `
+        <div class="summary-grid">
+          <div class="stat-box"><span class="stat-value tabular" style="color:var(--ring-stand)">${Math.round(totalVol).toLocaleString(localeTag())}</span><span class="stat-label">${esc(unit)} Total</span></div>
+          <div class="stat-box"><span class="stat-value tabular">${avgVol.toLocaleString(localeTag())}</span><span class="stat-label">${isEn ? 'Avg/Session' : 'Rata-rata'}</span></div>
+          <div class="stat-box"><span class="stat-value tabular">${Math.round(bestVol).toLocaleString(localeTag())}</span><span class="stat-label">${isEn ? 'Best' : 'Tertinggi'}</span></div>
+        </div>
+        <div class="card" style="padding:12px">
+          <div class="muted" style="font-size:0.76rem;margin-bottom:6px">${isEn ? `Weekly Volume (${unit})` : `Volume Mingguan (${unit})`}</div>
+          ${renderBarChartSvg(weeks, 'var(--ring-stand)', (v) => v >= 1000 ? `${(v / 1000).toFixed(1)}k` : String(v))}
+        </div>
+        <div class="card" style="padding:12px">
+          <strong style="display:block;font-size:0.84rem;margin-bottom:8px">${isEn ? 'Top Exercises by Volume' : 'Latihan dengan Volume Tertinggi'}</strong>
+          ${topHtml || `<p class="muted" style="margin:0">${isEn ? 'No volume data yet.' : 'Belum ada data volume.'}</p>`}
+        </div>
+      `;
+    } else if (metric === 'prs') {
+      title = t('kpiPrs');
+      const allPrs = [];
+      workouts.forEach((w) => {
+        (w.prs || []).forEach((prName) => {
+          allPrs.push({ prName, wkId: w.id, wkName: w.name, date: w.date });
+        });
+      });
+      const prRows = allPrs.slice(0, 20).map((item) => `
+        <div class="list-card" style="padding:10px 12px;cursor:pointer" data-kd-wk="${esc(item.wkId)}">
+          <div class="list-card-top">
+            <strong style="font-size:0.88rem;color:var(--ring-move)">${esc(item.prName)}</strong>
+            <span class="muted" style="font-size:0.75rem">${formatDate(item.date)}</span>
+          </div>
+          <div class="muted" style="font-size:0.78rem">${esc(item.wkName)}</div>
+        </div>
+      `).join('');
+      bodyHtml = `
+        <div class="summary-grid" style="grid-template-columns:repeat(2,1fr)">
+          <div class="stat-box"><span class="stat-value tabular" style="color:var(--ring-move)">${allPrs.length}</span><span class="stat-label">${isEn ? 'Total PRs' : 'Total Rekor PR'}</span></div>
+          <div class="stat-box"><span class="stat-value tabular">${workouts.filter((w) => w.prs && w.prs.length).length}</span><span class="stat-label">${isEn ? 'PR Sessions' : 'Sesi dengan PR'}</span></div>
+        </div>
+        <div class="stack-list" style="max-height:48vh;overflow-y:auto">${prRows || `<div class="empty-state">${esc(t('kpiPrsSubEmpty'))}</div>`}</div>
+      `;
+    } else {
+      title = t('kpiAvgDur');
+      const totalSec = workouts.reduce((s, w) => s + (w.durationSec || 0), 0);
+      const avgMin = workouts.length ? Math.round(totalSec / workouts.length / 60) : 0;
+      const maxMin = workouts.reduce((m, w) => Math.max(m, Math.round((w.durationSec || 0) / 60)), 0);
+      const weeks = buildWeeklyTrend((list) => list.length ? Math.round(list.reduce((s, w) => s + (w.durationSec || 0), 0) / list.length / 60) : 0);
+      const recent = workouts.slice(0, 5).map((w) => `
+        <div class="list-card" style="padding:10px 12px;cursor:pointer" data-kd-wk="${esc(w.id)}">
+          <div class="list-card-top">
+            <strong style="font-size:0.9rem">${esc(w.name)}</strong>
+            <span class="tabular" style="color:var(--ring-exercise);font-weight:700">${formatDuration(w.durationSec || 0)}</span>
+          </div>
+          <div class="muted" style="font-size:0.78rem">${formatDate(w.date)} • ${w.totalSets || 0} set</div>
+        </div>
+      `).join('');
+      bodyHtml = `
+        <div class="summary-grid">
+          <div class="stat-box"><span class="stat-value tabular" style="color:var(--ring-exercise)">${avgMin}m</span><span class="stat-label">${isEn ? 'Avg' : 'Rata-rata'}</span></div>
+          <div class="stat-box"><span class="stat-value tabular">${Math.round(totalSec / 60)}m</span><span class="stat-label">${isEn ? 'Total' : 'Total Menit'}</span></div>
+          <div class="stat-box"><span class="stat-value tabular">${maxMin}m</span><span class="stat-label">${isEn ? 'Longest' : 'Terlama'}</span></div>
+        </div>
+        <div class="card" style="padding:12px">
+          <div class="muted" style="font-size:0.76rem;margin-bottom:6px">${isEn ? 'Avg Duration per Week (min)' : 'Rata-rata Durasi per Minggu (menit)'}</div>
+          ${renderBarChartSvg(weeks, 'var(--ring-exercise)', (v) => `${v}m`)}
+        </div>
+        <div class="stack-list">${recent || `<div class="empty-state">${esc(t('historyEmptyAll'))}</div>`}</div>
+      `;
+    }
+
+    openModal(`
+      <div class="modal-header">
+        <h3>${esc(title)}</h3>
+        <button type="button" class="btn btn-ghost btn-xs" id="modalCloseBtn">${esc(t('btnClose'))}</button>
+      </div>
+      ${bodyHtml}
+      <button type="button" class="btn btn-secondary btn-sm btn-block" id="kdGoHistoryBtn">${isEn ? 'Open Full History' : 'Buka Semua History'}</button>
+    `);
+
+    document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+    document.querySelectorAll('[data-kd-wk]').forEach((el) => {
+      el.addEventListener('click', () => openWorkoutDetailModal(el.dataset.kdWk, false));
+    });
+    document.getElementById('kdGoHistoryBtn').addEventListener('click', () => {
+      closeModal();
+      const btn = document.querySelector('.nav-item[data-tab="history"]');
+      if (btn) btn.click();
+    });
+  }
 
     if (weeklyEl) {
       const maxBar = Math.max(...dayVols, 1);
@@ -1057,10 +1237,10 @@
     });
 
     list.querySelectorAll('[data-rename-folder]').forEach((btn) => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
         const f = state.folders.find((item) => item.id === btn.dataset.renameFolder);
         if (!f) return;
-        const name = prompt(t('promptRenameFolder'), f.name);
+        const name = await uiPrompt(t('promptRenameFolder'), f.name);
         if (name && name.trim()) {
           f.name = name.trim();
           saveState();
@@ -1070,8 +1250,8 @@
     });
 
     list.querySelectorAll('[data-del-folder]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        if (!confirm(t('confirmDelFolder'))) return;
+      btn.addEventListener('click', async () => {
+        if (!(await uiConfirm(t('confirmDelFolder')))) return;
         const fid = btn.dataset.delFolder;
         state.folders = state.folders.filter((f) => f.id !== fid);
         state.routines.forEach((r) => { if (r.folderId === fid) r.folderId = null; });
@@ -1099,8 +1279,8 @@
       });
     });
     list.querySelectorAll('[data-delete-routine]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        if (confirm(t('confirmDelRoutine'))) {
+      btn.addEventListener('click', async () => {
+        if (await uiConfirm(t('confirmDelRoutine'))) {
           state.routines = state.routines.filter((r) => r.id !== btn.dataset.deleteRoutine);
           saveState();
           renderRoutines();
@@ -1109,8 +1289,8 @@
     });
   }
 
-  function createNewFolder() {
-    const name = prompt(t('promptNewFolder'));
+  async function createNewFolder() {
+    const name = await uiPrompt(t('promptNewFolder'));
     if (!name || !name.trim()) return;
     state.folders.push({ id: uid('fld'), name: name.trim(), collapsed: false });
     saveState();
@@ -1131,8 +1311,65 @@
     };
   }
 
-  function startEmptyWorkout() {
-    if (state.activeWorkout && !confirm(t('confirmReplaceActive'))) return;
+  function openStartWorkoutModal() {
+    const isEn = curLang() === 'en';
+    const folderMap = new Map((state.folders || []).map((f) => [f.id, f.name]));
+    const routineCards = (state.routines || []).map((r) => {
+      const fName = r.folderId ? folderMap.get(r.folderId) : '';
+      const exNames = (r.exercises || []).slice(0, 3).map((item) => getExerciseById(item.exerciseId).name).join(', ');
+      const extra = (r.exercises || []).length > 3 ? ` +${r.exercises.length - 3}` : '';
+      return `
+        <div class="list-card" style="padding:12px;cursor:pointer" data-sw-routine="${esc(r.id)}">
+          <div class="list-card-top">
+            <div>
+              <strong style="font-size:0.95rem">${esc(r.name)}</strong>
+              ${fName ? `<span class="badge" style="margin-left:6px">${esc(fName)}</span>` : ''}
+            </div>
+            <span class="btn btn-primary btn-xs">${isEn ? 'Start' : 'Mulai'}</span>
+          </div>
+          <p class="muted" style="margin:4px 0 0;font-size:0.8rem">${(r.exercises || []).length} ${isEn ? 'exercises' : 'latihan'}${exNames ? ` • ${esc(exNames + extra)}` : ''}</p>
+        </div>
+      `;
+    }).join('');
+
+    openModal(`
+      <div class="modal-header">
+        <h3>${isEn ? 'Start Workout' : 'Mulai Latihan'}</h3>
+        <button type="button" class="btn btn-ghost btn-xs" id="modalCloseBtn">${esc(t('btnClose'))}</button>
+      </div>
+      <button type="button" class="btn btn-primary btn-block" id="swEmptyBtn">
+        ${gIcon('add', 'g-icon-sm')}<span>${isEn ? 'Start Empty Workout' : 'Mulai Latihan Kosong'}</span>
+      </button>
+      <div style="margin-top:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <strong style="font-size:0.86rem">${esc(t('routinesHeading'))}</strong>
+          <button type="button" class="btn btn-ghost btn-xs" id="swNewRoutineBtn">${esc(t('newRoutineBtn'))}</button>
+        </div>
+        <div class="stack-list" style="max-height:46vh;overflow-y:auto">
+          ${routineCards || `<div class="empty-state">${isEn ? 'No routine templates yet.' : 'Belum ada template routine.'}</div>`}
+        </div>
+      </div>
+    `);
+
+    document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+    document.getElementById('swEmptyBtn').addEventListener('click', () => {
+      closeModal();
+      startEmptyWorkout();
+    });
+    document.getElementById('swNewRoutineBtn').addEventListener('click', () => {
+      openRoutineModal(null);
+    });
+    document.querySelectorAll('[data-sw-routine]').forEach((el) => {
+      el.addEventListener('click', () => {
+        const rId = el.dataset.swRoutine;
+        closeModal();
+        startWorkoutFromRoutine(rId);
+      });
+    });
+  }
+
+  async function startEmptyWorkout() {
+    if (state.activeWorkout && !(await uiConfirm(t('confirmReplaceActive'), { danger: false }))) return;
     state.activeWorkout = {
       id: uid('wk'),
       name: t('newWorkoutDefault'),
@@ -1144,8 +1381,8 @@
     openActiveWorkoutSheet();
   }
 
-  function startWorkoutFromRoutine(routineId) {
-    if (state.activeWorkout && !confirm(t('confirmReplaceRoutine'))) return;
+  async function startWorkoutFromRoutine(routineId) {
+    if (state.activeWorkout && !(await uiConfirm(t('confirmReplaceRoutine'), { danger: false }))) return;
     const routine = state.routines.find((r) => r.id === routineId);
     if (!routine) return;
 
@@ -1239,37 +1476,33 @@
     if (type === 'reps_only') {
       return `
         <td><input type="number" step="1" min="0" class="set-input" placeholder="0" value="${esc(s.reps)}" data-ex="${exIdx}" data-set="${setIdx}" data-field="reps" /></td>
-        <td><input type="number" step="0.5" min="5" max="10" class="set-input" placeholder="-" value="${esc(s.rpe)}" data-ex="${exIdx}" data-set="${setIdx}" data-field="rpe" /></td>
       `;
     }
     if (type === 'duration') {
       return `
         <td><input type="number" step="5" min="0" class="set-input" placeholder="60" value="${esc(s.durationSec)}" data-ex="${exIdx}" data-set="${setIdx}" data-field="durationSec" /></td>
-        <td><input type="number" step="0.5" min="5" max="10" class="set-input" placeholder="-" value="${esc(s.rpe)}" data-ex="${exIdx}" data-set="${setIdx}" data-field="rpe" /></td>
       `;
     }
     if (type === 'distance_duration') {
       return `
         <td><input type="number" step="0.1" min="0" class="set-input" placeholder="0" value="${esc(s.distance)}" data-ex="${exIdx}" data-set="${setIdx}" data-field="distance" /></td>
         <td><input type="number" step="1" min="0" class="set-input" placeholder="0" value="${esc(s.durationMin)}" data-ex="${exIdx}" data-set="${setIdx}" data-field="durationMin" /></td>
-        <td><input type="number" step="0.5" min="5" max="10" class="set-input" placeholder="-" value="${esc(s.rpe)}" data-ex="${exIdx}" data-set="${setIdx}" data-field="rpe" /></td>
       `;
     }
     return `
       <td><input type="number" step="0.5" min="0" class="set-input" placeholder="0" value="${esc(s.weight)}" data-ex="${exIdx}" data-set="${setIdx}" data-field="weight" /></td>
       <td><input type="number" step="1" min="0" class="set-input" placeholder="0" value="${esc(s.reps)}" data-ex="${exIdx}" data-set="${setIdx}" data-field="reps" /></td>
-      <td><input type="number" step="0.5" min="5" max="10" class="set-input" placeholder="-" value="${esc(s.rpe)}" data-ex="${exIdx}" data-set="${setIdx}" data-field="rpe" /></td>
     `;
   }
 
   function renderTableHeaders(exMeta) {
     const type = exMeta.type || 'weight_reps';
     const unit = state.settings.unit;
-    if (type === 'reps_only') return `<th>${esc(t('thSet'))}</th><th>${esc(t('thPrev'))}</th><th>${esc(t('thReps'))}</th><th>${esc(t('thRpe'))}</th><th>✓</th><th></th>`;
-    if (type === 'duration') return `<th>${esc(t('thSet'))}</th><th>${esc(t('thPrev'))}</th><th>${esc(t('thSec'))}</th><th>${esc(t('thRpe'))}</th><th>✓</th><th></th>`;
-    if (type === 'distance_duration') return `<th>${esc(t('thSet'))}</th><th>${esc(t('thPrev'))}</th><th>${esc(t('thKm'))}</th><th>${esc(t('thMin'))}</th><th>${esc(t('thRpe'))}</th><th>✓</th><th></th>`;
+    if (type === 'reps_only') return `<th>${esc(t('thSet'))}</th><th>${esc(t('thPrev'))}</th><th>${esc(t('thReps'))}</th><th>✓</th><th></th>`;
+    if (type === 'duration') return `<th>${esc(t('thSet'))}</th><th>${esc(t('thPrev'))}</th><th>${esc(t('thSec'))}</th><th>✓</th><th></th>`;
+    if (type === 'distance_duration') return `<th>${esc(t('thSet'))}</th><th>${esc(t('thPrev'))}</th><th>${esc(t('thKm'))}</th><th>${esc(t('thMin'))}</th><th>✓</th><th></th>`;
     const weightCol = type === 'weighted_bodyweight' ? `+${unit}` : type === 'assisted_bodyweight' ? `-${unit}` : unit;
-    return `<th>${esc(t('thSet'))}</th><th>${esc(t('thPrev'))}</th><th>${esc(weightCol)}</th><th>${esc(t('thReps'))}</th><th>${esc(t('thRpe'))}</th><th>✓</th><th></th>`;
+    return `<th>${esc(t('thSet'))}</th><th>${esc(t('thPrev'))}</th><th>${esc(weightCol)}</th><th>${esc(t('thReps'))}</th><th>✓</th><th></th>`;
   }
 
   function renderActiveWorkout() {
@@ -1289,7 +1522,10 @@
       const pinnedNote = state.pinnedNotes[exItem.exerciseId] || '';
       const exRest = state.exerciseRestTimers[exItem.exerciseId] || state.settings.defaultRestSec;
       const ssClass = getSupersetClass(exItem.supersetGroup);
-      const ssBadge = exItem.supersetGroup ? `<span class="superset-badge">${esc(t('btnSuperset'))} ${esc(exItem.supersetGroup)}</span>` : '';
+      const ssPrevSame = Boolean(exItem.supersetGroup && exIdx > 0 && wk.exercises[exIdx - 1].supersetGroup === exItem.supersetGroup);
+      const ssNextSame = Boolean(exItem.supersetGroup && exIdx < wk.exercises.length - 1 && wk.exercises[exIdx + 1].supersetGroup === exItem.supersetGroup);
+      const ssPosClass = ssPrevSame && ssNextSame ? 'ss-mid' : ssNextSame ? 'ss-start' : ssPrevSame ? 'ss-end' : '';
+      const ssBadge = exItem.supersetGroup ? `<span class="superset-badge ${ssClass}">${esc(t('btnSuperset'))} ${esc(exItem.supersetGroup)}</span>` : '';
       const dbHint = (state.settings.dumbbellPerHand && exMeta.equipment === 'Dumbbell') ? ` ${esc(t('perHandVol'))}` : '';
       let normalCounter = 0;
 
@@ -1312,32 +1548,37 @@
       const showCalc = !['reps_only', 'duration', 'distance_duration'].includes(exMeta.type || 'weight_reps');
 
       return `
-        <div class="exercise-block ${ssClass}">
+        <div class="exercise-block ${ssClass} ${ssPosClass}" data-ex-block="${exIdx}">
           <div class="exercise-block-head">
-            <div>
-              <h4>${esc(exMeta.name)}${ssBadge}</h4>
-              <span class="muted">${esc(tMuscle(exMeta.muscle))} • ${esc(tEquip(exMeta.equipment))}${dbHint}</span>
+            <div class="ex-head-main">
+              <button type="button" class="ex-head-thumb" data-demo-ex="${esc(exItem.exerciseId)}" title="${esc(t('btnDemo'))}">
+                ${renderThumbHtml(exMeta, 40)}
+              </button>
+              <div class="ex-head-info">
+                <h4>${esc(exMeta.name)}${ssBadge}</h4>
+                <div class="ex-head-sub">
+                  <span class="muted">${esc(tMuscle(exMeta.muscle))} • ${esc(tEquip(exMeta.equipment))}${dbHint}</span>
+                  <button type="button" class="ex-rest-inline" data-ex-rest="${esc(exItem.exerciseId)}">${gIcon('timer', 'g-icon-sm')}<span>${exRest}s</span></button>
+                </div>
+              </div>
             </div>
-            <div style="display:flex;gap:4px">
-              <button class="btn btn-ghost btn-xs" data-move-ex="${exIdx}:-1" title="${esc(t('moveUpTitle'))}" ${exIdx === 0 ? 'disabled' : ''}>↑</button>
-              <button class="btn btn-ghost btn-xs" data-move-ex="${exIdx}:1" title="${esc(t('moveDownTitle'))}" ${exIdx === wk.exercises.length - 1 ? 'disabled' : ''}>↓</button>
-              <button class="btn btn-danger-ghost btn-xs" data-remove-ex="${exIdx}">×</button>
+            <div class="ex-head-actions">
+              <button type="button" class="ex-icon-btn drag-handle-btn" data-drag-ex="${exIdx}" title="${curLang() === 'en' ? 'Hold & drag to reorder' : 'Tahan & geser untuk urutkan'}" ${wk.exercises.length < 2 ? 'disabled' : ''}>${gIcon('drag_indicator', 'g-icon-sm')}</button>
+              <button type="button" class="ex-icon-btn ex-icon-danger" data-remove-ex="${exIdx}" title="${esc(t('btnClose'))}">${gIcon('close', 'g-icon-sm')}</button>
             </div>
           </div>
           <input type="text" class="pinned-note-input" placeholder="${esc(t('pinnedNotePh'))}"
             value="${esc(pinnedNote)}" data-pinned-note="${esc(exItem.exerciseId)}" />
           <div class="ex-tools-row">
-            <button class="btn btn-ghost btn-xs" data-demo-ex="${esc(exItem.exerciseId)}">${gIcon('visibility', 'g-icon-sm')}<span>${esc(t('btnDemo'))}</span></button>
-            <button class="btn btn-ghost btn-xs" data-ex-rest="${esc(exItem.exerciseId)}">${gIcon('timer', 'g-icon-sm')}<span>${esc(t('btnRest', { sec: exRest }))}</span></button>
-            <button class="btn btn-ghost btn-xs" data-toggle-ss="${exIdx}">${gIcon('link', 'g-icon-sm')}<span>${exItem.supersetGroup ? `SS ${exItem.supersetGroup}` : esc(t('btnSuperset'))}</span></button>
-            ${showCalc ? `<button class="btn btn-ghost btn-xs" data-plate-calc="${exIdx}">${gIcon('fitness_center', 'g-icon-sm')}<span>${esc(t('btnPlate'))}</span></button>` : ''}
-            ${showCalc ? `<button class="btn btn-ghost btn-xs" data-warmup-calc="${exIdx}">${gIcon('local_fire_department', 'g-icon-sm')}<span>${esc(t('btnWarmup'))}</span></button>` : ''}
+            <button type="button" class="ex-chip-btn ${exItem.supersetGroup ? 'active' : ''}" data-toggle-ss="${exIdx}">${gIcon('link', 'g-icon-sm')}<span>${exItem.supersetGroup ? `SS ${exItem.supersetGroup}` : esc(t('btnSuperset'))}</span></button>
+            ${showCalc ? `<button type="button" class="ex-chip-btn" data-plate-calc="${exIdx}">${gIcon('fitness_center', 'g-icon-sm')}<span>${esc(t('btnPlate'))}</span></button>` : ''}
+            ${showCalc ? `<button type="button" class="ex-chip-btn" data-warmup-calc="${exIdx}">${gIcon('local_fire_department', 'g-icon-sm')}<span>${esc(t('btnWarmup'))}</span></button>` : ''}
           </div>
           <table class="sets-table">
             <thead><tr>${renderTableHeaders(exMeta)}</tr></thead>
             <tbody>${rows}</tbody>
           </table>
-          <button class="btn btn-secondary btn-sm btn-block" style="margin-top:10px" data-add-set="${exIdx}">${esc(t('btnAddSet'))}</button>
+          <button class="btn-add-set" data-add-set="${exIdx}">${esc(t('btnAddSet'))}</button>
         </div>
       `;
     }).join('');
@@ -1363,41 +1604,82 @@
       });
     });
 
-    container.querySelectorAll('[data-move-ex]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const [idx, dir] = btn.dataset.moveEx.split(':').map(Number);
-        const target = idx + dir;
+    container.querySelectorAll('[data-drag-ex]').forEach((btn) => {
+      btn.addEventListener('pointerdown', (e) => {
         const arr = state.activeWorkout.exercises;
-        if (target < 0 || target >= arr.length) return;
-        [arr[idx], arr[target]] = [arr[target], arr[idx]];
-        saveState();
-        renderActiveWorkout();
+        if (arr.length < 2) return;
+        e.preventDefault();
+        const fromIdx = Number(btn.dataset.dragEx);
+        const blocks = [...container.querySelectorAll('.exercise-block[data-ex-block]')];
+        const draggedBlock = blocks[fromIdx];
+        if (!draggedBlock) return;
+
+        const startY = e.clientY;
+        const rects = blocks.map((b) => b.getBoundingClientRect());
+        const dragStep = rects[fromIdx].height + (fromIdx + 1 < rects.length ? Math.max(0, rects[fromIdx + 1].top - rects[fromIdx].bottom) : 12);
+        let targetIdx = fromIdx;
+        draggedBlock.classList.add('dragging');
+        try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+
+        const applyShifts = (tIdx) => {
+          blocks.forEach((b, i) => {
+            if (i === fromIdx) return;
+            if (fromIdx < tIdx && i > fromIdx && i <= tIdx) {
+              b.style.transform = `translateY(${-dragStep}px)`;
+            } else if (fromIdx > tIdx && i >= tIdx && i < fromIdx) {
+              b.style.transform = `translateY(${dragStep}px)`;
+            } else {
+              b.style.transform = '';
+            }
+          });
+        };
+
+        const onMove = (ev) => {
+          const dy = ev.clientY - startY;
+          draggedBlock.style.transform = `translateY(${dy}px) scale(1.015)`;
+
+          let nextTarget = fromIdx;
+          if (ev.clientY <= rects[0].top + rects[0].height / 2) {
+            nextTarget = 0;
+          } else {
+            for (let i = 0; i < rects.length; i++) {
+              const mid = rects[i].top + rects[i].height / 2;
+              if (ev.clientY > mid) nextTarget = i;
+            }
+          }
+          if (nextTarget !== targetIdx) {
+            targetIdx = nextTarget;
+            applyShifts(targetIdx);
+          }
+        };
+
+        const cleanup = () => {
+          draggedBlock.classList.remove('dragging');
+          blocks.forEach((b) => { b.style.transform = ''; });
+          btn.removeEventListener('pointermove', onMove);
+          btn.removeEventListener('pointerup', onUp);
+          btn.removeEventListener('pointercancel', onUp);
+        };
+
+        const onUp = () => {
+          cleanup();
+          if (targetIdx !== fromIdx) {
+            const [moved] = arr.splice(fromIdx, 1);
+            arr.splice(targetIdx, 0, moved);
+            saveState();
+            renderActiveWorkout();
+          }
+        };
+
+        btn.addEventListener('pointermove', onMove);
+        btn.addEventListener('pointerup', onUp);
+        btn.addEventListener('pointercancel', onUp);
       });
     });
 
     container.querySelectorAll('[data-toggle-ss]').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const idx = Number(btn.dataset.toggleSs);
-        const arr = state.activeWorkout.exercises;
-        const curr = arr[idx];
-        if (curr.supersetGroup) {
-          curr.supersetGroup = null;
-        } else {
-          // Link with next exercise if available, or reuse previous group
-          const prevGroup = idx > 0 ? arr[idx - 1].supersetGroup : null;
-          if (prevGroup) {
-            curr.supersetGroup = prevGroup;
-          } else {
-            const used = new Set(arr.map((e) => e.supersetGroup).filter(Boolean));
-            const nextLabel = SUPERSET_LABELS.find((l) => !used.has(l)) || 'A';
-            curr.supersetGroup = nextLabel;
-            if (idx + 1 < arr.length && !arr[idx + 1].supersetGroup) {
-              arr[idx + 1].supersetGroup = nextLabel;
-            }
-          }
-        }
-        saveState();
-        renderActiveWorkout();
+        openSupersetModal(Number(btn.dataset.toggleSs));
       });
     });
 
@@ -1437,8 +1719,17 @@
         saveState();
         renderActiveWorkout();
         if (set.completed) {
-          const restSec = state.exerciseRestTimers[exItem.exerciseId] || state.settings.defaultRestSec;
-          startRestTimer(restSec);
+          let shouldStartRest = true;
+          if (exItem.supersetGroup) {
+            const groupExercises = state.activeWorkout.exercises.filter((e) => e.supersetGroup === exItem.supersetGroup);
+            if (groupExercises.length > 1) {
+              shouldStartRest = groupExercises.every((e) => !e.sets[setIdx] || e.sets[setIdx].completed);
+            }
+          }
+          if (shouldStartRest) {
+            const restSec = state.exerciseRestTimers[exItem.exerciseId] || state.settings.defaultRestSec;
+            startRestTimer(restSec);
+          }
         }
       });
     });
@@ -1479,7 +1770,7 @@
     });
   }
 
-  function finishWorkout() {
+  async function finishWorkout() {
     const wk = state.activeWorkout;
     if (!wk) return;
 
@@ -1508,7 +1799,7 @@
       .filter((ex) => ex.sets.length > 0);
 
     if (!cleanedExercises.length) {
-      alert(t('alertNeedOneSet'));
+      await uiAlert(t('alertNeedOneSet'));
       return;
     }
 
@@ -1586,8 +1877,8 @@
     if (getCloudUser()) pushToDrive(true);
   }
 
-  function discardWorkout() {
-    if (!confirm(t('confirmDiscardWk'))) return;
+  async function discardWorkout() {
+    if (!(await uiConfirm(t('confirmDiscardWk')))) return;
     state.activeWorkout = null;
     stopRestTimer();
     saveState();
@@ -1821,6 +2112,7 @@
           <p class="muted" style="margin:0">${esc(t('exCountLabel', { count: w.exercises.length }))} • ${w.totalSets} set • ${w.totalVolume} ${esc(state.settings.unit)}</p>
           <div class="card-actions">
             <button class="btn btn-secondary btn-sm" data-view-wk="${esc(w.id)}">${esc(t('btnDetail'))}</button>
+            <button class="btn btn-secondary btn-sm" data-edit-wk="${esc(w.id)}">${curLang() === 'en' ? 'Edit' : 'Edit'}</button>
             <button class="btn btn-danger-ghost btn-sm" data-del-wk="${esc(w.id)}">${esc(t('btnDelete'))}</button>
           </div>
         </div>
@@ -1830,9 +2122,12 @@
     listEl.querySelectorAll('[data-view-wk]').forEach((btn) => {
       btn.addEventListener('click', () => openWorkoutDetailModal(btn.dataset.viewWk, false));
     });
+    listEl.querySelectorAll('[data-edit-wk]').forEach((btn) => {
+      btn.addEventListener('click', () => openEditWorkoutModal(btn.dataset.editWk));
+    });
     listEl.querySelectorAll('[data-del-wk]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        if (confirm(t('confirmDelWorkout'))) {
+      btn.addEventListener('click', async () => {
+        if (await uiConfirm(t('confirmDelWorkout'))) {
           state.workouts = state.workouts.filter((w) => w.id !== btn.dataset.delWk);
           saveState();
           renderHeaderStats();
@@ -2176,7 +2471,7 @@
     `);
 
     document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
-    document.getElementById('saveMeasBtn').addEventListener('click', () => {
+    document.getElementById('saveMeasBtn').addEventListener('click', async () => {
       const entry = {
         id: uid('ms'),
         date: new Date().toISOString(),
@@ -2188,7 +2483,7 @@
         thigh: document.getElementById('measThigh').value || null
       };
       if (!entry.weight && !entry.bodyFat && !entry.waist && !entry.chest && !entry.arms && !entry.thigh) {
-        alert(t('alertNeedOneMeas'));
+        await uiAlert(t('alertNeedOneMeas'));
         return;
       }
       state.measurements.unshift(entry);
@@ -2227,6 +2522,102 @@
       renderActiveWorkout();
       closeModal();
     });
+  }
+
+  function openSupersetModal(exIdx) {
+    const wk = state.activeWorkout;
+    if (!wk || !wk.exercises[exIdx]) return;
+    const arr = wk.exercises;
+    const curr = arr[exIdx];
+    const exMeta = getExerciseById(curr.exerciseId);
+    const isEn = curLang() === 'en';
+    const colors = { A: '#38bdf8', B: '#a855f7', C: '#f59e0b', D: '#10b981' };
+
+    const renderPicker = () => {
+      const selected = curr.supersetGroup || '';
+      const groupBtns = SUPERSET_LABELS.map((lbl) => {
+        const active = selected === lbl;
+        const col = colors[lbl];
+        const count = arr.filter((e) => e.supersetGroup === lbl).length;
+        return `
+          <button type="button" class="ss-group-btn ${active ? 'active' : ''}" data-pick-ss="${lbl}"
+            style="--ss-col:${col}">
+            <strong>Superset ${lbl}</strong>
+            <span>${count ? `${count} ${isEn ? 'ex' : 'latihan'}` : (isEn ? 'Empty' : 'Kosong')}</span>
+          </button>
+        `;
+      }).join('');
+
+      const partnerRows = arr.map((item, idx) => {
+        if (idx === exIdx) return '';
+        const meta = getExerciseById(item.exerciseId);
+        const inSame = Boolean(selected && item.supersetGroup === selected);
+        const otherTag = item.supersetGroup && !inSame
+          ? `<span class="superset-badge ${getSupersetClass(item.supersetGroup)}">SS ${esc(item.supersetGroup)}</span>`
+          : '';
+        return `
+          <label class="ss-partner-item ${inSame ? 'checked' : ''}">
+            <input type="checkbox" data-ss-partner="${idx}" ${inSame ? 'checked' : ''} ${!selected ? 'disabled' : ''} />
+            <span>${esc(meta.name)}${otherTag}</span>
+          </label>
+        `;
+      }).join('');
+
+      openModal(`
+        <div class="modal-header">
+          <h3>${isEn ? 'Superset Group' : 'Atur Superset'}</h3>
+          <button class="btn btn-ghost btn-xs" id="modalCloseBtn">${esc(t('btnClose'))}</button>
+        </div>
+        <p class="muted" style="margin:0 0 12px">${esc(exMeta.name)}</p>
+        <div class="ss-group-grid">${groupBtns}</div>
+        <div style="margin-top:14px">
+          <strong style="display:block;font-size:0.85rem;margin-bottom:8px">
+            ${selected
+              ? (isEn ? `Pair with exercises in Superset ${selected}:` : `Gabungkan dengan latihan di Superset ${selected}:`)
+              : (isEn ? 'Select a group (A–D) above to pair exercises' : 'Pilih grup (A–D) di atas untuk menggabungkan latihan')}
+          </strong>
+          <div class="ss-partner-list">${partnerRows || `<p class="muted" style="margin:0">${isEn ? 'Add another exercise to pair.' : 'Tambah latihan lain untuk digabung.'}</p>`}</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:14px">
+          ${selected ? `<button type="button" class="btn btn-danger-ghost btn-sm" id="clearSsBtn" style="flex:1">${isEn ? 'Remove Superset' : 'Lepas Superset'}</button>` : ''}
+          <button type="button" class="btn btn-primary btn-sm" id="doneSsBtn" style="flex:1">${isEn ? 'Done' : 'Selesai'}</button>
+        </div>
+      `);
+
+      document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+      document.getElementById('doneSsBtn').addEventListener('click', closeModal);
+      const clearBtn = document.getElementById('clearSsBtn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          curr.supersetGroup = null;
+          saveState();
+          renderActiveWorkout();
+          closeModal();
+        });
+      }
+
+      document.querySelectorAll('[data-pick-ss]').forEach((b) => {
+        b.addEventListener('click', () => {
+          curr.supersetGroup = b.dataset.pickSs;
+          saveState();
+          renderActiveWorkout();
+          renderPicker();
+        });
+      });
+
+      document.querySelectorAll('[data-ss-partner]').forEach((cb) => {
+        cb.addEventListener('change', () => {
+          const pIdx = Number(cb.dataset.ssPartner);
+          if (!curr.supersetGroup) return;
+          arr[pIdx].supersetGroup = cb.checked ? curr.supersetGroup : null;
+          saveState();
+          renderActiveWorkout();
+          renderPicker();
+        });
+      });
+    };
+
+    renderPicker();
   }
 
   function openPlateCalculatorModal(initialWeight = 60) {
@@ -2348,6 +2739,97 @@
     stopDemoInterval();
     document.getElementById('modalBackdrop').classList.add('hidden');
     document.getElementById('modalContent').innerHTML = '';
+  }
+
+  function showUiDialog({ mode = 'alert', title = '', message = '', defaultValue = '', placeholder = '', danger = false, confirmText = '', cancelText = '' }) {
+    return new Promise((resolve) => {
+      const isEn = curLang() === 'en';
+      const existing = document.getElementById('uiDialogBackdrop');
+      if (existing) existing.remove();
+
+      const backdrop = document.createElement('div');
+      backdrop.id = 'uiDialogBackdrop';
+      backdrop.className = 'ui-dialog-backdrop';
+
+      const okLabel = confirmText || (mode === 'confirm' && danger ? (isEn ? 'Delete' : 'Hapus') : (isEn ? 'OK' : 'OK'));
+      const cancelLabel = cancelText || (isEn ? 'Cancel' : 'Batal');
+      const okClass = danger ? 'btn btn-danger btn-sm' : 'btn btn-primary btn-sm';
+      const titleHtml = title ? `<h4 class="ui-dialog-title">${esc(title)}</h4>` : '';
+      const inputHtml = mode === 'prompt'
+        ? `<input type="text" id="uiDialogInput" class="input" style="margin-bottom:14px" value="${esc(defaultValue)}" placeholder="${esc(placeholder)}" />`
+        : '';
+      const cancelBtnHtml = mode !== 'alert'
+        ? `<button type="button" class="btn btn-secondary btn-sm" id="uiDialogCancel">${esc(cancelLabel)}</button>`
+        : '';
+
+      backdrop.innerHTML = `
+        <div class="ui-dialog-card" role="dialog" aria-modal="true">
+          ${titleHtml}
+          <p class="ui-dialog-msg">${esc(message)}</p>
+          ${inputHtml}
+          <div class="ui-dialog-actions">
+            ${cancelBtnHtml}
+            <button type="button" class="${okClass}" id="uiDialogOk">${esc(okLabel)}</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(backdrop);
+
+      const inputEl = document.getElementById('uiDialogInput');
+      const okBtn = document.getElementById('uiDialogOk');
+      const cancelBtn = document.getElementById('uiDialogCancel');
+
+      const finish = (val) => {
+        window.removeEventListener('keydown', onKey);
+        backdrop.remove();
+        resolve(val);
+      };
+      const onKey = (e) => {
+        if (e.key === 'Escape') finish(mode === 'confirm' ? false : mode === 'prompt' ? null : undefined);
+        else if (e.key === 'Enter' && (mode === 'prompt' || mode === 'alert')) {
+          e.preventDefault();
+          finish(mode === 'prompt' ? (inputEl ? inputEl.value : '') : undefined);
+        }
+      };
+
+      window.addEventListener('keydown', onKey);
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) finish(mode === 'confirm' ? false : mode === 'prompt' ? null : undefined);
+      });
+      okBtn.addEventListener('click', () => {
+        if (mode === 'confirm') finish(true);
+        else if (mode === 'prompt') finish(inputEl ? inputEl.value : '');
+        else finish();
+      });
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => finish(mode === 'confirm' ? false : null));
+      }
+
+      setTimeout(() => {
+        if (inputEl) { inputEl.focus(); inputEl.select(); }
+        else okBtn.focus();
+      }, 10);
+    });
+  }
+
+  function uiAlert(message, title = '') {
+    const isEn = curLang() === 'en';
+    return showUiDialog({ mode: 'alert', title: title || (isEn ? 'Notice' : 'Info'), message });
+  }
+
+  function uiConfirm(message, opts = {}) {
+    const isEn = curLang() === 'en';
+    return showUiDialog({
+      mode: 'confirm',
+      title: opts.title || (isEn ? 'Confirm' : 'Konfirmasi'),
+      message,
+      danger: opts.danger !== false,
+      confirmText: opts.confirmText || (opts.danger === false ? (isEn ? 'Continue' : 'Lanjutkan') : '')
+    });
+  }
+
+  function uiPrompt(message, defaultValue = '', placeholder = '') {
+    return showUiDialog({ mode: 'prompt', title: message, message: '', defaultValue, placeholder });
   }
 
   async function openExerciseDemoModal(exerciseId) {
@@ -2539,6 +3021,11 @@
   }
 
   function openExercisePickerModal(onPick) {
+    const isEn = curLang() === 'en';
+    const selectedIds = [];
+    const selectedSet = new Set();
+    const selectedExtras = new Map();
+
     openModal(`
       <div class="modal-header">
         <h3>${esc(t('modalPickerTitle'))}</h3>
@@ -2555,8 +3042,23 @@
           ${EQUIPMENT_LIST.map((eq) => `<option value="${esc(eq)}">${esc(tEquip(eq))}</option>`).join('')}
         </select>
       </div>
-      <div id="pickerList" class="stack-list" style="max-height:50vh;overflow-y:auto"></div>
+      <div id="pickerList" class="stack-list" style="max-height:48vh;overflow-y:auto"></div>
+      <div class="picker-footer">
+        <button type="button" class="btn btn-primary btn-block" id="pickerConfirmBtn" disabled>
+          ${isEn ? 'Select exercises above' : 'Pilih latihan di atas'}
+        </button>
+      </div>
     `);
+
+    const updateConfirmBtn = () => {
+      const btn = document.getElementById('pickerConfirmBtn');
+      if (!btn) return;
+      const n = selectedIds.length;
+      btn.disabled = n === 0;
+      btn.textContent = n === 0
+        ? (isEn ? 'Select exercises above' : 'Pilih latihan di atas')
+        : (isEn ? `+ Add ${n} Exercise${n > 1 ? 's' : ''}` : `+ Tambah ${n} Latihan`);
+    };
 
     const renderPicker = () => {
       const query = document.getElementById('pickerSearch').value.trim().toLowerCase();
@@ -2583,8 +3085,9 @@
 
       const list = document.getElementById('pickerList');
       list.innerHTML = items.slice(0, 120).map((e) => {
+        const isSel = selectedSet.has(e.id);
         return `
-          <div class="picker-item" data-pick-id="${esc(e.id)}">
+          <div class="picker-item ${isSel ? 'selected' : ''}" data-pick-id="${esc(e.id)}">
             <div class="ex-card-left">
               ${renderThumbHtml(e, 40)}
               <div>
@@ -2592,7 +3095,7 @@
                 <div class="muted">${esc(tMuscle(e.muscle))} • ${esc(tEquip(e.equipment))}</div>
               </div>
             </div>
-            <span class="badge">${esc(t('btnPick'))}</span>
+            <span class="badge ${isSel ? 'badge-selected' : ''}">${isSel ? '✓' : esc(t('btnPick'))}</span>
           </div>
         `;
       }).join('') || `<div class="empty-state">${esc(t('notFound'))}</div>`;
@@ -2600,18 +3103,41 @@
       list.querySelectorAll('[data-pick-id]').forEach((el) => {
         el.addEventListener('click', () => {
           const pickId = el.dataset.pickId;
-          if (extrasById.has(pickId)) ensureExerciseInState(extrasById.get(pickId));
-          onPick(pickId);
-          closeModal();
+          if (selectedSet.has(pickId)) {
+            selectedSet.delete(pickId);
+            const idx = selectedIds.indexOf(pickId);
+            if (idx !== -1) selectedIds.splice(idx, 1);
+            selectedExtras.delete(pickId);
+          } else {
+            selectedSet.add(pickId);
+            selectedIds.push(pickId);
+            if (extrasById.has(pickId)) selectedExtras.set(pickId, extrasById.get(pickId));
+          }
+          const badge = el.querySelector('.badge');
+          const nowSel = selectedSet.has(pickId);
+          el.classList.toggle('selected', nowSel);
+          if (badge) {
+            badge.classList.toggle('badge-selected', nowSel);
+            badge.textContent = nowSel ? '✓' : t('btnPick');
+          }
+          updateConfirmBtn();
         });
       });
     };
 
     renderPicker();
+    updateConfirmBtn();
     document.getElementById('pickerSearch').addEventListener('input', renderPicker);
     document.getElementById('pickerMuscle').addEventListener('change', renderPicker);
     document.getElementById('pickerEquip').addEventListener('change', renderPicker);
     document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+    document.getElementById('pickerConfirmBtn').addEventListener('click', () => {
+      if (!selectedIds.length) return;
+      selectedExtras.forEach((item) => ensureExerciseInState(item));
+      const picked = [...selectedIds];
+      closeModal();
+      onPick(picked);
+    });
   }
 
   function openRoutineModal(routineId = null) {
@@ -2684,14 +3210,16 @@
         });
       });
       document.getElementById('routineAddExBtn').addEventListener('click', () => {
-        openExercisePickerModal((exId) => {
-          draft.exercises.push({ exerciseId: exId, targetSets: 3, targetReps: '8-12' });
+        openExercisePickerModal((exIds) => {
+          exIds.forEach((exId) => {
+            draft.exercises.push({ exerciseId: exId, targetSets: 3, targetReps: '8-12' });
+          });
           renderRoutineEditor();
         });
       });
-      document.getElementById('saveRoutineBtn').addEventListener('click', () => {
+      document.getElementById('saveRoutineBtn').addEventListener('click', async () => {
         if (!draft.name.trim()) {
-          alert(t('alertRoutineName'));
+          await uiAlert(t('alertRoutineName'));
           return;
         }
         if (existing) {
@@ -2763,13 +3291,13 @@
     });
 
     document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
-    document.getElementById('saveCustomExBtn').addEventListener('click', () => {
+    document.getElementById('saveCustomExBtn').addEventListener('click', async () => {
       const name = document.getElementById('customExName').value.trim();
       const muscle = document.getElementById('customExMuscle').value;
       const equipment = document.getElementById('customExEquip').value;
       const type = document.getElementById('customExType').value;
       if (!name) {
-        alert(t('alertExName'));
+        await uiAlert(t('alertExName'));
         return;
       }
       const secondary = Array.from(selectedSec).filter((m) => m !== muscle);
@@ -2812,6 +3340,10 @@
       ? `<button class="btn btn-secondary btn-block" id="updateRoutineFromWkBtn">${gIcon('sync', 'g-icon-sm')}<span>${esc(t('btnUpdateRoutine', { name: matchingRoutine.name }))}</span></button>`
       : '';
 
+    const editHistBtn = !isJustFinished
+      ? `<button class="btn btn-secondary btn-block" id="detailEditWkBtn">${gIcon('edit', 'g-icon-sm')}<span>${curLang() === 'en' ? 'Edit Workout' : 'Edit Riwayat Latihan'}</span></button>`
+      : '';
+
     openModal(`
       <div class="modal-header">
         <h3 style="display:inline-flex;align-items:center;gap:6px">${isJustFinished ? `${gIcon('celebration')}<span>${esc(t('wkFinishedTitle'))}</span>` : esc(w.name)}</h3>
@@ -2820,10 +3352,15 @@
       <p class="muted" style="margin:0">${formatDate(w.date)} • ${formatDuration(w.durationSec)} • ${w.totalVolume} ${esc(state.settings.unit)} • ${w.totalSets} set</p>
       ${prBlock}
       <div class="stack-list">${exHtml}</div>
+      ${editHistBtn}
       ${updateRoutineBtn}
     `);
 
     document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+    const detailEditBtn = document.getElementById('detailEditWkBtn');
+    if (detailEditBtn) {
+      detailEditBtn.addEventListener('click', () => openEditWorkoutModal(w.id));
+    }
     const updBtn = document.getElementById('updateRoutineFromWkBtn');
     if (updBtn && matchingRoutine) {
       updBtn.addEventListener('click', () => {
@@ -2839,6 +3376,232 @@
         updBtn.disabled = true;
       });
     }
+  }
+
+  function openEditWorkoutModal(workoutId) {
+    const orig = state.workouts.find((item) => item.id === workoutId);
+    if (!orig) return;
+    const isEn = curLang() === 'en';
+    const draft = JSON.parse(JSON.stringify(orig));
+    const unit = state.settings.unit;
+
+    const toLocalInput = (iso) => {
+      const d = new Date(iso || Date.now());
+      const off = d.getTimezoneOffset();
+      return new Date(d.getTime() - off * 60000).toISOString().slice(0, 16);
+    };
+
+    let dateVal = toLocalInput(draft.date);
+    let durMinVal = Math.max(1, Math.round((draft.durationSec || 60) / 60));
+
+    const renderSetInputs = (exMeta, exIdx, s, setIdx) => {
+      const type = exMeta.type || 'weight_reps';
+      if (type === 'reps_only') {
+        return `<td><input type="number" step="1" min="0" class="set-input" value="${esc(s.reps)}" data-he-ex="${exIdx}" data-he-set="${setIdx}" data-he-field="reps" /></td>`;
+      }
+      if (type === 'duration') {
+        return `<td><input type="number" step="5" min="0" class="set-input" value="${esc(s.durationSec)}" data-he-ex="${exIdx}" data-he-set="${setIdx}" data-he-field="durationSec" /></td>`;
+      }
+      if (type === 'distance_duration') {
+        return `
+          <td><input type="number" step="0.1" min="0" class="set-input" value="${esc(s.distance)}" data-he-ex="${exIdx}" data-he-set="${setIdx}" data-he-field="distance" /></td>
+          <td><input type="number" step="1" min="0" class="set-input" value="${esc(s.durationMin)}" data-he-ex="${exIdx}" data-he-set="${setIdx}" data-he-field="durationMin" /></td>
+        `;
+      }
+      return `
+        <td><input type="number" step="0.5" min="0" class="set-input" value="${esc(s.weight)}" data-he-ex="${exIdx}" data-he-set="${setIdx}" data-he-field="weight" /></td>
+        <td><input type="number" step="1" min="0" class="set-input" value="${esc(s.reps)}" data-he-ex="${exIdx}" data-he-set="${setIdx}" data-he-field="reps" /></td>
+      `;
+    };
+
+    const renderHeaders = (exMeta) => {
+      const type = exMeta.type || 'weight_reps';
+      if (type === 'reps_only') return `<th>${esc(t('thSet'))}</th><th>${esc(t('thReps'))}</th><th></th>`;
+      if (type === 'duration') return `<th>${esc(t('thSet'))}</th><th>${esc(t('thSec'))}</th><th></th>`;
+      if (type === 'distance_duration') return `<th>${esc(t('thSet'))}</th><th>${esc(t('thKm'))}</th><th>${esc(t('thMin'))}</th><th></th>`;
+      const weightCol = type === 'weighted_bodyweight' ? `+${unit}` : type === 'assisted_bodyweight' ? `-${unit}` : unit;
+      return `<th>${esc(t('thSet'))}</th><th>${esc(weightCol)}</th><th>${esc(t('thReps'))}</th><th></th>`;
+    };
+
+    const renderEditor = () => {
+      const exHtml = draft.exercises.map((ex, exIdx) => {
+        const meta = getExerciseById(ex.exerciseId);
+        let normalCounter = 0;
+        const rows = ex.sets.map((s, setIdx) => {
+          if ((s.type || 'normal') !== 'warmup') normalCounter++;
+          const badge = getSetTypeDisplay(s, normalCounter || setIdx + 1);
+          return `
+            <tr class="set-row">
+              <td><button type="button" class="set-type-btn ${badge.cls}" data-he-cycle="${exIdx}:${setIdx}">${badge.label}</button></td>
+              ${renderSetInputs(meta, exIdx, s, setIdx)}
+              <td><button type="button" class="del-set-btn" data-he-delset="${exIdx}:${setIdx}">${gIcon('close', 'g-icon-sm')}</button></td>
+            </tr>
+          `;
+        }).join('');
+
+        return `
+          <div class="exercise-block" style="padding:12px">
+            <div class="exercise-block-head" style="margin-bottom:8px">
+              <h4 style="margin:0;font-size:0.92rem">${esc(meta.name)}</h4>
+              <button type="button" class="ex-icon-btn ex-icon-danger" data-he-delex="${exIdx}">${gIcon('close', 'g-icon-sm')}</button>
+            </div>
+            <table class="sets-table">
+              <thead><tr>${renderHeaders(meta)}</tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+            <button type="button" class="btn-add-set" data-he-addset="${exIdx}">${esc(t('btnAddSet'))}</button>
+          </div>
+        `;
+      }).join('');
+
+      openModal(`
+        <div class="modal-header">
+          <h3>${isEn ? 'Edit Workout' : 'Edit Riwayat Latihan'}</h3>
+          <button type="button" class="btn btn-ghost btn-xs" id="modalCloseBtn">${esc(t('btnClose'))}</button>
+        </div>
+        <div class="form-group">
+          <label for="heNameInput">${isEn ? 'Workout Name' : 'Nama Latihan'}</label>
+          <input type="text" id="heNameInput" class="input" value="${esc(draft.name)}" />
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 110px;gap:8px">
+          <div class="form-group" style="margin:0">
+            <label for="heDateInput">${isEn ? 'Date & Time' : 'Tanggal & Jam'}</label>
+            <input type="datetime-local" id="heDateInput" class="input" value="${esc(dateVal)}" />
+          </div>
+          <div class="form-group" style="margin:0">
+            <label for="heDurInput">${isEn ? 'Duration (min)' : 'Durasi (mnt)'}</label>
+            <input type="number" id="heDurInput" class="input" min="1" value="${esc(durMinVal)}" />
+          </div>
+        </div>
+        <div class="stack-list" style="max-height:38vh;overflow-y:auto;margin:10px 0">${exHtml || `<div class="empty-state">${esc(t('emptyActiveWk'))}</div>`}</div>
+        <button type="button" class="btn btn-secondary btn-sm btn-block" id="heAddExBtn">${esc(t('addExToWkBtn'))}</button>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button type="button" class="btn btn-ghost btn-sm" id="heCancelBtn" style="flex:1">${isEn ? 'Cancel' : 'Batal'}</button>
+          <button type="button" class="btn btn-primary btn-sm" id="heSaveBtn" style="flex:1">${esc(t('btnSave'))}</button>
+        </div>
+      `);
+
+      document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+      document.getElementById('heCancelBtn').addEventListener('click', closeModal);
+      document.getElementById('heNameInput').addEventListener('input', (e) => { draft.name = e.target.value; });
+      document.getElementById('heDateInput').addEventListener('change', (e) => { dateVal = e.target.value; });
+      document.getElementById('heDurInput').addEventListener('input', (e) => { durMinVal = Math.max(1, Number(e.target.value) || 1); });
+
+      document.querySelectorAll('[data-he-field]').forEach((inp) => {
+        inp.addEventListener('input', () => {
+          const exIdx = Number(inp.dataset.heEx);
+          const setIdx = Number(inp.dataset.heSet);
+          const field = inp.dataset.heField;
+          draft.exercises[exIdx].sets[setIdx][field] = Number(inp.value) || 0;
+        });
+      });
+
+      document.querySelectorAll('[data-he-cycle]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const [exIdx, setIdx] = btn.dataset.heCycle.split(':').map(Number);
+          const s = draft.exercises[exIdx].sets[setIdx];
+          const currIdx = SET_TYPES.indexOf(s.type || 'normal');
+          s.type = SET_TYPES[(currIdx + 1) % SET_TYPES.length];
+          renderEditor();
+        });
+      });
+
+      document.querySelectorAll('[data-he-delset]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const [exIdx, setIdx] = btn.dataset.heDelset.split(':').map(Number);
+          draft.exercises[exIdx].sets.splice(setIdx, 1);
+          renderEditor();
+        });
+      });
+
+      document.querySelectorAll('[data-he-addset]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const exIdx = Number(btn.dataset.heAddset);
+          const sets = draft.exercises[exIdx].sets;
+          const last = sets[sets.length - 1];
+          const meta = getExerciseById(draft.exercises[exIdx].exerciseId);
+          const newSet = last ? { ...last, type: 'normal', completed: true } : { ...makeEmptySet(meta.type), completed: true };
+          sets.push(newSet);
+          renderEditor();
+        });
+      });
+
+      document.querySelectorAll('[data-he-delex]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          draft.exercises.splice(Number(btn.dataset.heEx || btn.dataset.heDelex), 1);
+          renderEditor();
+        });
+      });
+
+      document.getElementById('heAddExBtn').addEventListener('click', () => {
+        openExercisePickerModal((exIds) => {
+          exIds.forEach((exId) => {
+            const meta = getExerciseById(exId);
+            draft.exercises.push({
+              exerciseId: exId,
+              supersetGroup: null,
+              sets: [{ ...makeEmptySet(meta.type), completed: true }]
+            });
+          });
+          renderEditor();
+        });
+      });
+
+      document.getElementById('heSaveBtn').addEventListener('click', async () => {
+        const cleaned = draft.exercises
+          .map((ex) => ({
+            exerciseId: ex.exerciseId,
+            supersetGroup: ex.supersetGroup || null,
+            sets: ex.sets.map((s) => ({
+              type: s.type || 'normal',
+              weight: Number(s.weight) || 0,
+              reps: Number(s.reps) || 0,
+              durationSec: Number(s.durationSec) || 0,
+              distance: Number(s.distance) || 0,
+              durationMin: Number(s.durationMin) || 0,
+              rpe: null,
+              completed: true
+            }))
+          }))
+          .filter((ex) => ex.sets.length > 0);
+
+        if (!cleaned.length) {
+          await uiAlert(t('alertNeedOneSet'));
+          return;
+        }
+
+        let totalVolume = 0;
+        let totalSets = 0;
+        let totalReps = 0;
+        for (const ex of cleaned) {
+          const meta = getExerciseById(ex.exerciseId);
+          for (const s of ex.sets) {
+            totalSets++;
+            totalReps += Number(s.reps) || 0;
+            totalVolume += calcSetVolume(meta, s);
+          }
+        }
+
+        const parsedDate = new Date(dateVal);
+        orig.name = draft.name.trim() || orig.name;
+        orig.date = Number.isNaN(parsedDate.getTime()) ? orig.date : parsedDate.toISOString();
+        orig.durationSec = Math.max(60, Math.round(durMinVal * 60));
+        orig.exercises = cleaned;
+        orig.totalSets = totalSets;
+        orig.totalReps = totalReps;
+        orig.totalVolume = Math.round(totalVolume);
+
+        state.workouts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        saveState();
+        renderHeaderStats();
+        renderDashboardBento();
+        renderHistory();
+        renderExercisesTab();
+        closeModal();
+      });
+    };
+
+    renderEditor();
   }
 
   function openSettingsModal() {
@@ -2920,8 +3683,8 @@
 
     if (isSignedIn) {
       document.getElementById('pushDriveBtn').addEventListener('click', () => pushToDrive(false));
-      document.getElementById('pullDriveBtn').addEventListener('click', () => {
-        if (confirm(t('confirmPullDrive'))) pullFromDrive(false);
+      document.getElementById('pullDriveBtn').addEventListener('click', async () => {
+        if (await uiConfirm(t('confirmPullDrive'), { danger: false })) pullFromDrive(false);
       });
       document.getElementById('disconnectGoogleBtn').addEventListener('click', async () => {
         await disconnectGoogleAccount();
@@ -2963,7 +3726,7 @@
 
   // --- Event Bindings ---
   function initEvents() {
-    document.getElementById('startEmptyWorkoutBtn').addEventListener('click', startEmptyWorkout);
+    document.getElementById('startEmptyWorkoutBtn').addEventListener('click', openStartWorkoutModal);
     document.getElementById('newFolderBtn').addEventListener('click', createNewFolder);
     document.getElementById('newRoutineBtn').addEventListener('click', () => openRoutineModal(null));
     document.getElementById('newExerciseBtn').addEventListener('click', openNewExerciseModal);
@@ -2999,12 +3762,14 @@
     });
 
     document.getElementById('addExerciseToWorkoutBtn').addEventListener('click', () => {
-      openExercisePickerModal((exId) => {
-        const exMeta = getExerciseById(exId);
-        state.activeWorkout.exercises.push({
-          exerciseId: exId,
-          supersetGroup: null,
-          sets: [makeEmptySet(exMeta.type)]
+      openExercisePickerModal((exIds) => {
+        exIds.forEach((exId) => {
+          const exMeta = getExerciseById(exId);
+          state.activeWorkout.exercises.push({
+            exerciseId: exId,
+            supersetGroup: null,
+            sets: [makeEmptySet(exMeta.type)]
+          });
         });
         saveState();
         renderActiveWorkout();
@@ -3068,13 +3833,23 @@
           applyStaticTranslations();
           renderAll();
           closeModal();
-          alert(t('alertImportOk'));
+          uiAlert(t('alertImportOk'));
         } catch (err) {
-          alert(t('alertImportErr', { msg: err.message }));
+          uiAlert(t('alertImportErr', { msg: err.message }));
         }
       };
       reader.readAsText(file);
       e.target.value = '';
+    });
+
+    window.addEventListener('pagehide', () => {
+      if (state.activeWorkout) saveState();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden' && state.activeWorkout) {
+        saveState();
+      }
     });
 
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -3101,7 +3876,7 @@
     renderAll();
 
     if (state.activeWorkout) {
-      minimizeActiveWorkout();
+      openActiveWorkoutSheet();
       startWorkoutTicker();
     }
 
